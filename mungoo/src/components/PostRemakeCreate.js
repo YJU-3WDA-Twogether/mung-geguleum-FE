@@ -229,7 +229,6 @@ const PostRemakeCreate = () => {
                                     className={styled.factoryInput__label}
                                 >
                                     <div className={styled.factoryInput__icon}
-                                         style={{marginRight:25}}
                                     >
                                         <IoImageOutline />
                                     </div>
@@ -254,6 +253,7 @@ const PostRemakeCreate = () => {
                             />
                         </div>
                     </form>
+
                 </div>
             </div>
             {/* 재창작 태그 선택 버튼 */}

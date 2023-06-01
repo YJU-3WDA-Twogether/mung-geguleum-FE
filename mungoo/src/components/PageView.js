@@ -9,70 +9,20 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import pfile from "../image/Profile.jpg";
-import {FaRegComment, FaRegHeart} from "react-icons/fa";
+import {FaRegComment, FaRegHeart,FaHeart} from "react-icons/fa";
 import {FiDownload, FiMoreHorizontal} from "react-icons/fi";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PrevArrow = (props) => {
-
-    const { onClick, currentSlide,fileDown } = props;
-    const customOnClick = () => {
-        onClick();
-        fileDown();
-    }
-    return (
-        <button
-            className="slick-arrow slick-prev"
-            onClick={customOnClick}
-            style={{
-                zIndex: 1,
-                display: currentSlide === 0 ? 'none' : 'block',
-                backgroundColor: "rgba(0, 0, 0, 0)", // Transparent background
-                position: 'absolute',
-                left: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-            }}
-        >
-            Prev
-        </button>
-    );
-};
-
-const NextArrow = (props) => {
-    const { onClick, currentSlide, slideCount,fileUp } = props;
-    const customOnClick = () => {
-        onClick();
-        fileUp();
-    }
-    return (
-        <button
-            className="slick-arrow slick-next"
-            onClick={customOnClick}
-            style={{
-                zIndex: 1,
-                display: currentSlide === slideCount - 1 ? 'none' : 'block',
-                backgroundColor: "rgba(0, 0, 0, 0)", // Transparent background
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-            }}
-        >
-            Next
-        </button>
-    );
-};
 
 const PostView = ({ selectedPost, handlePostClick }) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
-    const [user, setUser] = useState({});
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [clickedPostId, setClickedPostId] = useState(null);
-
+    const [user, setUser] = useState({});
+    const [likedPosts, setLikedPosts] = useState([]);
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -112,11 +62,32 @@ const PostView = ({ selectedPost, handlePostClick }) => {
         fetchPosts();
     }, []);
 
+    const handleHeartClick = async (postId) => {
+        const formData = {
+            pno: postId,
+            uno: user.uno
+        };
 
-    const handleClick = (uno) => {
-        handlePostClick(uno);
+        try {
+            if (likedPosts.includes(postId)) {
+                // If the post is already liked, send a DELETE request
+                const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData });
+                console.log(response.data);
+
+                // Update likedPosts state
+                setLikedPosts(likedPosts.filter(id => id !== postId));
+            } else {
+                // If the post is not liked yet, send a POST request
+                const response = await axios.post(`${API_URL}/heart/get`, formData);
+                console.log(response.data);
+
+                // Update likedPosts state
+                setLikedPosts([...likedPosts, postId]);
+            }
+        } catch (error) {
+            console.error('Error updating heart data:', error);
+        }
     };
-
     const handleSlideChange = (currentIndex) => {
         setFileNum(currentIndex);
     };
@@ -200,13 +171,13 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                         )}
                     </div>
                     <nav className={styled.nweet__actions}>
-                        <div className={`${styled.actionBox}`}>
-                            <div className={styled.actions__icon} >
-                                <FaRegHeart />
+                        <div className={`${styled.actionBox} ${styled.like} `}>
+                            <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno)}>
+                                {likedPosts.includes(post.pno) ? <FaHeart style={{color:"red"}}/> : <FaRegHeart />}
                             </div>
                             <div className={styled.actions__text}>
-                                <p>
-                                    좋아요 갯수
+                                <p className={styled.like}>
+                                    123
                                 </p>
                             </div>
                         </div>
@@ -218,7 +189,7 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                             </div>
                             <div className={styled.actions__text}>
                                 <p>
-                                    댓글 갯수
+
                                 </p>
                             </div>
                         </div>
@@ -230,7 +201,7 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                             </div>
                             <div className={styled.actions__text}>
                                 <p>
-                                    다운로드
+                                   312
                                 </p>
                             </div>
                         </div>
