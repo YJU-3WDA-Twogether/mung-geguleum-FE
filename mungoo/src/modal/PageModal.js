@@ -86,13 +86,13 @@ const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함�
                 <div className="layer-popup show">
                     <div className="modal-dialog" style={{ borderRadius: '10px 10px'}}>
                         {postData && (
-                        <div className="modal-content" style={{ borderRadius: '10px 0 0 10px'}}>
+                        <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden'}}>
                                 <>
                                     {postData.file.map((item, index) => (
                                         <div key={index}>
                                             {item.fsname.match(/.(jpg|jpeg|png|gif)$/i) ? (
                                                 <div className="img-wrap">
-                                                    <img src={`${API_URL}/file/read/${item.fno}`} alt="file" />
+                                                    <img src={`${API_URL}/file/read/${item.fno}`} alt="file" style={{width:600 , height:800}} />
                                                 </div>
                                             ) : item.fsname.match(/.(mp4|webm)$/i) ? (
                                                 <div className="video-wrap">
