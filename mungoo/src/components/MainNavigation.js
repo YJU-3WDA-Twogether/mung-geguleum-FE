@@ -11,12 +11,11 @@ import UserEtcBtn from "../button/UserEtcBtn";
 import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 import {useNavigate} from "react-router-dom";
 
-function MainNavigation({ onSelectPost, MainClose }) {
+function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
     const userEtcRef = useRef();
     const navigate  = useNavigate();
 
     const [user, setUser] = useState({});
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -24,6 +23,7 @@ function MainNavigation({ onSelectPost, MainClose }) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
+    console.log(user.accessToken)
 
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
@@ -38,6 +38,9 @@ function MainNavigation({ onSelectPost, MainClose }) {
             navigate("/auth");
         }
     };
+
+
+
     return (
         <>
             <section className={styled.container}>
@@ -57,7 +60,10 @@ function MainNavigation({ onSelectPost, MainClose }) {
                     <nav className={styled.leftBar__container}>
                         <ul>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Best')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Best');
+                                }}>
                                     <BsFire style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>베스트 모음</b>
@@ -65,7 +71,10 @@ function MainNavigation({ onSelectPost, MainClose }) {
                                 </div>
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Music')}>
+                                <div className={styled.leftBar__list} onClick={() =>{
+                                    handlePostUno();
+                                    onSelectPost('Music')}
+                                }>
                                     <SiApplemusic  style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>음악</b>
@@ -74,7 +83,9 @@ function MainNavigation({ onSelectPost, MainClose }) {
 
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Remake')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Remake')}}>
                                     <VscGitPullRequestCreate style={{color : "#6667ab"}}/>
                                     <span >
                                        <b>재창작</b>
@@ -83,7 +94,9 @@ function MainNavigation({ onSelectPost, MainClose }) {
 
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Stories')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Stories')}}>
                                     <TfiWrite style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>놀이터</b>
@@ -92,7 +105,9 @@ function MainNavigation({ onSelectPost, MainClose }) {
                             </li>
 
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('My')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('My')}}>
                                     <BsPersonFill  style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>마이페이지</b>

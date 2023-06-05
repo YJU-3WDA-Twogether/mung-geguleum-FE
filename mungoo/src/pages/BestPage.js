@@ -18,7 +18,7 @@ const BestPage = ({handlePostClick }) => {
                 text={"베스트"}
                 iconName={<HiOutlineSparkles />}
             />
-            <PostView handlePostClick={handleClick } />
+            <PostView handlePostClick={handleClick} />
         </>
     );
 };

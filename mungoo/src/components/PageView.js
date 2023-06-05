@@ -67,7 +67,6 @@ const PostView = ({ selectedPost, handlePostClick }) => {
             pno: postId,
             uno: user.uno
         };
-
         try {
             if (likedPosts.includes(postId)) {
                 // If the post is already liked, send a DELETE request
@@ -80,7 +79,6 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                 // If the post is not liked yet, send a POST request
                 const response = await axios.post(`${API_URL}/heart/get`, formData);
                 console.log(response.data);
-
                 // Update likedPosts state
                 setLikedPosts([...likedPosts, postId]);
             }
@@ -111,6 +109,7 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                                     src={pfile}
                                     alt="profileImg"
                                     className={styled.profile__image}
+                                    onClick={() => handlePostClick(post.uno)}
                                 />
                             </div>
                             <div className={styled.userInfo}>
@@ -121,7 +120,7 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                                         <p>{post.nickname}</p>
                                     </div>
                                     <div className={styled.userInfo__two}>
-                                        <p>
+                                        <p onClick={() => handlePostClick(post.uno)}>
                                             @{post.uid}
                                         </p>
                                         <p style={{ margin: "0 4px" }}>·</p>
@@ -133,7 +132,7 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                             </div>
                         </div>
                     <div className={styled.nweet__text}>
-                        <h1>{post.title}</h1>
+                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                         <h4>{post.content}</h4>
                     </div>
                     <div className={styled.nweet__image}>
@@ -176,9 +175,11 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                                 {likedPosts.includes(post.pno) ? <FaHeart style={{color:"red"}}/> : <FaRegHeart />}
                             </div>
                             <div className={styled.actions__text}>
-                                <p className={styled.like}>
-                                    123
-                                </p>
+                                {post.hcount === 0 ? null : (
+                                    <p className={styled.like}>
+                                        {post.hcount}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className={`${styled.actionBox} ${styled.comment}`}>
@@ -188,9 +189,11 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                                 <FaRegComment  onClick={() => pnoClick(post.pno) }/>
                             </div>
                             <div className={styled.actions__text}>
-                                <p>
-
-                                </p>
+                                {post.rcount === 0 ? null : (
+                                    <p>
+                                        {post.rcount}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div
