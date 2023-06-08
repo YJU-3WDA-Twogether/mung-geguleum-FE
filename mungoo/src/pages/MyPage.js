@@ -1,18 +1,22 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import styled from "../styles/Mypage.module.css";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { BsCalendar3 } from "react-icons/bs";
+import { IoMdExit } from "react-icons/io";
+import { IoArrowBackOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
-import {BsCalendar3}  from "react-icons/bs";
-import MyPageBtn from "../button/MyPageBtn";
+import style from "../styles/MyPageBtn.module.css";
+import styled from "../styles/Mypage.module.css";
+import { TopCategory } from "../topCatgory/TopCategory";
+import MyLikeView from "./MyLikeView";
 import MyLog from "./MyLog";
 import MyPostView from "./MyPostView";
-import {IoArrowBackOutline} from "react-icons/io5";
-import {IoMdExit} from "react-icons/io";
-import {TopCategory} from "../topCatgory/TopCategory";
-import style from "../styles/MyPageBtn.module.css";
+
+const API_URL = process.env.REACT_APP_API_URL;
 function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
 
     const [user, setUser] = useState({});
+    const [user2, setUser2]= useState({});
     const [selected, setSelected] = useState(1);
 
     useEffect(() => {
@@ -28,14 +32,30 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
             console.log(selected);
         });
     };
+    useEffect(() => {
+        if (selectedPostUno) {
+            fetchUserInfo(selectedPostUno);
+        }
+    }, [selectedPostUno]);
 
+    const fetchUserInfo = async (pno) => {
+        try {
+            const response = await axios.get(`${API_URL}/user/read/${pno}`);
+            const userInfo = response.data;
+            // 받아온 회원 정보를 사용하거나 상태에 저장 등 필요한 작업 수행
+            setUser2(userInfo);
+            // ...
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+        }
+    };
 
     return (
         <section className={styled.container}>
             <div className={styled.main__container}>
 
                 <TopCategory
-                    text={user.uid}
+                    text={selectedPostUno === null ? user.uid :user2.uid}
                     iconName={<IoArrowBackOutline />}
                     iconName2={<IoMdExit />}
                     MainClose={MainClose}
@@ -50,21 +70,16 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                             <div className={styled.profile__image}>
                                 <img src={pfile} alt="프로필 이미지" />
                             </div>
-                            <div className={styled.profile__editBtn}>
-                                프로필 수정
-                            </div>
-                            {user.uno === selectedPostUno ? (
+                            {selectedPostUno === user2.uno ? null : (
                                 <div className={styled.profile__editBtn}>
                                     프로필 수정
                                 </div>
-                            ) : (
-                                <></>
                             )}
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
-                                <p>{user.nickname}</p>
-                                <p>@{user.uid}</p>
+                                <p>{selectedPostUno  === null ? user.nickname :user2.nickname}</p>
+                                <p>@{selectedPostUno  === null  ? user.uid :user2.uid}</p>
                             </div>
                             <div className={styled.profile__desc}>
                                 <p>안녕하세요</p>
@@ -110,8 +125,8 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     </div>
                 </nav>
                 {selected === 1 && <MyLog selectedPostUno={selectedPostUno} />}
-                {selected === 2 && <MyPostView />}
-                {selected === 3 && <MyPostView />}
+                {selected === 2 && <MyLikeView />}
+                {selected === 3 && <MyPostView selectedPostUno={selectedPostUno}/>}
             </div>
         </section>
     );

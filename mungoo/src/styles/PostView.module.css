@@ -190,8 +190,9 @@
     height: 100%;
 }
 .nweet__image video {
-    width: 300px;
-    height: 100px;
+    width: 600px;
+    height: 500px;
+    background-color: black;
 }
 
 
@@ -267,7 +268,7 @@
 }
 
 .nweet .nweet__actions .actionBox:hover .actions__icon::after {
-    background-color: #7ad3ae34;
+    background-color: #e4e4e8;
 }
 
 .nweet .nweet__actions .actionBox .actions__icon svg {
@@ -292,18 +293,24 @@
 .nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon svg,
 .nweet .nweet__actions .actionBox:nth-child(3).like .actions__icon svg,
 .nweet .nweet__actions .actionBox:nth-child(3).like:hover {
-    color: #6667ab;
+    color: #0b0be3;
 }
 
 .nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon::after {
-    background-color: #f918801a;
+    background-color: rgba(255, 0, 118, 0.1);
 }
 
-/* 북마크 */
+.nweet .nweet__actions .actionBox.bookmark,
+.nweet .nweet__actions .actionBox.bookmark .actions__icon svg,
+.nweet .nweet__actions .actionBox:nth-child(1):hover .actions__icon svg {
+    color: #f9183d;
+}
+
+
 .nweet .nweet__actions .actionBox.bookmark,
 .nweet .nweet__actions .actionBox.bookmark .actions__icon svg,
 .nweet .nweet__actions .actionBox:nth-child(4):hover .actions__icon svg {
-    color: #f9183d;
+    color: #0d6efc;
 }
 
 
@@ -311,7 +318,7 @@
 .nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon svg,
 .nweet .nweet__actions .actionBox.reNweet .actions__icon svg,
 .nweet .nweet__actions .actionBox.reNweet:hover {
-    color: #6667ab;
+    color: #3031b4;
 }
 
 .nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon::after {
@@ -340,10 +347,11 @@
 
 /* 리트윗 숫자 */
 .nweet .nweet__actions .actionBox.reNweet p {
-    color: #1d9bf0;
+    color: #425b85;
 }
 
 /* 좋아요 숫자 */
 .nweet .nweet__actions .actionBox.like p {
     color: #6667ab;
 }
+

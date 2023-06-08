@@ -1,17 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
-import styled from '../styles/MainNavigation.module.css'
-import { BsFire,BsPersonFill } from "react-icons/bs";
-import { SiApplemusic} from "react-icons/si";
-import { VscGitPullRequestCreate} from "react-icons/vsc";
-import { TfiWrite} from "react-icons/tfi";
-import {FiMoreHorizontal} from "react-icons/fi";
+import React, { useEffect, useRef, useState } from 'react';
+import { BsFire, BsPersonFill } from "react-icons/bs";
+import { FiMoreHorizontal } from "react-icons/fi";
+import { SiApplemusic } from "react-icons/si";
+import { TfiWrite } from "react-icons/tfi";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
 import pfile from "../image/Profile.jpg";
+import styled from '../styles/MainNavigation.module.css';
 
+import { useNavigate } from "react-router-dom";
 import UserEtcBtn from "../button/UserEtcBtn";
-import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
-import {useNavigate} from "react-router-dom";
+import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 
-function MainNavigation({ onSelectPost, MainClose }) {
+function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
     const userEtcRef = useRef();
     const navigate  = useNavigate();
 
@@ -57,7 +57,10 @@ function MainNavigation({ onSelectPost, MainClose }) {
                     <nav className={styled.leftBar__container}>
                         <ul>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Best')}>
+                            <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Best');
+                                }}>
                                     <BsFire style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>베스트 모음</b>

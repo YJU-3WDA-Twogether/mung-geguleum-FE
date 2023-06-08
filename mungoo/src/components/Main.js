@@ -1,6 +1,6 @@
-import React, { useState ,useEffect} from 'react';
-import PostController from './PostController';
+import React, { useState } from 'react';
 import MainNavigation from "./MainNavigation";
+import PostController from './PostController';
 
 import styled from "../styles/App.module.css";
 function Main({isLoggedIn,userObj,handleLogout}) {
@@ -25,19 +25,21 @@ function Main({isLoggedIn,userObj,handleLogout}) {
     const handlePostClick = (uno) => {
         setIsMyPage(true);
         setSelectedPostUno(uno);
+        setSelectedPost('My');
     };
 
     const MainClose = () => {
         setSelectedPost('Best');
         setIsMyPage(false);
-        setSelectedPostUno(null); // 게시글의 uno 값 초기화
+        setSelectedPostUno(null);
     };
-
-
+    const handlePostUno = () => {
+        setSelectedPostUno(null);
+    };
     return (
         <div className={styled.container}>
             <>
-                <MainNavigation onSelectPost={handleSelectPost} />
+                <MainNavigation onSelectPost={handleSelectPost}  handlePostUno={handlePostUno}/>
             </>
 
             <div className={styled.center__container}>

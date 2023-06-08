@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import '../styles/PageModal.css';
+import React from 'react';
+import { HiOutlineSparkles } from "react-icons/hi";
 import PostView from "../components/PageView";
-import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import '../styles/PageModal.css';
+import { TopCategory } from "../topCatgory/TopCategory";
 
 
 const BestPage = ({handlePostClick }) => {
@@ -18,8 +18,8 @@ const BestPage = ({handlePostClick }) => {
                 text={"베스트"}
                 iconName={<HiOutlineSparkles />}
             />
-            <PostView handlePostClick={handleClick } />
+            <PostView handlePostClick={handleClick }/>
         </>
     );
-};
+}; 
 export default BestPage;

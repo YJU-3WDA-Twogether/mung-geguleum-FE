@@ -35,9 +35,6 @@
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
-
-
 .left-content {
   flex: 1;
   padding: 20px;
@@ -47,3 +44,31 @@
   flex: 1;
   padding: 20px;
 }
+
+.D3replySmit{
+  color: #515188;
+  transition: all 0.3s;
+  cursor: auto;
+  float: right;
+  padding-right: 30px;
+}
+
+.D3replySmit:disabled{
+  color: #bcbcf3;
+  transition: all 0.3s;
+  cursor: auto;
+}
+.D3replyInput{
+  padding-left: 30px;
+  width: 300px;
+}
+
+.D3fixedDown {
+  border-top: 1px solid #ebebeb;
+  padding: 20px; /* 내부 간격 설정 */
+}
+
+
+
+
+

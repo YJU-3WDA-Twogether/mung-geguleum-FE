@@ -1,8 +1,8 @@
-import React, { useEffect, useRef ,useState} from 'react';
-import * as d3 from 'd3';
-import '../styles/d3.css';
 import axios from 'axios';
+import * as d3 from 'd3';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
+import '../styles/d3.css';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -242,7 +242,7 @@ const D3 = () => {
 
     return (
         <>
-            <svg ref={svgRef} width={1000} height={800}></svg>
+            <svg ref={svgRef} width={700} height={500}></svg>
             {selectedNode && (
                 <Modal isOpen={true} onRequestClose={closeModal} className="modal-container">
                     <div className="left-content">

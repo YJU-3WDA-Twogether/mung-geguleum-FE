@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import '../styles/RemakeModal.css';
 
 const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
@@ -65,43 +65,49 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
 
     return (
         <>
-            <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
-                <div className="Remake layer-popup show">
-                    <div className="Remake modal-dialog">
-                        <div className="Remake modal-content" style={{ borderRadius: '10px 10px' }}>
-                            <table border={1}>
-                                <tbody>
-                                {pageData.map((item, index) => (
-                                    <tr key={item.lno}>
-                                        <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
-                                        <td>{item.ptitle}</td>
-                                        <td>{item.unickname}</td>
-                                        <td>{item.regDate}</td>
-                                        <td>
-                                            <input type="checkbox" checked={selectedPosts.indexOf(item) !== -1} onChange={() => handleSelectPost(item)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                            <div className="Remake pagination">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                    <button type="button"
-                                        key={page}
-                                        className={`page-button ${page === currentPage ? 'active' : ''}`}
-                                        onClick={() => handlePageClick(page)}
-                                    >
-                                        {page}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" className="close-button" onClick={closeModal}>
-                        X
-                    </button>
-                </div>
-            </div>
+<div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
+  <div className="Remake layer-popup show">
+    <div className="Remake modal-dialog">
+      <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
+        <table className='RemakeTagTable'>
+          <tbody>
+            {pageData.map((item, index) => (
+              <tr key={item.lno}>
+                <td className='RemakeTagCell'>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
+                <td className='RemakeTagCell'>{item.ptitle}</td>
+                <td className='RemakeTagCell'>{item.unickname}</td>
+                <td className='RemakeTagCell'>{item.regDate}</td>
+                <td className='RemakeTagCell'>
+                  <input
+                    type="checkbox"
+                    checked={selectedPosts.indexOf(item) !== -1}
+                    onChange={() => handleSelectPost(item)}
+                    className='RemakeTagCheckbox'
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="Remake pagination">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              type="button"
+              key={page}
+              className={`page-button ${page === currentPage ? 'active' : ''}`}
+              onClick={() => handlePageClick(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+    <button type="button" className="close-button" onClick={closeModal}>
+      X
+    </button>
+  </div>
+</div>
         </>
     );
 };
