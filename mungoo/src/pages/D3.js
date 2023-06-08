@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import '../styles/d3.css';
 import axios from 'axios';
 import Modal from 'react-modal';
+import PageModal from "../modal/PageModal";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -28,7 +29,6 @@ const D3 = () => {
         const height = +svg.node().getBoundingClientRect().height;
 
         let link, node, simulation;
-
 
         const initializeDisplay = () => {
             // set the data and properties of link lines
@@ -56,11 +56,11 @@ const D3 = () => {
                         .on("drag", dragged)
                         .on("end", dragended)
                 )
-                .on('click', openModal);
+                .on('click', pnoClick);
             // node tooltip
             node
                 .append("title")
-                .text((d) => `${d.id}\n${d.title}\n${d.nickname}`);
+                .text((d) => `${d.regTime}\n${d.title}\n${d.nickname}`);
 
             // generate the svg objects and force simulation
 
@@ -187,134 +187,30 @@ const D3 = () => {
 
     const [selectedNode, setSelectedNode] = useState(null);
     const [nodeData, setNodeData] = useState(null);
-    const openModal = async (d) => {
-        setSelectedNode(d);
-        try {
-            const response = await axios.get(`${API_URL}/post/read/${d.id}`);
-            const data = response.data;
-            setNodeData(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching node data:', error);
-        }
+    const pnoClick = async (d) => {
+        setSelectedPostId(d.id);
+        setClickedPostId(d.id);
+        setShowPopup(true);
     };
 
     const closeModal = () => {
         setSelectedNode(null);
         setNodeData(null);
     };
-    // 댓글
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
-    const [replyingTo, setReplyingTo] = useState(null);
 
-    const handleCommentSubmit = (e) => {
-        e.preventDefault(); // 폼의 기본 동작인 새로고침을 방지합니다.
-
-        if (newComment.trim() === "") {
-            return; // 댓글 내용이 비어있으면 함수를 종료합니다.
-        }
-
-        const newCommentObj = {
-            id: comments.length + 1, // 댓글에 고유한 id를 할당합니다.
-            text: newComment,
-            replies: [] // 답글 배열을 초기화합니다.
-        };
-
-        const updatedComments = [...comments, newCommentObj]; // 새로운 댓글을 기존의 댓글 배열에 추가합니다.
-        setComments(updatedComments); // 업데이트된 댓글 배열을 설정합니다.
-        setNewComment(""); // 입력 필드를 비웁니다.
-    };
-    const handleReply = (commentIndex) => {
-        const commentText = comments[commentIndex].text; // 선택한 댓글의 텍스트를 가져옵니다.
-        const replyText = prompt(`"${commentText}"에 대한 답글 내용을 입력하세요`); // 답글 내용을 입력받습니다.
-
-        const updatedComments = [...comments]; // 기존의 댓글 배열을 복사합니다.
-
-        // 선택한 댓글의 텍스트에 언급(@)을 추가한 답글을 생성합니다.
-        const replyWithMention = `@${commentText} ${replyText}`;
-
-        // 선택한 댓글에 답글을 추가합니다.
-        updatedComments[commentIndex].replies.push({ text: replyWithMention });
-
-        setComments(updatedComments); // 업데이트된 댓글 배열을 설정합니다.
-    };
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState(null);
+    const [clickedPostId, setClickedPostId] = useState(null);
 
     return (
         <>
-            <svg ref={svgRef} width={1000} height={800}></svg>
-            {selectedNode && (
-                <Modal isOpen={true} onRequestClose={closeModal} className="modal-container">
-                    <div className="left-content">
-                        <h2>{selectedNode.title}</h2>
-                        <p>{selectedNode.id}</p>
-                        <p>{selectedNode.nickname}</p>
-                        {nodeData && (
-                            <>
-                                {nodeData.file.map((item, index) => (
-                                    <div key={index}>
-                                        {item.fsname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                            <div className="img-wrap">
-                                                <img src={`${API_URL}/file/read/${item.fno}`} alt="file" style={{ width: 600, height: 650 }} />
-                                            </div>
-                                        ) : item.fsname.match(/.(mp4|webm)$/i) ? (
-                                            <div className="video-wrap">
-                                                <video controls style={{ width: 550, height: 550 }}>
-                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`video/${item.fsname.split('.').pop()}`} />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            </div>
-                                        ) : item.fsname.match(/.(mp3|wav)$/i) ? (
-                                            <div className="audio-wrap">
-                                                <audio controls>
-                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`audio/${item.fsname.split('.').pop()}`} />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            </div>
-                                        ) : (
-                                            <div className="file-wrap">
-                                                <a href={`${API_URL}/file/read/${item.fno}`} target="_blank" rel="noopener noreferrer">
-                                                    {item.fsname}
-                                                </a>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </>
-                        )}
-                    </div>
-                    <div className="right-content">
-                        <div>
-                            <h3>댓글</h3>
-                            {/* Render comments */}
-                            {comments.map((comment, index) => (
-                                <div key={comment.id}>
-                                    <p>{comment.text}</p>
-                                    {/* Render replies */}
-                                    {comment.replies.map((reply, replyIndex) => (
-                                        <div key={replyIndex} className="reply">
-                                            <span>{reply.text}</span>
-                                        </div>
-                                    ))}
-                                    {/* Reply button */}
-                                    <button onClick={() => handleReply(index)}>답글 달기</button>
-                                </div>
-                            ))}
-                            {/* Comment form */}
-                            <form onSubmit={handleCommentSubmit}>
-                                <input
-                                    type="text"
-                                    placeholder="댓글을 입력하세요"
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                />
-                                <button type="submit">댓글 작성</button>
-                            </form>
-                        </div>
-                    </div>
 
-                </Modal>
-            )}
+            <svg ref={svgRef} width={1200} height={880}></svg>
+            <PageModal
+                showPopup={showPopup && selectedPostId === clickedPostId}
+                setShowPopup={setShowPopup}
+                postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+            />
         </>
     );
 
