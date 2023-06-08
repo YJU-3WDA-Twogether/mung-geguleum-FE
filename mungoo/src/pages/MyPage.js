@@ -125,7 +125,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                 </nav>
                 {selected === 1 && <MyLog selectedPostUno={selectedPostUno} />}
                 {selected === 2 && <MyPostView />}
-                {selected === 3 && <MyPostView />}
+                {selected === 3 && <MyPostView selectedPostUno={selectedPostUno}/>}
             </div>
         </section>
     );
