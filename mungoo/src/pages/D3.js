@@ -242,7 +242,7 @@ const D3 = () => {
 
     return (
         <>
-            <svg ref={svgRef} width={700} height={500}></svg>
+            <svg ref={svgRef} width={1000} height={800}></svg>
             {selectedNode && (
                 <Modal isOpen={true} onRequestClose={closeModal} className="modal-container">
                     <div className="left-content">
