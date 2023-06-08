@@ -15,7 +15,7 @@ import {FiDownload, FiMoreHorizontal} from "react-icons/fi";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const PostView = ({ selectedPost, handlePostClick }) => {
+const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
@@ -50,37 +50,64 @@ const PostView = ({ selectedPost, handlePostClick }) => {
             });
     };
     useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/post/getlist`);
-                console.log(response.data.content);
-                setPosts(response.data.content);
-            } catch (error) {
-                console.error(error);
+        if (user.uno) {
+            if (selectedPostUno) {
+                const params = {
+                    uno: selectedPostUno,
+                };
+                fetchPosts(params);
+            } else {
+                const params = {
+                    uno: user.uno,
+                };
+                fetchPosts(params);
             }
-        };
-        fetchPosts();
-    }, []);
+        }
 
-    const handleHeartClick = async (postId) => {
+    }, [user.uno, selectedPostUno]);
+    const fetchPosts = async (params) => {
+        try {
+            const response = await axios.get(`${API_URL}/post/getlist`, { params });
+            console.log(response.data.content);
+            setPosts(response.data.content);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleHeartClick = async (postId, hexist) => {
         const formData = {
             pno: postId,
-            uno: user.uno
+            uno: user.uno,
         };
         try {
-            if (likedPosts.includes(postId)) {
+            if (hexist) {
                 // If the post is already liked, send a DELETE request
                 const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData });
                 console.log(response.data);
 
                 // Update likedPosts state
-                setLikedPosts(likedPosts.filter(id => id !== postId));
+                setLikedPosts(likedPosts.filter((id) => id !== postId));
+
+                // Update hcount in posts state
+                setPosts((prevPosts) =>
+                    prevPosts.map((post) =>
+                        post.pno === postId ? { ...post, hexist: false, hcount: post.hcount - 1 } : post
+                    )
+                );
             } else {
                 // If the post is not liked yet, send a POST request
                 const response = await axios.post(`${API_URL}/heart/get`, formData);
                 console.log(response.data);
+
                 // Update likedPosts state
                 setLikedPosts([...likedPosts, postId]);
+
+                // Update hcount in posts state
+                setPosts((prevPosts) =>
+                    prevPosts.map((post) =>
+                        post.pno === postId ? { ...post, hexist: true, hcount: post.hcount + 1 } : post
+                    )
+                );
             }
         } catch (error) {
             console.error('Error updating heart data:', error);
@@ -171,8 +198,8 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                     </div>
                     <nav className={styled.nweet__actions}>
                         <div className={`${styled.actionBox} ${styled.like} `}>
-                            <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno)}>
-                                {likedPosts.includes(post.pno) ? <FaHeart style={{color:"red"}}/> : <FaRegHeart />}
+                            <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno, post.hexist)}>
+                                {post.hexist ? <FaHeart style={{color:"red"}}/> : <FaRegHeart />}
                             </div>
                             <div className={styled.actions__text}>
                                 {post.hcount === 0 ? null : (
@@ -203,9 +230,11 @@ const PostView = ({ selectedPost, handlePostClick }) => {
                                 <FiDownload  onClick={() => downloadFile(post.file[fileNum])} />
                             </div>
                             <div className={styled.actions__text}>
-                                <p>
-                                   312
-                                </p>
+                                {post.lcount === 0 ? null : (
+                                    <p>
+                                        {post.lcount}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div
