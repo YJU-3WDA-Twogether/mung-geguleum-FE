@@ -10,6 +10,7 @@ import {IoArrowBackOutline} from "react-icons/io5";
 import {IoMdExit} from "react-icons/io";
 import {TopCategory} from "../topCatgory/TopCategory";
 import style from "../styles/MyPageBtn.module.css";
+import MyLikeView from "./MyLikeView";
 
 const API_URL = process.env.REACT_APP_API_URL;
 function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
@@ -124,7 +125,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     </div>
                 </nav>
                 {selected === 1 && <MyLog selectedPostUno={selectedPostUno} />}
-                {selected === 2 && <MyPostView />}
+                {selected === 2 && <MyLikeView />}
                 {selected === 3 && <MyPostView selectedPostUno={selectedPostUno}/>}
             </div>
         </section>
