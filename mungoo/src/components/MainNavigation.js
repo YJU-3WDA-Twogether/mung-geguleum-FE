@@ -6,10 +6,10 @@ import { VscGitPullRequestCreate} from "react-icons/vsc";
 import { TfiWrite} from "react-icons/tfi";
 import {FiMoreHorizontal} from "react-icons/fi";
 import pfile from "../image/Profile.jpg";
-
 import UserEtcBtn from "../button/UserEtcBtn";
 import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 import {useNavigate} from "react-router-dom";
+import jwt from "jwt-decode";
 
 function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
     const userEtcRef = useRef();
@@ -23,8 +23,9 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
-    console.log(user.accessToken)
-
+/*    console.log(user.accessToken);
+    const {uno,role} = jwt(localStorage.getItem('accessToken'));
+    console.log("메인페이지"+uno)*/
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
     const toggleUserEtc = () => {
@@ -38,7 +39,6 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
             navigate("/auth");
         }
     };
-
 
 
     return (

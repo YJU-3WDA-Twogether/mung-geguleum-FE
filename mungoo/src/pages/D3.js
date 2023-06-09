@@ -7,7 +7,7 @@ import PageModal from "../modal/PageModal";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const D3 = () => {
+const D3 = ({handlePostClick}) => {
     const svgRef = React.useRef();
     const [graphData, setGraphData] = useState(null);
     const simulationRef = useRef(null);
@@ -210,6 +210,7 @@ const D3 = () => {
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+                handlePostClick={handlePostClick}
             />
         </>
     );

@@ -11,6 +11,7 @@ import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
+import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -53,26 +54,21 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                 console.error(error);
             });
     };
+
     useEffect(() => {
-        if (user.uno) {
-            if (selectedPostUno) {
-                const params = {
-                    uno: selectedPostUno,
-                };
-                fetchPosts(params);
-            } else {
-                const params = {
-                    uno: user.uno,
-                };
-                fetchPosts(params);
-            }
+        if (localStorage.getItem('accessToken')) {
+            fetchPosts();
         }
 
     }, [user.uno, selectedPostUno]);
-
+    console.log("테스트"+localStorage.getItem('accessToken'))
     const fetchPosts = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/post/getlist`, {params});
+            const response = await axios.get(`${API_URL}/post/getlist`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
             console.log(response.data.content);
             setPosts(response.data.content);
         } catch (error) {
@@ -82,12 +78,14 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     const handleHeartClick = async (postId, hexist) => {
         const formData = {
             pno: postId,
-            uno: user.uno,
         };
         try {
             if (hexist) {
                 // If the post is already liked, send a DELETE request
-                const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData });
+                const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }});
                 console.log(response.data);
 
                 // Update likedPosts state
@@ -101,7 +99,10 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                 );
             } else {
                 // If the post is not liked yet, send a POST request
-                const response = await axios.post(`${API_URL}/heart/get`, formData);
+                const response = await axios.post(`${API_URL}/heart/get`, { data: formData,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }});
                 console.log(response.data);
 
                 // Update likedPosts state
@@ -298,7 +299,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                                     <FiMoreHorizontal />
                                 </div>
                                 {dropdownPostId === post.pno && (
-                                    <Dropdown.Menu show>
+                                    <Dropdown.Menu show style={{left : '73.5%'}}>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno); setDropdownPostId(null); }}>
                                             그래프
                                         </Dropdown.Item>
@@ -321,7 +322,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                                         >
                                             Close
                                         </button>
-                                        <D3/>
+                                        <D3 handlePostClick={handlePostClick}/>
                                     </div>
                                 )}
                             </div>
@@ -334,6 +335,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+                handlePostClick={handlePostClick}
             />
         </>
     );

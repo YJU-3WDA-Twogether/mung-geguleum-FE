@@ -42,9 +42,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
         try {
             const response = await axios.get(`${API_URL}/user/read/${pno}`);
             const userInfo = response.data;
-            // 받아온 회원 정보를 사용하거나 상태에 저장 등 필요한 작업 수행
             setUser2(userInfo);
-            // ...
         } catch (error) {
             console.error('Error fetching user info:', error);
         }

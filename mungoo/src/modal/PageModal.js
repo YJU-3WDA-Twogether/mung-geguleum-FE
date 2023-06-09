@@ -5,7 +5,7 @@ import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostView.module.css";
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함수 전달받음
+const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 상태값과 함수 전달받음
 
     const [postData, setPostData] = useState(null);
     const [comment, setComment] = useState("");
@@ -128,10 +128,11 @@ const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함�
                                             src={pfile}
                                             alt="profileImg"
                                             className={styled.profile__image}
+                                            onClick={() => handlePostClick(postData.uno)}
                                         />
                                         <div style={{paddingLeft:"8px"}}>
                                             <p> <span className="comment-author">{postData.title}</span>
-                                                {new Date(postData.regDate).toLocaleString()} {postData.nickname}</p>
+                                                {new Date(postData.regDate).toLocaleString()} { postData.nickname}</p>
                                             <p>{postData.content}</p>
                                         </div>
                                     </div>
