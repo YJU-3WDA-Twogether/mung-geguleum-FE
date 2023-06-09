@@ -1,8 +1,17 @@
 import Modal from '@mui/material/Modal';
-import React from 'react';
+import React, { useRef } from 'react';
+import { GrClose } from "react-icons/gr";
+import {
+  IoCameraOutline,
+  IoCameraReverseOutline
+} from "react-icons/io5";
+import pfile from "../image/Profile.jpg";
+import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
-
 const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
+
+  const inputRef = useRef();
+
   return (
     <Modal
       open={open}
@@ -13,8 +22,8 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
       <div className={styled.container}>
         <form className={styled.editForm}>
           <div className={styled.topBox}>
-            <div className={styled.close}>
-              {/* <GrClose /> */}
+            <div className={styled.close} onClick={onClose}>
+              <GrClose />
             </div>
             <div className={styled.submit}>
               <input
@@ -29,7 +38,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
             <div className={styled.backImage}>
               <div className={styled.image__iconBox}>
                 <label htmlFor="attach-bgfile">
-                  {/* {editAttachmentBg !== bgImg ? (
+                  {bgfile ? (
                     <div className={styled.image__icon}>
                       <IoCameraReverseOutline />
                     </div>
@@ -37,9 +46,10 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                     <div className={styled.image__icon}>
                       <IoCameraOutline />
                     </div>
-                  )} */}
+                  )}
                 </label>
-                {/* {editAttachmentBg !== bgImg && (
+                {/* 이미지가 있을경우 X */}
+                {/* {bgfile && (
                   <div className={styled.image__icon}>
                     <IoCloseSharp />
                   </div>
@@ -53,16 +63,16 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                   }}
                 />
               </div>
-              {/* <div className={styled.bgImageBox}>
-                <img src={editAttachmentBg} alt="배경화면 이미지" />
-              </div> */}
+              <div className={styled.bgImageBox}>
+              <img src={bgfile} alt="배경사진" />
+              </div>
             </div>
             <div className={styled.editBox}>
               <div className={styled.edit}>
                 <div className={styled.profile__image}>
                   <div className={styled.image__iconBox}>
                     <label htmlFor="attach-file">
-                      {/* {editAttachment !== noneProfile ? (
+                      {pfile ? (
                         <div className={styled.image__icon}>
                           <IoCameraReverseOutline />
                         </div>
@@ -70,9 +80,10 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                         <div className={styled.image__icon}>
                           <IoCameraOutline />
                         </div>
-                      )} */}
+                      )}
                     </label>
-                    {/* {editAttachment !== noneProfile && (
+                    {/* 이미지가 있을경우 X */}
+                    {/* {pfile && (
                       <div className={styled.image__icon}>
                         <IoCloseSharp />
                       </div>
@@ -86,7 +97,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                       }}
                     />
                   </div>
-                  {/* <img src={editAttachment} alt="프로필 이미지" /> */}
+                  <img src={pfile} alt="프로필 이미지" />
                 </div>
               </div>
               <div className={`${styled.edit}`}>
@@ -95,7 +106,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                   <input
                     maxLength="25"
                     className={styled.edit__Input}
-                    // ref={inputRef}
+                    ref={inputRef}
                     spellCheck="false"
                     type="text"
                     required
