@@ -149,13 +149,13 @@ const modalStyles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    zIndex: 10000, // Set a higher value than the other modal's z-index
+    zIndex: 9999, // Set a higher value than the other modal's z-index
     background: "#6667AB",
     padding: "10px",
     borderRadius: "4px",
     backdropFilter: "blur(8px)",
-    width: "700px", // Adjust the width as desired
-    height: "500px", // Adjust the height as desired
+    width: "1200px", // Adjust the width as desired
+    height: "900px", // Adjust the height as desired
   };
   const [closeButtonStyles, setCloseButtonStyles] = useState({
     position: "absolute",
@@ -299,16 +299,12 @@ const toggleDropdown = (postId) => {
                                 <FiMoreHorizontal />
                             </div>
                             {dropdownPostId === post.pno && (
-                                <Dropdown.Menu show>
+                                <Dropdown.Menu show  style={{left:'73.5%'}}>
                                     <Dropdown.Item onClick={() => { handleActionClick(post.pno); setDropdownPostId(null); }}>
-                                    Action
+                                    그래프
                                     </Dropdown.Item>
-
                                 <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                    Another action
-                                </Dropdown.Item>
-                                <Dropdown.Item href="#/action-3" onClick={() => setDropdownPostId(null)}>
-                                    Something else
+                                    신고하기
                                 </Dropdown.Item>
                                 </Dropdown.Menu>
                                 )}

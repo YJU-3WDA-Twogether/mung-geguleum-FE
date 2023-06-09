@@ -5,6 +5,7 @@ import { IoMdExit } from "react-icons/io";
 import { IoArrowBackOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
+import ProfileEditModal from '../modal/ProfileEditModal';
 import style from "../styles/MyPageBtn.module.css";
 import styled from "../styles/Mypage.module.css";
 import { TopCategory } from "../topCatgory/TopCategory";
@@ -18,6 +19,25 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     const [user, setUser] = useState({});
     const [user2, setUser2]= useState({});
     const [selected, setSelected] = useState(1);
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+      };
+    
+      const handleCloseModal = () => {
+        setOpenModal(false);
+      };
+    
+      const handleProfileEdit = () => {
+        // Handle the profile edit logic here
+        // This function will be called when the "Save" button is clicked inside the modal
+        // Perform the necessary actions, such as updating the user's profile data
+        // You can access form data or perform API calls here
+        // Once the editing is done, you can close the modal by calling handleCloseModal()
+        handleCloseModal();
+      };
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -50,6 +70,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
         }
     };
 
+
     return (
         <section className={styled.container}>
             <div className={styled.main__container}>
@@ -64,17 +85,23 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     <div className={styled.backImage}>
                         <img src={bgfile} alt="배경사진" />
                     </div>
-
                     <div className={styled.profile}>
                         <div className={styled.profile__edit}>
                             <div className={styled.profile__image}>
                                 <img src={pfile} alt="프로필 이미지" />
                             </div>
                             {selectedPostUno === user2.uno ? null : (
-                                <div className={styled.profile__editBtn}>
+                            <div className={styled.profile__editBtn} onClick={handleOpenModal}
+                                >
                                     프로필 수정
                                 </div>
                             )}
+
+                        <ProfileEditModal
+                                open={openModal}
+                                onClose={handleCloseModal}
+                                handleProfileEdit={handleProfileEdit}
+                            />
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>

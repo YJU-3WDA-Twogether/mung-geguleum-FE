@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styled from "./styles/App.module.css";
 import Routers from './routes/Routers';
+import styled from "./styles/App.module.css";
 
 function App() {
     const [init, setInit] = useState(false);
