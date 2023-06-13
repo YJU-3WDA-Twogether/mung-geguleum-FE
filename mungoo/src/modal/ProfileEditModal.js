@@ -1,16 +1,34 @@
 import Modal from '@mui/material/Modal';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { GrClose } from "react-icons/gr";
-import {
-  IoCameraOutline,
-  IoCameraReverseOutline
-} from "react-icons/io5";
+import { IoCameraOutline, IoCameraReverseOutline, IoCloseSharp } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
-const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
+
+const ProfileEditModal = ({ open, onClose, handleProfileEdit ,creatorInfo }) => {
+  
+  const [selectedProfileImage, setSelectedProfileImage] = useState(null);
+  const [selectedBgImage, setSelectedBgImage] = useState(null);
 
   const inputRef = useRef();
+
+  const handleProfileImageChange = (e) => {
+    setSelectedProfileImage(e.target.files[0]);
+  };
+
+  const handleBgImageChange = (e) => {
+    setSelectedBgImage(e.target.files[0]);
+  };
+
+  const onDeleteProfileClick = () => {
+    setSelectedProfileImage(null);
+  };
+
+  const onDeleteBgClick = async  () => {
+     const ok = window.confirm("배경사진을 삭제하시겠어요?");   
+     setSelectedBgImage(null);
+  };
 
   return (
     <Modal
@@ -30,7 +48,6 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                 type="submit"
                 value="프로필 수정"
                 className={styled.editInput__arrow}
-                // disabled={!isAddFile && !isDeleteProfileURL && !isDeleteBgURL}
               />
             </div>
           </div>
@@ -38,22 +55,23 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
             <div className={styled.backImage}>
               <div className={styled.image__iconBox}>
                 <label htmlFor="attach-bgfile">
-                  {bgfile ? (
-                    <div className={styled.image__icon}>
-                      <IoCameraReverseOutline />
+                  {selectedBgImage !== bgfile? (
+                    <div className={styled.image__icons}>
+                      <div className={styled.image__icon}>
+                        <IoCameraReverseOutline />
+                      </div>               
                     </div>
                   ) : (
                     <div className={styled.image__icon}>
-                      <IoCameraOutline />
-                    </div>
+                    <IoCameraOutline />
+                  </div>              
                   )}
                 </label>
-                {/* 이미지가 있을경우 X */}
-                {/* {bgfile && (
-                  <div className={styled.image__icon}>
+                {selectedBgImage && selectedBgImage !== bgfile && (
+                  <div className={styled.image__icon} onClick={onDeleteBgClick}>
                     <IoCloseSharp />
-                  </div>
-                )} */}
+                  </div> 
+                )}
                 <input
                   id="attach-bgfile"
                   type="file"
@@ -61,10 +79,20 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                   style={{
                     display: "none",
                   }}
+                  onChange={handleBgImageChange}
                 />
               </div>
               <div className={styled.bgImageBox}>
-              <img src={bgfile} alt="배경사진" />
+                {selectedBgImage ? (
+                  <>
+                    <img
+                      src={URL.createObjectURL(selectedBgImage)}
+                      alt="배경사진"
+                    />
+                  </>
+                ) : (
+                  <img src={bgfile} alt="배경사진" />
+                )}
               </div>
             </div>
             <div className={styled.editBox}>
@@ -72,9 +100,11 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                 <div className={styled.profile__image}>
                   <div className={styled.image__iconBox}>
                     <label htmlFor="attach-file">
-                      {pfile ? (
-                        <div className={styled.image__icon}>
-                          <IoCameraReverseOutline />
+                      {selectedProfileImage !== pfile ? (
+                        <div className={styled.image__icons}>
+                          <div className={styled.image__icon}>
+                            <IoCameraReverseOutline />
+                          </div>                    
                         </div>
                       ) : (
                         <div className={styled.image__icon}>
@@ -82,12 +112,11 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                         </div>
                       )}
                     </label>
-                    {/* 이미지가 있을경우 X */}
-                    {/* {pfile && (
-                      <div className={styled.image__icon}>
-                        <IoCloseSharp />
-                      </div>
-                    )} */}
+                    {selectedProfileImage && selectedProfileImage !== pfile && (
+                      <div className={styled.image__icon} onClick={onDeleteProfileClick}>
+                            <IoCloseSharp />
+                          </div>
+                    )}
                     <input
                       id="attach-file"
                       type="file"
@@ -95,9 +124,17 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit }) => {
                       style={{
                         display: "none",
                       }}
+                      onChange={handleProfileImageChange}
                     />
                   </div>
-                  <img src={pfile} alt="프로필 이미지" />
+                  <img
+                    src={
+                      selectedProfileImage
+                        ? URL.createObjectURL(selectedProfileImage)
+                        : pfile
+                    }
+                    alt="프로필 이미지"
+                  />
                 </div>
               </div>
               <div className={`${styled.edit}`}>
