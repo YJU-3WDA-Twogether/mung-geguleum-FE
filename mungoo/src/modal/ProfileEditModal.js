@@ -6,7 +6,10 @@ import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
 
-const ProfileEditModal = ({ open, onClose, handleProfileEdit ,creatorInfo }) => {
+
+
+
+const ProfileEditModal = ({ open, onClose, handleProfileEdit  }) => {
   
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedBgImage, setSelectedBgImage] = useState(null);
@@ -21,13 +24,20 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit ,creatorInfo }) => 
     setSelectedBgImage(e.target.files[0]);
   };
 
-  const onDeleteProfileClick = () => {
-    setSelectedProfileImage(null);
+  const onDeleteProfileClick = async () => {
+    const ok = window.confirm("프로필사진을 삭제하시겠어요?");  
+
+    if(ok){
+      setSelectedProfileImage(pfile);
+    }
   };
 
   const onDeleteBgClick = async  () => {
-     const ok = window.confirm("배경사진을 삭제하시겠어요?");   
-     setSelectedBgImage(null);
+     const ok = window.confirm("배경사진을 삭제하시겠어요?");  
+     
+     if(ok){
+      setSelectedBgImage(bgfile);
+     }
   };
 
   return (
@@ -83,13 +93,11 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit ,creatorInfo }) => 
                 />
               </div>
               <div className={styled.bgImageBox}>
-                {selectedBgImage ? (
-                  <>
+                {selectedBgImage && selectedBgImage !== bgfile ?  (         
                     <img
                       src={URL.createObjectURL(selectedBgImage)}
                       alt="배경사진"
-                    />
-                  </>
+                    />   
                 ) : (
                   <img src={bgfile} alt="배경사진" />
                 )}
@@ -127,14 +135,14 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit ,creatorInfo }) => 
                       onChange={handleProfileImageChange}
                     />
                   </div>
-                  <img
-                    src={
-                      selectedProfileImage
-                        ? URL.createObjectURL(selectedProfileImage)
-                        : pfile
-                    }
-                    alt="프로필 이미지"
-                  />
+                  {selectedProfileImage && selectedProfileImage !== pfile ? (
+                    <img
+                      src= {URL.createObjectURL(selectedProfileImage)}
+                      alt='프로필 이미지'
+                      />
+                  ) : (
+                    <img src={pfile} alt='프로필 이미지' />
+                  )}           
                 </div>
               </div>
               <div className={`${styled.edit}`}>
