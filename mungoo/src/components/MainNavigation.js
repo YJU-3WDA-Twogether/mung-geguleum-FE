@@ -23,9 +23,9 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
-/*    console.log(user.accessToken);
-    const {uno,role} = jwt(localStorage.getItem('accessToken'));
-    console.log("메인페이지"+uno)*/
+//     console.log(user.accessToken);
+      const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+//     console.log("메인페이지"+uno)
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
     const toggleUserEtc = () => {
@@ -134,8 +134,8 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
                                 />
                             </div>
                             <div className={styled.userInfo__name}>
-                                <p>{user.nickname}</p>
-                                <p>@{user.uid}</p>
+                                <p>{nickname}</p>
+                                <p>@{uid}</p>
                             </div>
                             <div className={styled.userInfo__etc}>
                                 <FiMoreHorizontal/>

@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import axios from 'axios';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/Calender.css';
+import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 function MyLog({selectedPostUno}) {
@@ -12,9 +13,8 @@ function MyLog({selectedPostUno}) {
     const [result, setResult] = useState({});
     const [selectedDate, setSelectedDate] = useState(null);
     const selectedData = result[selectedDate];
-
     const [user, setUser] = useState({});
-
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
 
 
     const displayMonth = String(month).padStart(2, '0'); // 월을 두 자리 숫자로 만듦
@@ -27,7 +27,7 @@ function MyLog({selectedPostUno}) {
         }
     }, []);
     useEffect(() => {
-        if (user.uno) {
+        if (uno) {
             if (selectedPostUno) {
                 const params = {
                     uno: selectedPostUno,
@@ -36,13 +36,13 @@ function MyLog({selectedPostUno}) {
                 fetchData(params);
             } else {
                 const params = {
-                    uno: user.uno,
+                    uno: uno,
                     date: displayDate,
                 };
                 fetchData(params);
             }
         }
-    }, [displayDate, user.uno, selectedPostUno]);
+    }, [displayDate, uno, selectedPostUno]);
 
 
     const fetchData = async (params) => {

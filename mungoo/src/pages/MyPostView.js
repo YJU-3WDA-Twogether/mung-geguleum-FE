@@ -6,6 +6,7 @@ import {FaHeart, FaRegComment, FaRegHeart} from "react-icons/fa";
 import {FiDownload, FiMoreHorizontal} from "react-icons/fi";
 import PageModal from "../modal/PageModal";
 import axios from "axios";
+import jwt from "jwt-decode";
 const API_URL = process.env.REACT_APP_API_URL;
 function MyPostView({handlePostClick,selectedPostUno}) {
     const [posts, setPosts] = useState([]);
@@ -15,6 +16,13 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     const [clickedPostId, setClickedPostId] = useState(null);
     const [user, setUser] = useState({});
     const [likedPosts, setLikedPosts] = useState([]);
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const token = localStorage.getItem('accessToken')
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    };
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -25,7 +33,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     console.log(selectedPostUno)
     const downloadFile = (file) => {
         const params = {
-            uno: user.uno,
+            uno: uno,
             pno: file.pno,
         };
 
@@ -42,7 +50,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             });
     };
     useEffect(() => {
-        if (user.uno) {
+        if (uno) {
             if (selectedPostUno) {
                 const params = {
                     uno: selectedPostUno,
@@ -50,31 +58,33 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                 fetchPosts(params);
             } else {
                 const params = {
-                    uno: user.uno,
+                    uno: uno,
                 };
                 fetchPosts(params);
             }
+            console.log(uno)
         }
 
     }, [user.uno, selectedPostUno]);
     const fetchPosts = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/post/getMyPost`, { params });
+            console.log(params)
+            const response = await axios.get(`${API_URL}/post/getMyPost/${params.uno}`);
             console.log(response.data.content);
             setPosts(response.data.content);
         } catch (error) {
             console.error(error);
         }
     };
+
     const handleHeartClick = async (postId, hexist) => {
         const formData = {
             pno: postId,
-            uno: user.uno,
         };
         try {
             if (hexist) {
                 // If the post is already liked, send a DELETE request
-                const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData });
+                const response = await axios.delete(`${API_URL}/heart/delete`, formData, config);
                 console.log(response.data);
 
                 // Update likedPosts state
@@ -88,7 +98,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                 );
             } else {
                 // If the post is not liked yet, send a POST request
-                const response = await axios.post(`${API_URL}/heart/get`, formData);
+                const response = await axios.post(`${API_URL}/heart/create`, formData , config);
                 console.log(response.data);
 
                 // Update likedPosts state

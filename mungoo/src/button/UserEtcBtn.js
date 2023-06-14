@@ -4,10 +4,12 @@ import { GoTriangleDown } from "react-icons/go";
 import pfile from "../image/Profile.jpg";
 import styled from "../styles/UserEtcBtn.module.css";
 import {useEffect, useState} from "react";
+import jwt from "jwt-decode";
 
 const UserEtcBtn = ({ creatorInfo, userEtc, onLogOutClick }) => {
 
     const [user, setUser] = useState({});
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -29,8 +31,8 @@ const UserEtcBtn = ({ creatorInfo, userEtc, onLogOutClick }) => {
                             />
                         </div>
                         <div className={styled.userInfo__name}>
-                            <p>{user.nickname}</p>
-                            <p>@{user.uid}</p>
+                            <p>{nickname}</p>
+                            <p>@{uid}</p>
                         </div>
                         <div className={styled.userInfo__etc}>
                             <BiCheck />

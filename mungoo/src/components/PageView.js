@@ -12,6 +12,7 @@ import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
 import jwt from "jwt-decode";
+import data from "bootstrap/js/src/dom/data";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -27,7 +28,11 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     const [dropdownPostId, setDropdownPostId] = useState(null);
     const [modalPostId,setModalPostId]  = useState(null);
     const [likedPosts, setLikedPosts] = useState([]);
-
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -42,7 +47,10 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
             pno: file.pno,
         };
 
-        axios.get(`${API_URL}/file/download/${file.fno}`, { params, responseType: 'blob' })
+        axios.get(`${API_URL}/file/download/${file.fno}`, { params, responseType: 'blob',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            } })
             .then(response => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -64,11 +72,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     console.log("테스트"+localStorage.getItem('accessToken'))
     const fetchPosts = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/post/getlist`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+            const response = await axios.get(`${API_URL}/post/getlist`, config);
             console.log(response.data.content);
             setPosts(response.data.content);
         } catch (error) {
@@ -81,34 +85,28 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
         };
         try {
             if (hexist) {
-                // If the post is already liked, send a DELETE request
-                const response = await axios.delete(`${API_URL}/heart/delete`, { data: formData,
+                console.log("댓글 취소 요청입니다.");
+                console.log(config.headers)
+                console.log(formData.pno)
+                const response = await axios.delete(`${API_URL}/heart/delete`, {data: formData ,
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     }});
                 console.log(response.data);
 
-                // Update likedPosts state
                 setLikedPosts(likedPosts.filter((id) => id !== postId));
 
-                // Update hcount in posts state
                 setPosts((prevPosts) =>
                     prevPosts.map((post) =>
                         post.pno === postId ? { ...post, hexist: false, hcount: post.hcount - 1 } : post
                     )
                 );
             } else {
-                // If the post is not liked yet, send a POST request
-                const response = await axios.post(`${API_URL}/heart/get`, { data: formData,
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }});
+                const response = await axios.post(`${API_URL}/heart/create`, formData,config);
                 console.log(response.data);
 
-                // Update likedPosts state
                 setLikedPosts([...likedPosts, postId]);
 
-                // Update hcount in posts state
                 setPosts((prevPosts) =>
                     prevPosts.map((post) =>
                         post.pno === postId ? { ...post, hexist: true, hcount: post.hcount + 1 } : post

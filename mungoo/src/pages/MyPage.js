@@ -11,6 +11,7 @@ import {IoMdExit} from "react-icons/io";
 import {TopCategory} from "../topCatgory/TopCategory";
 import style from "../styles/MyPageBtn.module.css";
 import MyLikeView from "./MyLikeView";
+import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
@@ -18,6 +19,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     const [user, setUser] = useState({});
     const [user2, setUser2]= useState({});
     const [selected, setSelected] = useState(1);
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -53,7 +55,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
             <div className={styled.main__container}>
 
                 <TopCategory
-                    text={selectedPostUno === null ? user.uid :user2.uid}
+                    text={selectedPostUno === null ? uid :user2.uid}
                     iconName={<IoArrowBackOutline />}
                     iconName2={<IoMdExit />}
                     MainClose={MainClose}
@@ -76,8 +78,8 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
-                                <p>{selectedPostUno  === null ? user.nickname :user2.nickname}</p>
-                                <p>@{selectedPostUno  === null  ? user.uid :user2.uid}</p>
+                                <p>{selectedPostUno  === null ? nickname :user2.nickname}</p>
+                                <p>@{selectedPostUno  === null  ? uid :user2.uid}</p>
                             </div>
                             <div className={styled.profile__desc}>
                                 <p>안녕하세요</p>

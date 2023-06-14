@@ -21,6 +21,13 @@ const PostCreate = ({pageNum}) => {
         videoList: [],
     });
     const [user, setUser] = useState({});
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
+
+
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -100,7 +107,6 @@ const PostCreate = ({pageNum}) => {
 
         try {
             const data = new FormData();
-            data.append('uno', user.uno); // uno 추가
             data.append('title', formData.title);
             data.append('content', formData.content);
             data.append('bno', pageNum);
@@ -116,11 +122,10 @@ const PostCreate = ({pageNum}) => {
                 console.log(file)
             });
 
-            const response = await axios.post(`${API_URL}/post/create`, data, {
+            const response = await axios.post(`${API_URL}/post/create`, {data : data,
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                }});
             alert('게시글이 성공적으로 작성되었습니다.');
             setFormData({
                 title: '',
