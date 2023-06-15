@@ -1,12 +1,11 @@
-import React, { useState,useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
+import { Carousel } from "react-responsive-carousel";
+import pfile from "../image/Profile.jpg";
 import RemakeTegModal from "../modal/RemakeTegModal";
 import styled from "../styles/PostCreate.module.css";
-import pfile from "../image/Profile.jpg";
-import {Carousel} from "react-responsive-carousel";
-import {IoCloseSharp, IoImageOutline} from "react-icons/io5";
-import {VscGitPullRequestCreate} from "react-icons/vsc";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -14,6 +13,12 @@ const API_URL = process.env.REACT_APP_API_URL;
 const PostRemakeCreate = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [user, setUser] = useState({});
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
+
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -112,7 +117,6 @@ const PostRemakeCreate = () => {
 
         try {
             const data = new FormData();
-            data.append('uno', user.uno); // uno 추가
             data.append('title', formData.title);
             data.append('content', formData.content);
             data.append('bno', 4);
@@ -138,16 +142,23 @@ const PostRemakeCreate = () => {
 
             const response = await axios.post(`${API_URL}/post/create`, data, {
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
-                },
+                }
             });
             console.log('formData:', formData);
             console.log('category:', category);
             console.log('remakeTag:', remakeTag);
             console.log('data:', data);
-
             console.log(response.data);
             alert('게시글이 성공적으로 작성되었습니다.');
+            setFormData({
+                title: '',
+                content: '',
+                fileList: [],
+                audioList: [],
+                videoList: [],
+            });
         } catch (error) {
             console.error(error);
             alert('게시글 작성 중 오류가 발생했습니다.');
@@ -229,7 +240,6 @@ const PostRemakeCreate = () => {
                                     className={styled.factoryInput__label}
                                 >
                                     <div className={styled.factoryInput__icon}
-                                         style={{marginRight:25}}
                                     >
                                         <IoImageOutline />
                                     </div>
@@ -254,6 +264,7 @@ const PostRemakeCreate = () => {
                             />
                         </div>
                     </form>
+
                 </div>
             </div>
             {/* 재창작 태그 선택 버튼 */}

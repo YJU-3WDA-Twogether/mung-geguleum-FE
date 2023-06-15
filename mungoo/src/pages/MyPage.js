@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
 import { BsCalendar3 } from "react-icons/bs";
 import { IoMdExit } from "react-icons/io";
@@ -20,6 +21,8 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     const [user2, setUser2]= useState({});
     const [selected, setSelected] = useState(1);
     const [openModal, setOpenModal] = useState(false);
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -76,7 +79,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
             <div className={styled.main__container}>
 
                 <TopCategory
-                    text={selectedPostUno === null ? user.uid :user2.uid}
+                    text={selectedPostUno === null ? uid :user2.uid}
                     iconName={<IoArrowBackOutline />}
                     iconName2={<IoMdExit />}
                     MainClose={MainClose}
@@ -105,8 +108,8 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
-                                <p>{selectedPostUno  === null ? user.nickname :user2.nickname}</p>
-                                <p>@{selectedPostUno  === null  ? user.uid :user2.uid}</p>
+                                <p>{selectedPostUno  === null ? nickname :user2.nickname}</p>
+                                <p>@{selectedPostUno  === null  ? uid :user2.uid}</p>
                             </div>
                             <div className={styled.profile__desc}>
                                 <p>안녕하세요</p>

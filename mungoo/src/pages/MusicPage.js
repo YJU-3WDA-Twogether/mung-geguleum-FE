@@ -1,6 +1,8 @@
 import React from "react";
-import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import { HiOutlineSparkles } from "react-icons/hi";
+import PageView from "../components/PageView";
+import PageCreate from "../components/PostCreate";
+import { TopCategory } from "../topCatgory/TopCategory";
 function MusicPage(){
 
     return (
@@ -10,6 +12,9 @@ function MusicPage(){
                 text={"음악"}
                 iconName={<HiOutlineSparkles />}
             />
+            <PageCreate pageNum={2}/>
+            <PageView pageNum={"음악"}/>
+
         </div>
     );
 }

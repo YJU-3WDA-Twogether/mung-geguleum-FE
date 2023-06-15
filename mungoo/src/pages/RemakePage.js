@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { HiOutlineSparkles } from "react-icons/hi";
+import PageView from "../components/PageView";
 import PostRemakeCreate from "../components/PostRemakeCreate";
-import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import { TopCategory } from "../topCatgory/TopCategory";
 
 function RemakePage(){
     const [pageView, setPageView] = useState(null);
@@ -20,7 +21,7 @@ function RemakePage(){
                     iconName={<HiOutlineSparkles />}
                 />
                 <PostRemakeCreate/>
-                {/*<PageView />*/}
+                <PageView pageNum={"재창작"}/>
             </>
         );
     }, []);

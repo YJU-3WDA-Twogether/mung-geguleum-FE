@@ -1,15 +1,23 @@
 import axios from "axios";
+import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
+import { FiMoreHorizontal } from "react-icons/fi";
 import pfile from "../image/Profile.jpg";
 import '../styles/PageModal.css';
 import styled from "../styles/PostView.module.css";
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함수 전달받음
+const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 상태값과 함수 전달받음
 
     const [postData, setPostData] = useState(null);
     const [comment, setComment] = useState("");
     const [user, setUser] = useState({});
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -47,24 +55,22 @@ const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함�
         }
     }, [postId]);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const currentTimestamp = new Date().toISOString();
 
-
         const formData = {
             reply:comment,
             pno: postId,
-            uno: user.uno,
             deph : 1,
-            uname: user.uname,
+            uname: nickname,
             regDate: currentTimestamp // 현재 시간을 추가합니다.
         };
         console.log(formData)
         try {
-            const response = await axios.post(`${API_URL}/reply/create`, formData);
+            const response = await axios.post(`${API_URL}/reply/create`, formData, config);
             console.log(response.data);
-
 
             if (postData) {
                 setPostData({
@@ -128,10 +134,11 @@ const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함�
                                             src={pfile}
                                             alt="profileImg"
                                             className={styled.profile__image}
+                                            onClick={() => handlePostClick(postData.uno)}
                                         />
                                         <div style={{paddingLeft:"8px"}}>
                                             <p> <span className="comment-author">{postData.title}</span>
-                                                {new Date(postData.regDate).toLocaleString()} {postData.nickname}</p>
+                                                {new Date(postData.regDate).toLocaleString()} { postData.nickname}</p>
                                             <p>{postData.content}</p>
                                         </div>
                                     </div>
@@ -153,7 +160,9 @@ const PageModal = ({ showPopup, setShowPopup, postId}) => { // 상태값과 함�
                                                             </p>
                                                             <div className="comment-date">
                                                                 <p>{localDate}</p>
+                                                                <FiMoreHorizontal />
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                 </React.Fragment>

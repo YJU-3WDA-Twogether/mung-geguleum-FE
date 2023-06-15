@@ -1,22 +1,21 @@
+import jwt from "jwt-decode";
 import React, { useEffect, useRef, useState } from 'react';
 import { BsFire, BsPersonFill } from "react-icons/bs";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { SiApplemusic } from "react-icons/si";
 import { TfiWrite } from "react-icons/tfi";
 import { VscGitPullRequestCreate } from "react-icons/vsc";
-import pfile from "../image/Profile.jpg";
-import styled from '../styles/MainNavigation.module.css';
-
 import { useNavigate } from "react-router-dom";
 import UserEtcBtn from "../button/UserEtcBtn";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
+import pfile from "../image/Profile.jpg";
+import styled from '../styles/MainNavigation.module.css';
 
-function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
+function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
     const userEtcRef = useRef();
     const navigate  = useNavigate();
 
     const [user, setUser] = useState({});
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -24,7 +23,9 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
-
+//     console.log(user.accessToken);
+      const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+//     console.log("메인페이지"+uno)
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
     const toggleUserEtc = () => {
@@ -38,6 +39,8 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
             navigate("/auth");
         }
     };
+
+
     return (
         <>
             <section className={styled.container}>
@@ -57,7 +60,7 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
                     <nav className={styled.leftBar__container}>
                         <ul>
                             <li>
-                            <div className={styled.leftBar__list} onClick={() => {
+                                <div className={styled.leftBar__list} onClick={() => {
                                     handlePostUno();
                                     onSelectPost('Best');
                                 }}>
@@ -68,7 +71,10 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
                                 </div>
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Music')}>
+                                <div className={styled.leftBar__list} onClick={() =>{
+                                    handlePostUno();
+                                    onSelectPost('Music')}
+                                }>
                                     <SiApplemusic  style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>음악</b>
@@ -77,7 +83,9 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
 
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Remake')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Remake')}}>
                                     <VscGitPullRequestCreate style={{color : "#6667ab"}}/>
                                     <span >
                                        <b>재창작</b>
@@ -86,7 +94,9 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
 
                             </li>
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('Stories')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('Stories')}}>
                                     <TfiWrite style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>놀이터</b>
@@ -95,7 +105,9 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
                             </li>
 
                             <li>
-                                <div className={styled.leftBar__list} onClick={() => onSelectPost('My')}>
+                                <div className={styled.leftBar__list} onClick={() => {
+                                    handlePostUno();
+                                    onSelectPost('My')}}>
                                     <BsPersonFill  style={{color : "#6667ab"}}/>
                                     <span>
                                        <b>마이페이지</b>
@@ -122,8 +134,8 @@ function MainNavigation({ onSelectPost, MainClose,handlePostUno }) {
                                 />
                             </div>
                             <div className={styled.userInfo__name}>
-                                <p>{user.nickname}</p>
-                                <p>@{user.uid}</p>
+                                <p>{nickname}</p>
+                                <p>@{uid}</p>
                             </div>
                             <div className={styled.userInfo__etc}>
                                 <FiMoreHorizontal/>

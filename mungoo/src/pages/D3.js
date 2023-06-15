@@ -1,20 +1,26 @@
 import axios from 'axios';
 import * as d3 from 'd3';
-import tip from "d3-tip";
 import React, { useEffect, useRef, useState } from 'react';
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const D3 = () => {
+const D3 = ({handlePostClick, d3num, modalPostId}) => {
     const svgRef = React.useRef();
     const [graphData, setGraphData] = useState(null);
     const simulationRef = useRef(null);
 
+    console.log(modalPostId)
     const fetchGraphData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/tag/json`);
+            let response;
+            if(d3num===0){
+                response = await axios.get(`${API_URL}/postSource/getlist`);
+            }else{
+                response = await axios.get(`${API_URL}/postSource/getlist/${modalPostId}`);
+            }
+            console.log(response);
             const data = response.data[0];
             console.log(data);
             setGraphData(data);
@@ -29,14 +35,6 @@ const D3 = () => {
         const height = +svg.node().getBoundingClientRect().height;
 
         let link, node, simulation;
-
-        //툴팁 설정
-    const tooltip = tip()
-    .attr("class", "d3-tip")
-    .html((d) => `${d.id} : ${d.value}`);
-    
-  // 툴팁 호출 
-    svg.call(tooltip);
 
         const initializeDisplay = () => {
             // set the data and properties of link lines
@@ -64,18 +62,7 @@ const D3 = () => {
                         .on("drag", dragged)
                         .on("end", dragended)
                 )
-                .on('click', pnoClick)
-                .style("cursor", "pointer"); // 마우스 커서를 포인터로 변경
-
-
-                node.on("mouseover", tooltip.show);
-                node.on("mousemove", tooltip.show);
-                node.on("mouseout", () => { //마우스가 툴팁 밖으로 벗어나면 사라지게 설정
-                  if (!d3.event.relatedTarget || !d3.event.relatedTarget.classList.contains("d3-tip")) {
-                    tooltip.hide();
-                  }
-                });
-          
+                .on('click', pnoClick);
             // node tooltip
             node
                 .append("title")
@@ -97,7 +84,7 @@ const D3 = () => {
                 .force(
                     "link",
                     d3.forceLink().id((d) => {
-                        return d.id;
+                        return d.pno;
                     })
                 )
                 .force("charge", d3.forceManyBody())
@@ -180,18 +167,6 @@ const D3 = () => {
             d.fy = null;
         };
 
-            //< 툴팁 클릭 이벤트 처리
-        const handleTooltipClick = (d) => {
-            window.location.href = `https://search.naver.com/search.naver?query=${encodeURIComponent(d.id)}`;
-        };
-        
-        const tooltips = document.getElementsByClassName("d3-tip");
-    
-        for (let i = 0; i < tooltips.length; i++) {
-            tooltips[i].addEventListener("click", handleTooltipClick);
-        }
-        //>
-
         if (graphData && graphData.links && graphData.nodes) {
             initializeDisplay();
         } else {
@@ -219,8 +194,8 @@ const D3 = () => {
     const [selectedNode, setSelectedNode] = useState(null);
     const [nodeData, setNodeData] = useState(null);
     const pnoClick = async (d) => {
-        setSelectedPostId(d.id);
-        setClickedPostId(d.id);
+        setSelectedPostId(d.pno);
+        setClickedPostId(d.pno);
         setShowPopup(true);
     };
 
@@ -235,11 +210,13 @@ const D3 = () => {
 
     return (
         <>
+
             <svg ref={svgRef} width={1200} height={880}></svg>
             <PageModal
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+                handlePostClick={handlePostClick}
             />
         </>
     );

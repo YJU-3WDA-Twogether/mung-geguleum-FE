@@ -1,12 +1,12 @@
-import React, { useState,useEffect } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostCreate.module.css";
 
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import 'pure-react-carousel/dist/react-carousel.es.css';
 
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -21,6 +21,13 @@ const PostCreate = ({pageNum}) => {
         videoList: [],
     });
     const [user, setUser] = useState({});
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
+
+
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -100,7 +107,6 @@ const PostCreate = ({pageNum}) => {
 
         try {
             const data = new FormData();
-            data.append('uno', user.uno); // uno 추가
             data.append('title', formData.title);
             data.append('content', formData.content);
             data.append('bno', pageNum);
@@ -116,11 +122,11 @@ const PostCreate = ({pageNum}) => {
                 console.log(file)
             });
 
-            const response = await axios.post(`${API_URL}/post/create`, data, {
+            const response = await axios.post(`${API_URL}/post/create`, data,{
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
-                },
-            });
+                }});
             alert('게시글이 성공적으로 작성되었습니다.');
             setFormData({
                 title: '',
@@ -220,7 +226,7 @@ const PostCreate = ({pageNum}) => {
                                 type="submit"
                                 value="작성하기"
                                 className={styled.factoryInput__arrow}
-                                disabled={formData.content === "" && formData.title === ""}
+                                disabled={formData.title === "" && formData.content === "" }
                             />
                         </div>
                     </form>
@@ -231,4 +237,3 @@ const PostCreate = ({pageNum}) => {
 };
 
 export default PostCreate;
-

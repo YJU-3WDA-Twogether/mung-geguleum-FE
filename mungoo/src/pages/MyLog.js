@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -13,6 +14,8 @@ function MyLog({ selectedPostUno }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [user, setUser] = useState({});
+  const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+
 
   const displayMonth = String(month).padStart(2, '0'); // 월을 두 자리 숫자로 만듦
   const displayDate = `${year}-${displayMonth}`; // yyyy-mm 형식으로 조합
@@ -25,7 +28,7 @@ function MyLog({ selectedPostUno }) {
   }, []);
 
   useEffect(() => {
-    if (user.uno) {
+    if (uno) {
       if (selectedPostUno) {
         const params = {
           uno: selectedPostUno,
@@ -34,13 +37,13 @@ function MyLog({ selectedPostUno }) {
         fetchData(params);
       } else {
         const params = {
-          uno: user.uno,
+          uno: uno,
           date: displayDate,
         };
         fetchData(params);
       }
     }
-  }, [displayDate, user.uno, selectedPostUno]);
+  }, [displayDate, uno, selectedPostUno]);
 
   useEffect(() => {
     setYear(value.getFullYear());
@@ -90,6 +93,9 @@ function MyLog({ selectedPostUno }) {
 
   const onChange = (newValue) => {
     setValue(newValue);
+    setYear(newValue.getFullYear());
+    setMonth(newValue.getMonth() + 1);
+    setSelectedDate(new Date(value.getFullYear(), value.getMonth(), value.getDate()+1).toISOString().slice(0, 10));
   };
 
   const goToPreviousPage = () => {
@@ -116,7 +122,7 @@ function MyLog({ selectedPostUno }) {
         {/* 데이터 테이블 */}
         <div className="Calender-info">
           <p className="Calender-Title">{value.toLocaleDateString()}의 활동</p>
-          {selectedData.length > 0 ? (
+          {Array.isArray(selectedData) && selectedData.length > 0 ? (
             <table className="Calender-table">
               <thead className="Calender-thead">
                 <tr>
