@@ -122,9 +122,10 @@ const PostCreate = ({pageNum}) => {
                 console.log(file)
             });
 
-            const response = await axios.post(`${API_URL}/post/create`, {data : data,
+            const response = await axios.post(`${API_URL}/post/create`, data,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'multipart/form-data',
                 }});
             alert('게시글이 성공적으로 작성되었습니다.');
             setFormData({
