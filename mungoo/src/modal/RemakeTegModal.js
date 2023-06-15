@@ -11,6 +11,11 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     const PAGE_SIZE = 5;
     const API_URL = process.env.REACT_APP_API_URL;
     const [selectedPosts, setSelectedPosts] = useState([]);
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
 
     const handleOutsideClick = (e) => {
         if (e.target.className === 'layer-popup show') {
@@ -38,7 +43,7 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
 
     const fetchData = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/log/gettaglist`, { params });
+            const response = await axios.get(`${API_URL}/log/getdownlist`, config);
             setData(response.data.content);
             setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
         } catch (error) {
