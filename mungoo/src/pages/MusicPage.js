@@ -13,7 +13,7 @@ function MusicPage(){
                 iconName={<HiOutlineSparkles />}
             />
             <PageCreate pageNum={2}/>
-            <PageView/>
+            <PageView pageNum={"음악"}/>
 
         </div>
     );

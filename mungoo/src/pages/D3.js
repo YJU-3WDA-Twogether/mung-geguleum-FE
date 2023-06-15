@@ -1,20 +1,26 @@
-import React, { useEffect, useRef ,useState} from 'react';
-import * as d3 from 'd3';
-import '../styles/d3.css';
 import axios from 'axios';
-import Modal from 'react-modal';
+import * as d3 from 'd3';
+import React, { useEffect, useRef, useState } from 'react';
 import PageModal from "../modal/PageModal";
+import '../styles/d3.css';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const D3 = ({handlePostClick}) => {
+const D3 = ({handlePostClick, d3num, modalPostId}) => {
     const svgRef = React.useRef();
     const [graphData, setGraphData] = useState(null);
     const simulationRef = useRef(null);
 
+    console.log(modalPostId)
     const fetchGraphData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/postSource/getlist`);
+            let response;
+            if(d3num===0){
+                response = await axios.get(`${API_URL}/postSource/getlist`);
+            }else{
+                response = await axios.get(`${API_URL}/postSource/getlist/${modalPostId}`);
+            }
+            console.log(response);
             const data = response.data[0];
             console.log(data);
             setGraphData(data);
@@ -78,7 +84,7 @@ const D3 = ({handlePostClick}) => {
                 .force(
                     "link",
                     d3.forceLink().id((d) => {
-                        return d.id;
+                        return d.pno;
                     })
                 )
                 .force("charge", d3.forceManyBody())
@@ -188,8 +194,8 @@ const D3 = ({handlePostClick}) => {
     const [selectedNode, setSelectedNode] = useState(null);
     const [nodeData, setNodeData] = useState(null);
     const pnoClick = async (d) => {
-        setSelectedPostId(d.id);
-        setClickedPostId(d.id);
+        setSelectedPostId(d.pno);
+        setClickedPostId(d.pno);
         setShowPopup(true);
     };
 

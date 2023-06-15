@@ -17,7 +17,7 @@ import data from "bootstrap/js/src/dom/data";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
+const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
@@ -28,6 +28,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     const [dropdownPostId, setDropdownPostId] = useState(null);
     const [modalPostId,setModalPostId]  = useState(null);
     const [likedPosts, setLikedPosts] = useState([]);
+    const [d3num, setD3num] =  useState(null);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -72,7 +73,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
     console.log("테스트"+localStorage.getItem('accessToken'))
     const fetchPosts = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/post/getlist`, config);
+            const response = await axios.get(`${API_URL}/post/getlist/${pageNum}`, config);
             console.log(response.data.content);
             setPosts(response.data.content);
         } catch (error) {
@@ -131,15 +132,15 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
         setShowPopup(true);
     };
 
-    const handleActionClick = (postId) => {
+    const handleActionClick = (postId, num) => {
         setShowModal(true);
         setModalPostId(postId);
+        setD3num(num);
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
         setModalPostId(null);
-
     };
 //   모달창 CSS
     const modalStyles = {
@@ -298,10 +299,12 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                                 </div>
                                 {dropdownPostId === post.pno && (
                                     <Dropdown.Menu show style={{left : '73.5%'}}>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno); setDropdownPostId(null); }}>
-                                            그래프
+                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
+                                            전체 그래프
                                         </Dropdown.Item>
-
+                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
+                                            단일 그래프
+                                        </Dropdown.Item>
                                         <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
                                           신고하기
                                         </Dropdown.Item>
@@ -320,7 +323,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno }) => {
                                         >
                                             Close
                                         </button>
-                                        <D3 handlePostClick={handlePostClick}/>
+                                        <D3 handlePostClick={handlePostClick} d3num={d3num} modalPostId={modalPostId}/>
                                     </div>
                                 )}
                             </div>
