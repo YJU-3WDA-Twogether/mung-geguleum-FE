@@ -14,7 +14,7 @@ const D3 = ({handlePostClick}) => {
 
     const fetchGraphData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/tag/json`);
+            const response = await axios.get(`${API_URL}/postSource/getlist`);
             const data = response.data[0];
             console.log(data);
             setGraphData(data);
