@@ -1,116 +1,134 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import '../styles/RemakeModal.css';
+import '../styles/RemakeTegModal.css';
 
 const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
-    // ...
-    const [user, setUser] = useState({});
-    const [data, setData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const PAGE_SIZE = 5;
+  const [user, setUser] = useState({});
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const PAGE_SIZE = 5;
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [selectedPosts, setSelectedPosts] = useState([]);
 
+  const config = {
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+    },
+};
 
-    const API_URL = process.env.REACT_APP_API_URL;
-    const [selectedPosts, setSelectedPosts] = useState([]);
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+  const handleOutsideClick = (e) => {
+    if (e.target.className === 'layer-popup show') {
+      setShowPopup(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowPopup(false);
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const params = {
+      uno: user.uno,
     };
+    fetchData(params);
+  }, [user]);
 
-    const handleOutsideClick = (e) => {
-        if (e.target.className === 'layer-popup show') {
-            setShowPopup(false);
-        }
-    };
+  const fetchData = async (params) => {
+    try {
+      const response = await axios.get(`${API_URL}/log/getdownlist`, config);
+      setData(response.data.content);
+      setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    const closeModal = () => {
-        setShowPopup(false);
-    };
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+  const handleSelectPost = (post) => {
+    const index = selectedPosts.indexOf(post);
+    let updatedPosts;
+    if (index === -1) {
+      updatedPosts = [...selectedPosts, post];
+    } else {
+      updatedPosts = [...selectedPosts.slice(0, index), ...selectedPosts.slice(index + 1)];
+    }
+    setSelectedPosts(updatedPosts);
+    onSelectPosts(updatedPosts);
+  };
 
-    useEffect(() => {
-        const params = {
-            uno: user.uno,
-        };
-        fetchData(params);
-    }, [user]);
+  const pageData = data.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-    const fetchData = async (params) => {
-        try {
-            const response = await axios.get(`${API_URL}/log/getdownlist`, config);
-            setData(response.data.content);
-            setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
-        } catch (error) {
-            console.error(error);
-        }
-    };
+  const handleCompleteSelection = () => {
+    if (selectedPosts.length > 0) {
+      //체크박스 1개이상 선택하지 않을시 alert메세지
+      closeModal();
+    } else {
+      alert('재창작 태그를 선택해주세요.');
+    }
+  };
 
-    const handlePageClick = (page) => {
-        setCurrentPage(page);
-    };
-    const handleSelectPost = (post) => {
-        const index = selectedPosts.indexOf(post);
-        let updatedPosts;
-        if (index === -1) {
-            updatedPosts = [...selectedPosts, post];
-        } else {
-            updatedPosts = [...selectedPosts.slice(0, index), ...selectedPosts.slice(index + 1)];
-        }
-        setSelectedPosts(updatedPosts);
-        onSelectPosts(updatedPosts);
-    };
-
-    const pageData = data.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-
-    return (
-        <>
-            <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
-                <div className="Remake layer-popup show">
-                    <div className="Remake modal-dialog">
-                        <div className="Remake modal-content" style={{ borderRadius: '10px 10px' }}>
-                            <table border={1}>
-                                <tbody>
-                                {pageData.map((item, index) => (
-                                    <tr key={item.lno}>
-                                        <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
-                                        <td>{item.ptitle}</td>
-                                        <td>{item.unickname}</td>
-                                        <td>{item.regDate}</td>
-                                        <td>
-                                            <input type="checkbox" checked={selectedPosts.indexOf(item) !== -1} onChange={() => handleSelectPost(item)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                            <div className="Remake pagination">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                <button type="button"
-                                        key={page}
-                                        className={`page-button ${page === currentPage ? 'active' : ''}`}
-                                        onClick={() => handlePageClick(page)}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" className="close-button" onClick={closeModal}>
-                        X
-                    </button>
-                </div>
+  return (
+    <>
+      <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
+        <div className="Remake layer-popup show">
+          <div className="Remake modal-dialog">
+            <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
+              <table className="RemakeTagTable">
+                <tbody>
+                  {pageData.map((item, index) => (
+                    <tr key={item.lno}>
+                      <td className="RemakeTagCell">{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
+                      <td className="RemakeTagCell">{item.ptitle}</td>
+                      <td className="RemakeTagCell">{item.unickname}</td>
+                      <td className="RemakeTagCell">{item.regDate}</td>
+                      <td className="RemakeTagCell">
+                        <input
+                          type="checkbox"
+                          checked={selectedPosts.indexOf(item) !== -1}
+                          onChange={() => handleSelectPost(item)}
+                          className="RemakeTagCheckbox"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="Remake pagination">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    type="button"
+                    key={page}
+                    className={`page-button ${page === currentPage ? 'active' : ''}`}
+                    onClick={() => handlePageClick(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="Remake-Selected" onClick={handleCompleteSelection}>
+                선택 완료
+              </button>
             </div>
-        </>
-    );
+          </div>
+          <button type="button" className="close-button" onClick={closeModal}>
+            X
+          </button>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default RemakeTegModal;

@@ -22,9 +22,8 @@
     justify-content: center;
     padding: 10px;
     box-sizing: border-box;
-
-
 }
+
 .react-calendar__month-view__days {
     justify-content: space-between;
 }
@@ -144,3 +143,40 @@
 .Calender-thead {
     border-bottom: 1px solid #6667AB;
 }
+
+/* 페이징 기능 */
+.backButton,
+.frontButton {
+  background-color: #6667AB;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  padding: 8px 12px;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover,
+.frontButton:hover {
+  background-color: #8889C5;
+}
+
+.backButton:disabled,
+.frontButton:disabled {
+  background-color: #6667AB;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+.nowPage {
+    font-size: 14px;
+    margin-right: 10px;
+    margin-top: 5px;
+    color: #6667AB;
+    font-weight: bold;
+  }
+  /* 페이징 기능 */
+  
+

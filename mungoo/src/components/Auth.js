@@ -1,11 +1,11 @@
-import React, { useState ,useEffect} from 'react';
-import styled from "../styles/Auth.module.css";
-import authBg from "../image/background.jpg";
+import React, { useState } from 'react';
+import { GithubBtn } from "../button/GithubBtn";
+import { GoogleBtn } from "../button/GoogleBtn";
 import authlg from "../image/MainLogo.png";
+import authBg from "../image/background.jpg";
+import styled from "../styles/Auth.module.css";
 import AuthForm from ".//AuthForm";
-import {GoogleBtn} from "../button/GoogleBtn";
-import {GithubBtn} from "../button/GithubBtn";
-import TypingEffect from "../typingEffect/TypingEffect";
+
 function Auth({setUserObj}) {
     const [newAccount, setNewAccount] = useState(true);
 
