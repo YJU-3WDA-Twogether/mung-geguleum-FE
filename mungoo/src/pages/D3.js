@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
+import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
-
 const API_URL = process.env.REACT_APP_API_URL;
 
 const D3 = ({handlePostClick, d3num, modalPostId}) => {
@@ -66,7 +66,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             // node tooltip
             node
                 .append("title")
-                .text((d) => `${d.regTime}\n${d.title}\n${d.nickname}`);
+                .text((d) => `${d.regDate}\n${d.title}\n${d.nickname}`);
 
             // generate the svg objects and force simulation
 
@@ -75,6 +75,8 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             simulation.on("tick", ticked);
             initializeForces();
             updateDisplay();
+            initializeImagePatterns();
+
 
         };
 
@@ -109,18 +111,32 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
 
             simulation
                 .force("link")
-                .distance(30)
-                .iterations(1)
+                .distance(50)
+                .iterations(50)
                 .links(graphData.links);
+        };
+        const initializeImagePatterns = () => {
+            const defs = svg.append('defs');
+
+            graphData.nodes.forEach((node, i) => {
+                defs.append('pattern')
+                    .attr('id', `img${i}`)
+                    .attr('height', '100%')
+                    .attr('width', '100%')
+                    .attr('patternContentUnits', 'objectBoundingBox')
+                    .append('image')
+                    .attr('height', 1)
+                    .attr('width', 1)
+                    .attr('preserveAspectRatio', 'none')
+                    .attr('xlink:href', pfile); // 이 부분은 실제 이미지 URL이어야 합니다.
+            });
         };
 
         const updateDisplay = () => {
-            node
-                .attr("r", 5)
-                .attr("stroke", "red")
-                .attr("stroke-width", Math.abs(-120) / 15);
-
-            link.attr("stroke-width", 1).attr("opacity", 1);
+            node.attr('r', 15)
+                .attr('fill', (_, i) => `url(#img${i})`)
+                .attr('stroke-width', Math.abs(-100) / 5);
+            link.attr('stroke-width', 1).attr('opacity', 1);
         };
 
         const ticked = () => {
@@ -149,6 +165,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             .attr("d", "M 0,-5 L 10 ,0 L 0,5")
             .attr("fill", "#999")
             .style("stroke", "none");
+
 
         const dragstarted = (d) => {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();

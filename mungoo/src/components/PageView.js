@@ -27,6 +27,12 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
     const [modalPostId,setModalPostId]  = useState(null);
     const [likedPosts, setLikedPosts] = useState([]);
     const [d3num, setD3num] =  useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 5;
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -140,6 +146,10 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
         setShowModal(false);
         setModalPostId(null);
     };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+      };
 //   모달창 CSS
     const modalStyles = {
         position: "fixed",
@@ -181,7 +191,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
 
     return (
         <>
-            {posts.map((post) => (
+            {currentPosts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper}>
                         <div className={styled.nweet__container} key={post.pno}>
@@ -336,6 +346,25 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
+            <ul className="pagination">
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+        (pageNumber) => (
+          <li
+            key={pageNumber}
+            className={`page-item ${
+              pageNumber === currentPage ? "active" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          </li>
+        )
+      )}
+    </ul>
         </>
     );
 };

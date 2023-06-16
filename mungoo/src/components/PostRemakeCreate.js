@@ -251,8 +251,9 @@ const PostRemakeCreate = () => {
                                     htmlFor="attach-file"
                                     className={styled.factoryInput__label}
                                 >
-                                    <div className={styled.factoryInput__icon}>
-                                        <VscGitPullRequestCreate onClick={handleRemakeTagClick}/>
+                                    <div className={styled.factoryInput__icon} onClick={handleRemakeTagClick}>
+                                        
+                                        <VscGitPullRequestCreate />
                                     </div>
                                 </label>
                             </div>
