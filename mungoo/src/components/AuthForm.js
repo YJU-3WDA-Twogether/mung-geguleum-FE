@@ -1,11 +1,10 @@
 import React, { useState,useEffect} from "react";
 import { useNavigate  } from 'react-router-dom';
-
-import styled from "../styles/AuthForm.module.css";
 import axios from "axios";
-
-
+import jwt from "jwt-decode";
+import styled from "../styles/AuthForm.module.css";
 const API_URL = process.env.REACT_APP_API_URL;
+
 
 const AuthForm = ({ newAccount,setUserObj}) => {
     const navigate = useNavigate ();
@@ -23,7 +22,6 @@ const AuthForm = ({ newAccount,setUserObj}) => {
         nickname:'',
     };
 
-
     const [formData, setFormData] = useState(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
     const [select, setSelect] = useState("");
 
@@ -38,9 +36,14 @@ const AuthForm = ({ newAccount,setUserObj}) => {
         if (newAccount) {
             try {
                 const response = await axios.post(`${API_URL}/user/login`, formData);
-                localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem("accessToken", response.data);
                 alert('로그인에 성공하였습니다.');
+                localStorage.setItem('user', JSON.stringify(response.data));
                 setUserObj(response.data); // 로그인 성공 후 App의 상태를 업데이트
+                console.log(response.data);
+                // const {uno,role} = jwt(response.data);
+                // console.log(uno);
+                // console.log(role);
                 navigate('/');
             } catch (error) {
                 console.error(error);

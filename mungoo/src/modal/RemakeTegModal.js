@@ -9,8 +9,15 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const PAGE_SIZE = 5;
+
+
     const API_URL = process.env.REACT_APP_API_URL;
     const [selectedPosts, setSelectedPosts] = useState([]);
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    };
 
     const handleOutsideClick = (e) => {
         if (e.target.className === 'layer-popup show') {
@@ -38,7 +45,7 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
 
     const fetchData = async (params) => {
         try {
-            const response = await axios.get(`${API_URL}/log/gettaglist`, { params });
+            const response = await axios.get(`${API_URL}/log/getdownlist`, config);
             setData(response.data.content);
             setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
         } catch (error) {
@@ -86,14 +93,14 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
                             </table>
                             <div className="Remake pagination">
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                    <button type="button"
+                                <button type="button"
                                         key={page}
                                         className={`page-button ${page === currentPage ? 'active' : ''}`}
                                         onClick={() => handlePageClick(page)}
-                                    >
-                                        {page}
-                                    </button>
-                                ))}
+                                >
+                                    {page}
+                                </button>
+                            ))}
                             </div>
                         </div>
                     </div>

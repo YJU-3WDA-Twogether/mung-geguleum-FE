@@ -20,7 +20,7 @@ function StoriesPage() {
                     iconName={<HiOutlineSparkles />}
                 />
                 <PageCreate pageNum={3}/>
-                <PageView/>
+                <PageView pageNum={"놀이터"}/>
             </>
         );
     }, []);
