@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
-
+import pfile from "../image/Profile.jpg";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const D3 = ({handlePostClick, d3num, modalPostId}) => {
@@ -66,7 +66,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             // node tooltip
             node
                 .append("title")
-                .text((d) => `${d.regTime}\n${d.title}\n${d.nickname}`);
+                .text((d) => `${d.regDate}\n${d.title}\n${d.nickname}`);
 
             // generate the svg objects and force simulation
 
@@ -109,7 +109,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
 
             simulation
                 .force("link")
-                .distance(30)
+                .distance(50)
                 .iterations(1)
                 .links(graphData.links);
         };
@@ -117,8 +117,8 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
         const updateDisplay = () => {
             node
                 .attr("r", 5)
-                .attr("stroke", "red")
-                .attr("stroke-width", Math.abs(-120) / 15);
+                .attr("stroke", "blue")
+                .attr("stroke-width", Math.abs(-120) / 5)
 
             link.attr("stroke-width", 1).attr("opacity", 1);
         };
