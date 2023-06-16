@@ -1,12 +1,12 @@
-import React, { useState,useEffect } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostCreate.module.css";
 
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import 'pure-react-carousel/dist/react-carousel.es.css';
 
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -237,4 +237,3 @@ const PostCreate = ({pageNum}) => {
 };
 
 export default PostCreate;
-

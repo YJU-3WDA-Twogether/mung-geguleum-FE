@@ -1,12 +1,11 @@
-import React, { useState,useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
+import { Carousel } from "react-responsive-carousel";
+import pfile from "../image/Profile.jpg";
 import RemakeTegModal from "../modal/RemakeTegModal";
 import styled from "../styles/PostCreate.module.css";
-import pfile from "../image/Profile.jpg";
-import {Carousel} from "react-responsive-carousel";
-import {IoCloseSharp, IoImageOutline} from "react-icons/io5";
-import {VscGitPullRequestCreate} from "react-icons/vsc";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

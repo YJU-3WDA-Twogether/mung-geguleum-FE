@@ -1,8 +1,8 @@
-import React, {useState,useEffect} from 'react';
-import PageCreate from "../components/PostCreate";
+import React, { useEffect, useState } from 'react';
+import { HiOutlineSparkles } from "react-icons/hi";
 import PageView from "../components/PageView";
-import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import PageCreate from "../components/PostCreate";
+import { TopCategory } from "../topCatgory/TopCategory";
 function StoriesPage() {
     const [pageView, setPageView] = useState(null);
 

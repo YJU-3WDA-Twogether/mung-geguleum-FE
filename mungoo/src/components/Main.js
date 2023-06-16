@@ -1,6 +1,6 @@
-import React, { useState ,useEffect} from 'react';
-import PostController from './PostController';
+import React, { useState } from 'react';
 import MainNavigation from "./MainNavigation";
+import PostController from './PostController';
 
 import styled from "../styles/App.module.css";
 function Main({isLoggedIn,userObj,handleLogout}) {

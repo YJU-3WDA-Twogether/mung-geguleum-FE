@@ -9,12 +9,12 @@
 html {
     scroll-behavior: smooth;
 }
-
+/* 
 input {
     all: unset;
     box-sizing: border-box;
     appearance: none;
-}
+} */
 
 body {
     overflow-x: hidden;
