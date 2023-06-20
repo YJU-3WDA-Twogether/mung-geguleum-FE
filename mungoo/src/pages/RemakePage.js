@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import PostRemakeCreate from "../components/PostRemakeCreate";
 import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import {HiOutlineBell} from "react-icons/hi";
 import PageView from "../components/PageView";
 
-function RemakePage(){
+function RemakePage({handlePostClick }){
     const [pageView, setPageView] = useState(null);
+    const handleClick  = (uno) => {
+        handlePostClick(uno);
+        console.log('Post clicked:', uno);
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -18,10 +22,10 @@ function RemakePage(){
                 <TopCategory
                     home={"home"}
                     text={"재창작"}
-                    iconName={<HiOutlineSparkles />}
+                    iconName={<HiOutlineBell />}
                 />
                 <PostRemakeCreate/>
-                <PageView pageNum={"재창작"}/>
+                <PageView handlePostClick={handleClick} pageNum={"재창작"}/>
             </>
         );
     }, []);
