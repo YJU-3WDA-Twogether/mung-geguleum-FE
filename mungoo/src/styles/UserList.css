@@ -1,0 +1,70 @@
+/* UserList.css */
+.UserList {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #6667AB;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.UserList-h1 {
+  font-size: 28px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.UserList-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.UserList-table th,
+.UserList-table td {
+  padding: 10px;
+  color:#6667AB;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+.UserList-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  text-align: center;
+}
+
+.UserList-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.UserList-table .DeleteIcon {
+  display: flex;
+  justify-content: center;
+}
+
+.UserList-table .DeleteIcon svg {
+  cursor: pointer;
+}
+
+.UserList-table .DeleteIcon svg:hover {
+  transform: scale(1.2);
+}
+
+.Update-button {
+  margin-top: 10px;
+  background-color: #6667AB;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.Update-button:hover {
+  background-color: white;
+}

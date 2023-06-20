@@ -1,7 +1,9 @@
 import axios from 'axios';
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
+import Collapse from 'react-bootstrap/Collapse';
 import { IoAlertCircleOutline } from "react-icons/io5";
+import D3Guide from "../image/D3Guide.png";
 import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
@@ -225,13 +227,22 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [clickedPostId, setClickedPostId] = useState(null);
+    const [clickedButton, setClickedButton] = useState(false);
+    
 
     return (
         <>
-            <IoAlertCircleOutline size={50}/>
+            <IoAlertCircleOutline size={50} onClick={() => 
+            setClickedButton(!clickedButton)}
+            aria-controls="example-collapse-text"
+            aria-expanded={clickedButton}
+            />
+                    
+          <Collapse in={clickedButton} dimension='width'>
+              <img src={D3Guide} style={{ width: '100%' ,height: '100%' }} alt='D3 Guide' />
+          </Collapse>
             <svg ref={svgRef} width={1180} height={830}>
-
-            </svg>
+            </svg>          
             <PageModal
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}

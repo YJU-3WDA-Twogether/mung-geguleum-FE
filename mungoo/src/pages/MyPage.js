@@ -121,7 +121,6 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                         </div>
                     </div>
                 </div>
-
                 <nav className={styled.categoryList}>
                     <div
                         onClick={() => handleClick(1)}
