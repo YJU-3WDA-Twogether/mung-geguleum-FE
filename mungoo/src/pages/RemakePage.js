@@ -4,8 +4,16 @@ import PageView from "../components/PageView";
 import PostRemakeCreate from "../components/PostRemakeCreate";
 import { TopCategory } from "../topCatgory/TopCategory";
 
-function RemakePage(){
+const RemakePage = ({handlePostClick}) => {
+    const handleClick = (uno) => {
+        handlePostClick(uno);
+        console.log('Post clicked' , uno);
+    };
+
     const [pageView, setPageView] = useState(null);
+
+   
+    
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -21,12 +29,13 @@ function RemakePage(){
                     iconName={<HiOutlineSparkles />}
                 />
                 <PostRemakeCreate/>
-                <PageView pageNum={"재창작"}/>
+                <PageView handlePostClick={handleClick} pageNum={"재창작"}/>
             </>
         );
     }, []);
 
     return <div>{pageView}</div>;
-}
+};
+
 
 export default RemakePage;

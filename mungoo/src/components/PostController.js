@@ -1,9 +1,10 @@
 import React from 'react';
+import AdminPage from "../pages/AdminPage";
 import BestPage from "../pages/BestPage";
 import MusicPage from "../pages/MusicPage";
-import StoriesPage from "../pages/StoriesPage";
-import RemakePage from "../pages/RemakePage";
 import MyPage from "../pages/MyPage";
+import RemakePage from "../pages/RemakePage";
+import StoriesPage from "../pages/StoriesPage";
 
 function PostController({ PostName, handlePostClick,selectedPostUno,MainClose }) {
     let page;
@@ -24,6 +25,10 @@ function PostController({ PostName, handlePostClick,selectedPostUno,MainClose })
         case 'My':
             page = <MyPage handlePostClick={handlePostClick} selectedPostUno={selectedPostUno} MainClose={MainClose}/>;
             break;
+
+       case 'ADMIN':
+                page = <AdminPage handlePostClick={handlePostClick} />;
+                break;   
     }
 
     return page;

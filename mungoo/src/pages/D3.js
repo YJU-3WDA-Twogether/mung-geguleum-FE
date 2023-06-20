@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
+import { IoAlertCircleOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
@@ -227,8 +228,10 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
 
     return (
         <>
+            <IoAlertCircleOutline size={50}/>
+            <svg ref={svgRef} width={1180} height={830}>
 
-            <svg ref={svgRef} width={1200} height={880}></svg>
+            </svg>
             <PageModal
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}

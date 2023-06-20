@@ -3,8 +3,17 @@ import { HiOutlineSparkles } from "react-icons/hi";
 import PageView from "../components/PageView";
 import PageCreate from "../components/PostCreate";
 import { TopCategory } from "../topCatgory/TopCategory";
-function StoriesPage() {
+
+    const StoriesPage = ({handlePostClick}) => {
+        const handleClick = (uno) =>{
+            handlePostClick(uno);
+            console.log('Post clicked:' ,uno);
+        };
+        
     const [pageView, setPageView] = useState(null);
+
+  
+    
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -20,11 +29,12 @@ function StoriesPage() {
                     iconName={<HiOutlineSparkles />}
                 />
                 <PageCreate pageNum={3}/>
-                <PageView pageNum={"놀이터"}/>
+                <PageView  handlePostClick={handleClick} pageNum={"놀이터"}/>
             </>
         );
     }, []);
 
     return <div>{pageView}</div>;
-}
+};
+
 export default StoriesPage;

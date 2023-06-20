@@ -10,7 +10,9 @@ import 'slick-carousel/slick/slick.css';
 import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
+import '../styles/Pagination.css';
 import styled from '../styles/PostView.module.css';
+
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -149,6 +151,11 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
       };
 //   모달창 CSS
     const modalStyles = {
@@ -227,6 +234,8 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                         <div className={styled.nweet__text}>
                             <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                             <h4>{post.content}</h4>
+                            </div>
+                            <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
                                 <Carousel
                                     showThumbs={false}
@@ -346,7 +355,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
-            <ul className="pagination">
+   <ul className="pagination">
       {Array.from({ length: totalPages }, (_, index) => index + 1).map(
         (pageNumber) => (
           <li
