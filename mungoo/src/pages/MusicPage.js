@@ -1,19 +1,23 @@
 import React from "react";
 import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import {HiOutlineBell} from "react-icons/hi";
 import PageCreate from "../components/PostCreate";
 import PageView from "../components/PageView";
-function MusicPage(){
+function MusicPage({handlePostClick}){
+    const handleClick  = (uno) => {
+        handlePostClick(uno);
+        console.log('Post clicked:', uno);
+    };
 
     return (
         <div>
             <TopCategory
                 home={"home"}
                 text={"음악"}
-                iconName={<HiOutlineSparkles />}
+                iconName={<HiOutlineBell />}
             />
             <PageCreate pageNum={2}/>
-            <PageView pageNum={"음악"}/>
+            <PageView handlePostClick={handleClick} pageNum={"음악"}/>
 
         </div>
     );

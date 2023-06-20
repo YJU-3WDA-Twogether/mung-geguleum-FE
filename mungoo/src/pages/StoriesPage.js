@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { HiOutlineSparkles } from "react-icons/hi";
+import { HiOutlineBell } from "react-icons/hi";
 import PageView from "../components/PageView";
 import PageCreate from "../components/PostCreate";
 import { TopCategory } from "../topCatgory/TopCategory";
-function StoriesPage() {
+function StoriesPage({handlePostClick}) {
     const [pageView, setPageView] = useState(null);
+
+    const handleClick  = (uno) => {
+        handlePostClick(uno);
+        console.log('Post clicked:', uno);
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -17,10 +22,10 @@ function StoriesPage() {
                 <TopCategory
                     home={"home"}
                     text={"놀이터"}
-                    iconName={<HiOutlineSparkles />}
+                    iconName={<HiOutlineBell />}
                 />
                 <PageCreate pageNum={3}/>
-                <PageView pageNum={"놀이터"}/>
+                <PageView handlePostClick={handleClick} pageNum={"놀이터"}/>
             </>
         );
     }, []);

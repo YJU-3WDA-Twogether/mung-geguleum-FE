@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { FiDownload, FiMoreHorizontal } from "react-icons/fi";
+import {IoWarningOutline} from "react-icons/io5";
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -13,7 +14,10 @@ import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
 import jwt from "jwt-decode";
 import data from "bootstrap/js/src/dom/data";
-
+import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
+import PostEtcBtn from "../button/PostEtcBtn";
+import {IoMdPeople, IoMdPerson} from "react-icons/io";
+import {HiBell} from "react-icons/hi"
 const API_URL = process.env.REACT_APP_API_URL;
 
 
@@ -29,6 +33,10 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
     const [modalPostId,setModalPostId]  = useState(null);
     const [likedPosts, setLikedPosts] = useState([]);
     const [d3num, setD3num] =  useState(null);
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const etcRef = useRef();
+    const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -68,9 +76,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
         if (localStorage.getItem('accessToken')) {
             fetchPosts();
         }
-
     }, [user.uno, selectedPostUno]);
-    console.log("테스트"+localStorage.getItem('accessToken'))
     const fetchPosts = async (params) => {
         try {
             const response = await axios.get(`${API_URL}/post/getlist/${pageNum}`, config);
@@ -180,12 +186,15 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
+    const toggleNweetEct = () => {
+        setNweetEtc((prev) => !prev);
+    };
 
     return (
         <>
             {posts.map((post) => (
                 <li className={styled.nweet}>
-                    <div className={styled.nweet__wrapper}>
+                    <div className={styled.nweet__wrapper} >
                         <div className={styled.nweet__container} key={post.pno}>
                             <div
                                 className={styled.nweet__profile}
@@ -214,44 +223,61 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                                         </p>
                                     </div>
                                 </div>
+                                {uno === post.uno && (
+                                <div className={styled.nweet__edit} ref={etcRef}>
+                                        <div className={styled.nweet__editIcon} onClick={toggleNweetEct}>
+                                            <IoWarningOutline />
+                                            <div className={styled.horizontal__bg}></div>
+                                        </div>
+                                        {nweetEtc && (
+                                            <PostEtcBtn
+                                                setNweetEtc={setNweetEtc}
+                                                postNum={post.pno}
+                                            />
+                                        )}
+                                </div>
+                                )}
                             </div>
                         </div>
                         <div className={styled.nweet__text}>
                             <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                             <h4>{post.content}</h4>
+                        </div>
+
+                        <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
                                 <Carousel
                                     showThumbs={false}
                                     onChange={handleSlideChange}
                                 >
                                     {post.file.map((file) => (
-                                        <div key={file.fno}>
-                                            {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file" />
-                                            ) : file.fname.match(/.(mp4|webm)$/i) ? (
-                                                <video controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`video/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                <audio controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`audio/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            ) : (
-                                                <div className="file-wrap">{file.fname}</div>
-                                            )}
-                                        </div>
+                                            <div key={file.fno}>
+                                                {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
+                                                    <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
+                                                ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
+                                                    <video controls>
+                                                        <source
+                                                            src={`${API_URL}/file/read/${file.fno}`}
+                                                            type={`video/${file.fname.split('.').pop()}`}
+                                                        />
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : file.fname.match(/.(mp3|wav)$/i) ? (
+                                                    <audio controls>
+                                                        <source
+                                                            src={`${API_URL}/file/read/${file.fno}`}
+                                                            type={`audio/${file.fname.split('.').pop()}`}
+                                                        />
+                                                        Your browser does not support the audio tag.
+                                                    </audio>
+                                                ) : (
+                                                    <div className="file-wrap">{file.fname}</div>
+                                                )}
+                                            </div>
                                     ))}
                                 </Carousel>
                             )}
-                        </div>
+                           </div>
                         <nav className={styled.nweet__actions}>
                             <div className={`${styled.actionBox} ${styled.like} `}>
                                 <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno, post.hexist)}>
@@ -300,13 +326,13 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                                 {dropdownPostId === post.pno && (
                                     <Dropdown.Menu show style={{left : '73.5%'}}>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                            전체 그래프
+                                            <p><IoMdPeople/> 전체 그래프</p>
                                         </Dropdown.Item>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                            단일 그래프
+                                            <p><IoMdPerson/>단일 그래프</p>
                                         </Dropdown.Item>
                                         <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                          신고하기
+                                            <p><HiBell/>신고하기</p>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 )}
@@ -327,8 +353,9 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                                     </div>
                                 )}
                             </div>
-                        </nav>
 
+
+                        </nav>
                     </div>
                 </li>
             ))}

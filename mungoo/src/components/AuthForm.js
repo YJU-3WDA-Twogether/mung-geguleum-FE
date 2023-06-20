@@ -41,9 +41,6 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setUserObj(response.data); // 로그인 성공 후 App의 상태를 업데이트
                 console.log(response.data);
-                // const {uno,role} = jwt(response.data);
-                // console.log(uno);
-                // console.log(role);
                 navigate('/');
             } catch (error) {
                 console.error(error);

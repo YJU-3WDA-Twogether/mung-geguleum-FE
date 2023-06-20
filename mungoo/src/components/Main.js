@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import MainNavigation from "./MainNavigation";
 import PostController from './PostController';
-
 import styled from "../styles/App.module.css";
+import RightBar from "../components/RightBar";
+
 function Main({isLoggedIn,userObj,handleLogout}) {
     const [selectedPost, setSelectedPost] = useState('Best');
     const [selectedMyPage, setSelectedMyPage] = useState("My");
@@ -50,9 +51,9 @@ function Main({isLoggedIn,userObj,handleLogout}) {
                     MainClose={MainClose}
                 />
             </div>
-            <div>
-               <div> </div>
-            </div>
+            <>
+                <RightBar/>
+            </>
         </div>
     );
 }

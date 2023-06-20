@@ -135,6 +135,7 @@ const PostCreate = ({pageNum}) => {
                 audioList: [],
                 videoList: [],
             });
+
         } catch (error) {
             console.error(error);
             alert('게시글 작성 중 오류가 발생했습니다.');

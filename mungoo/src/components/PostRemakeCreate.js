@@ -247,14 +247,13 @@ const PostRemakeCreate = () => {
                                 <input
                                     id="attach-file" type="file" accept="image/*, audio/*, video/*" onChange={handleFileChange}
                                 />
-                                <label
-                                    htmlFor="attach-file"
-                                    className={styled.factoryInput__label}
+                            </div>
+                            <div className={styled.factoryInput__iconBox}>
+                                <div
+                                    className={`${styled.factoryInput__icon} ${styled.emoji__icon}` } onClick={handleRemakeTagClick}
                                 >
-                                    <div className={styled.factoryInput__icon}>
-                                        <VscGitPullRequestCreate onClick={handleRemakeTagClick}/>
-                                    </div>
-                                </label>
+                                    <VscGitPullRequestCreate />
+                                </div>
                             </div>
                             <input
                                 type="submit"

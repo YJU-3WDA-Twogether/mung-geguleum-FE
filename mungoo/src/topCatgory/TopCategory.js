@@ -10,7 +10,6 @@ export const TopCategory = ({
   text,
   home,
   myNweets,
-  onLogOutClick,
   MainClose,
 }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -22,6 +21,13 @@ export const TopCategory = ({
 
   const handleOffcanvasClose = () => {
     setShowOffcanvas(false);
+  };
+  const onLogOutClick = () => {
+    const ok = window.confirm("로그아웃 하시겠어요?");
+    if (ok) {
+      localStorage.clear();
+      navigate("/auth");
+    }
   };
 
   return (

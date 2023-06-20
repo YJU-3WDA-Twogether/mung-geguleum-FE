@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/PageModal.css';
 import PostView from "../components/PageView";
 import {TopCategory} from "../topCatgory/TopCategory";
-import {HiOutlineSparkles} from "react-icons/hi";
+import {HiOutlineSparkles,HiOutlineBell} from "react-icons/hi";
 import PageView from "../components/PageView";
 
 
@@ -17,7 +17,7 @@ const BestPage = ({handlePostClick }) => {
             <TopCategory
                 home={"home"}
                 text={"베스트"}
-                iconName={<HiOutlineSparkles />}
+                iconName={<HiOutlineBell />}
             />
             <PostView handlePostClick={handleClick} pageNum={"베스트"} />
         </>

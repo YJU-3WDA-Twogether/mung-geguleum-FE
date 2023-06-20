@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
 import pfile from "../image/Profile.jpg";
+import { IoAlertCircleOutline } from "react-icons/io5";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const D3 = ({handlePostClick, d3num, modalPostId}) => {
@@ -75,6 +76,8 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             simulation.on("tick", ticked);
             initializeForces();
             updateDisplay();
+            initializeImagePatterns();
+
 
         };
 
@@ -109,18 +112,32 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
 
             simulation
                 .force("link")
-                .distance(50)
-                .iterations(1)
+                .distance(75)
+                .iterations(50)
                 .links(graphData.links);
+        };
+        const initializeImagePatterns = () => {
+            const defs = svg.append('defs');
+
+            graphData.nodes.forEach((node, i) => {
+                defs.append('pattern')
+                    .attr('id', `img${i}`)
+                    .attr('height', '100%')
+                    .attr('width', '100%')
+                    .attr('patternContentUnits', 'objectBoundingBox')
+                    .append('image')
+                    .attr('height', 1)
+                    .attr('width', 1)
+                    .attr('preserveAspectRatio', 'none')
+                    .attr('xlink:href', pfile); // 이 부분은 실제 이미지 URL이어야 합니다.
+            });
         };
 
         const updateDisplay = () => {
-            node
-                .attr("r", 5)
-                .attr("stroke", "blue")
-                .attr("stroke-width", Math.abs(-120) / 5)
-
-            link.attr("stroke-width", 1).attr("opacity", 1);
+            node.attr('r', 30)
+                .attr('fill', (_, i) => `url(#img${i})`)
+                .attr('stroke-width', Math.abs(-100) / 5);
+            link.attr('stroke-width', 1).attr('opacity', 1);
         };
 
         const ticked = () => {
@@ -149,6 +166,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             .attr("d", "M 0,-5 L 10 ,0 L 0,5")
             .attr("fill", "#999")
             .style("stroke", "none");
+
 
         const dragstarted = (d) => {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -208,10 +226,16 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [clickedPostId, setClickedPostId] = useState(null);
 
+    const ontest = () =>{
+      console.log("테스트");
+    };
+
     return (
         <>
+            <IoAlertCircleOutline size={50} onClick={ontest}/>
+            <svg ref={svgRef} width={1180} height={830}>
 
-            <svg ref={svgRef} width={1200} height={880}></svg>
+            </svg>
             <PageModal
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
