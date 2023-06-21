@@ -11,7 +11,7 @@ import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 import {useNavigate} from "react-router-dom";
 import jwt from "jwt-decode";
 
-function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
+function MainNavigation({ onSelectPost, MainClose, handlePostUno,setSearchQuery}) {
     const userEtcRef = useRef();
     const navigate  = useNavigate();
 
@@ -23,9 +23,9 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
-//     console.log(user.accessToken);
-      const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
-//     console.log("메인페이지"+uno)
+
+    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
     const toggleUserEtc = () => {
@@ -61,6 +61,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
                         <ul>
                             <li>
                                 <div className={styled.leftBar__list} onClick={() => {
+                                    setSearchQuery("");
                                     handlePostUno();
                                     onSelectPost('Best');
                                 }}>
@@ -72,6 +73,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
                             </li>
                             <li>
                                 <div className={styled.leftBar__list} onClick={() =>{
+                                    setSearchQuery("");
                                     handlePostUno();
                                     onSelectPost('Music')}
                                 }>
@@ -84,6 +86,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
                             </li>
                             <li>
                                 <div className={styled.leftBar__list} onClick={() => {
+                                    setSearchQuery("");
                                     handlePostUno();
                                     onSelectPost('Remake')}}>
                                     <VscGitPullRequestCreate style={{color : "#6667ab"}}/>
@@ -95,6 +98,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
                             </li>
                             <li>
                                 <div className={styled.leftBar__list} onClick={() => {
+                                    setSearchQuery("");
                                     handlePostUno();
                                     onSelectPost('Stories')}}>
                                     <TfiWrite style={{color : "#6667ab"}}/>
@@ -106,6 +110,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno}) {
 
                             <li>
                                 <div className={styled.leftBar__list} onClick={() => {
+                                    setSearchQuery("");
                                     handlePostUno();
                                     onSelectPost('My')}}>
                                     <BsPersonFill  style={{color : "#6667ab"}}/>

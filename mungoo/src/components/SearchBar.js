@@ -3,10 +3,10 @@ import { FiSearch } from "react-icons/fi";
 
 import styled from "../styles/SearchBar.module.css";
 
-export const SearchBar = ({ userObj }) => {
+export const SearchBar = ({ searchQuery, setSearchQuery}) => {
     const searchRef = useRef();
     const textRef = useRef();
-    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+
 
     const handleSearchChange = useCallback((event) => {
         setSearchQuery(event.target.value);

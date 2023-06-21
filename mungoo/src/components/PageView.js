@@ -181,8 +181,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
 
 //   모달창 CSS
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
@@ -198,7 +196,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
 
     return (
         <>
-
             {posts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >

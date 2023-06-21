@@ -4,9 +4,14 @@ import MusicPage from "../pages/MusicPage";
 import StoriesPage from "../pages/StoriesPage";
 import RemakePage from "../pages/RemakePage";
 import MyPage from "../pages/MyPage";
+import SearchPage from "../pages/SearchPage";
 
-function PostController({ PostName, handlePostClick,selectedPostUno,MainClose }) {
+function PostController({ PostName, handlePostClick,selectedPostUno,MainClose,searchQuery,setSearchQuery}) {
     let page;
+
+    if(searchQuery.length > 0){
+        PostName='Search';
+    }
 
     switch (PostName) {
         case 'Best':
@@ -23,6 +28,9 @@ function PostController({ PostName, handlePostClick,selectedPostUno,MainClose })
             break;
         case 'My':
             page = <MyPage handlePostClick={handlePostClick} selectedPostUno={selectedPostUno} MainClose={MainClose}/>;
+            break;
+        case 'Search':
+            page = <SearchPage searchQuery={searchQuery} setSearchQuery={setSearchQuery} handlePostClick={handlePostClick} selectedPostUno={selectedPostUno}/>;
             break;
     }
 
