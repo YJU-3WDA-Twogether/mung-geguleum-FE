@@ -42,8 +42,9 @@ const UserListPage = () => {
     <div className='UserList'>
       <h1 className='UserList-h1'>유저 리스트 페이지</h1>
       <input
+        className='UserList-Input'
         type="text"
-        placeholder="검색"
+        placeholder="유저 검색"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
@@ -73,7 +74,6 @@ const UserListPage = () => {
           ))}
         </tbody>
       </table>
-      <button className='Update-button'>수정</button>
     </div>
   );
 };

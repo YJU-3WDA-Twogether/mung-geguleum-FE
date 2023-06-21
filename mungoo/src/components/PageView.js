@@ -74,7 +74,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
         if (localStorage.getItem('accessToken')) {
             fetchPosts();
         }
-
     }, [user.uno, selectedPostUno]);
     console.log("테스트"+localStorage.getItem('accessToken'))
     const fetchPosts = async (params) => {

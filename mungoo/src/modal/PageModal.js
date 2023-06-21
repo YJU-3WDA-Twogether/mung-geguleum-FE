@@ -1,7 +1,6 @@
 import axios from "axios";
 import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
-import { FiMoreHorizontal } from "react-icons/fi";
 import pfile from "../image/Profile.jpg";
 import '../styles/PageModal.css';
 import styled from "../styles/PostView.module.css";
@@ -90,46 +89,45 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
         <>
             <div className={`layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
                 <div className="layer-popup show">
-                    <div className="modal-dialog" style={{ borderRadius: '10px 10px'}}>
-                        {postData && (
-                        <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden'}}>
-                                <>
-                                    {postData.file.map((item, index) => (
-                                        <div key={index}>
-                                            {item.fsname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <div className="img-wrap">
-                                                    <img src={`${API_URL}/file/read/${item.fno}`} alt="file" style={{width:600 , height:800}} />
-                                                </div>
-                                            ) : item.fsname.match(/.(mp4|webm)$/i) ? (
-                                                <div className="video-wrap">
-                                                    <video controls>
-                                                        <source src={`${API_URL}/file/read/${item.fno}`} type={`video/${item.fsname.split('.').pop()}`} />
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                </div>
-                                            ) : item.fsname.match(/.(mp3|wav)$/i) ? (
-                                                <div className="audio-wrap">
-                                                    <audio controls>
-                                                        <source src={`${API_URL}/file/read/${item.fno}`} type={`audio/${item.fsname.split('.').pop()}`} />
-                                                        Your browser does not support the audio tag.
-                                                    </audio>
-                                                </div>
-                                            ) : (
-                                                <div className="file-wrap">
-                                                    <a href={`${API_URL}/file/read/${item.fno}`} target="_blank" rel="noopener noreferrer">
-                                                        {item.fsname}
-                                                    </a>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </>
-                        </div>
+                    <div className="modal-dialog" style={{  borderRadius:  '10px 10px'}}>
+                        {postData && postData.file.length > 0 && (
+                            <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden'}}>
+                                {/* 파일 표시 영역 내용 */}
+                                {postData.file.map((item, index) => (
+                                    <div key={index}>
+                                        {item.fsname.match(/.(jpg|jpeg|png|gif)$/i) ? (
+                                            <div className="img-wrap">
+                                                <img src={`${API_URL}/file/read/${item.fno}`} alt="file" style={{ width: '600px', height: '700px'}} />
+                                            </div>
+                                        ) : item.fsname.match(/.(mp4|webm)$/i) ? (
+                                            <div className="video-wrap">
+                                                <video controls style={{ width: '100%', height: '100%' }}>
+                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`video/${item.fsname.split('.').pop()}`} />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </div>
+                                        ) : item.fsname.match(/.(mp3|wav)$/i) ? (
+                                            <div className="audio-wrap">
+                                                <audio controls style={{ width: '100%', height: '100%' }}>
+                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`audio/${item.fsname.split('.').pop()}`} />
+                                                    Your browser does not support the audio tag.
+                                                </audio>
+                                            </div>
+                                        ) : (
+                                            <div className="file-wrap">
+                                                <a href={`${API_URL}/file/read/${item.fno}`} target="_blank" rel="noopener noreferrer">
+                                                    {item.fsname}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         )}
-                        <div className="modal-content app" style={{ borderRadius: '0 10px 10px 0'}}>
+                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px'}}>
                             {postData && (
                                 <>
-                                    <div className="fixedUp">
+                                    <div className="fixedUp" >
                                         <img
                                             src={pfile}
                                             alt="profileImg"
@@ -159,8 +157,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                                 <span className="comment-content">{comment.reply}</span>
                                                             </p>
                                                             <div className="comment-date">
-                                                                <p>{localDate}</p>
-                                                                <FiMoreHorizontal />
+                                                                <p style={{color:"#6667AB"}}>{localDate}</p>
                                                             </div>
 
                                                         </div>

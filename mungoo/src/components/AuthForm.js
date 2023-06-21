@@ -59,6 +59,7 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                             uid: formData.uid,
                             password: formData.password,
                         });
+                        localStorage.setItem("accessToken", loginResponse.data);
                         localStorage.setItem('user', JSON.stringify(loginResponse.data));
                         setUserObj(loginResponse.data);
                         navigate('/');
