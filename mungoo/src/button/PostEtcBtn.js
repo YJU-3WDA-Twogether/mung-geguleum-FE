@@ -8,8 +8,9 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PostEtcBtn = ({
-                         toggleEdit,
-                         postNum
+                        postNum,
+                        fetchPosts,
+                        uno
                      }) => {
     const onDeleteClick = async () => {
         const ok = window.confirm("구름을 삭제할까요?");
@@ -19,12 +20,16 @@ const PostEtcBtn = ({
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 }});
+            console.log('uno:', uno);
+            fetchPosts({ uno });
         }
     };
 
+
+
     return (
         <div className={styled.container}>
-            <div className={`${styled.btn} ${styled.updateBtn}`} onClick={toggleEdit}>
+            <div className={`${styled.btn} ${styled.updateBtn}`} >
                 <FiEdit />
                 <p>수정하기</p>
             </div>

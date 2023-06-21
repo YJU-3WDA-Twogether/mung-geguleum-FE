@@ -29,7 +29,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     const [d3num, setD3num] =  useState(null);
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const etcRef = useRef();
-    const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+    const [nweetEtc, setNweetEtc ] = useState(null);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -42,7 +42,6 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             console.log(JSON.parse(storedUser))
         }
     }, []);
-    console.log(selectedPostUno)
     const downloadFile = (file) => {
         const params = {
             uno: user.uno,
@@ -81,7 +80,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             console.log(uno)
         }
 
-    }, [user.uno, selectedPostUno]);
+    }, [user, selectedPostUno]);
     const fetchPosts = async (params) => {
         try {
             console.log(params)
@@ -142,9 +141,6 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
-    const toggleNweetEct = () => {
-        setNweetEtc((prev) => !prev);
-    };
     const handleActionClick = (postId, num) => {
         setShowModal(true);
         setModalPostId(postId);
@@ -189,10 +185,26 @@ function MyPostView({handlePostClick,selectedPostUno}) {
 
 //   모달창 CSS
 
+    const toggleNweetEct = (postId) => {
+        setNweetEtc(postId === nweetEtc ? null : postId);
+    };
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (etcRef.current && !etcRef.current.contains(event.target)) {
+                setNweetEtc(null);
+                setDropdownPostId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     return (
         <>
-
             {posts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
@@ -225,16 +237,15 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                     </div>
                                 </div>
                                 {uno === post.uno && (
-                                    <div className={styled.nweet__edit} ref={etcRef}>
-                                        <div className={styled.nweet__editIcon} onClick={toggleNweetEct}>
+                                    <div className={styled.nweet__edit}  >
+                                        <div className={styled.nweet__editIcon} onClick={() => toggleNweetEct(post.pno)}>
                                             <IoWarningOutline />
                                             <div className={styled.horizontal__bg}></div>
                                         </div>
-                                        {nweetEtc && (
-                                            <PostEtcBtn
-                                                setNweetEtc={setNweetEtc}
-                                                postNum={post.pno}
-                                            />
+                                        {nweetEtc === post.pno && (
+                                            <div ref={etcRef}>
+                                                <PostEtcBtn postNum={post.pno}  fetchPosts={fetchPosts} uno={uno} />
+                                            </div>
                                         )}
                                     </div>
                                 )}
@@ -310,7 +321,9 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                 className={`${styled.actionBox}`}
                             >
                                 <div className={styled.actions__icon}>
-                                    <FiDownload  onClick={() => downloadFile(post.file[fileNum])} />
+                                    {post.file[fileNum] && (
+                                        <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
+                                    )}
                                 </div>
                                 <div className={styled.actions__text}>
                                     {post.lcount === 0 ? null : (
@@ -325,17 +338,19 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                     <FiMoreHorizontal />
                                 </div>
                                 {dropdownPostId === post.pno && (
-                                    <Dropdown.Menu show style={{left : '73.5%'}}>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                            <p><IoMdPeople/> 전체 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                            <p><IoMdPerson/>단일 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                            <p><HiBell/>신고하기</p>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
+                                    <div  ref={etcRef}>
+                                        <Dropdown.Menu show style={{left : '73.5%'}}>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
+                                                <p><IoMdPeople/> 전체 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
+                                                <p><IoMdPerson/>단일 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
+                                                <p><HiBell/>신고하기</p>
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </div>
                                 )}
                                 {modalPostId === post.pno && (
                                     <div style={modalStyles}>

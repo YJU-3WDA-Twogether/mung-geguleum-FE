@@ -6,7 +6,7 @@ import { TopCategory } from "../topCatgory/TopCategory";
 function StoriesPage({handlePostClick}) {
     const [pageView, setPageView] = useState(null);
 
-    const [newPosts, setNewPosts] = useState([]);
+    const [newPosts, setNewPosts] = useState(false);
     const handleClick  = (uno) => {
         handlePostClick(uno);
         console.log('Post clicked:', uno);
@@ -17,11 +17,6 @@ function StoriesPage({handlePostClick}) {
 
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
-            // setPageView(<PageView />);
-            return;
-        }
         setPageView(
             <>
                 <TopCategory
@@ -29,8 +24,8 @@ function StoriesPage({handlePostClick}) {
                     text={"놀이터"}
                     iconName={<HiOutlineBell />}
                 />
-                <PageCreate pageNum={3} onPostSubmit={handlePostSubmit}/>
-                <PageView handlePostClick={handleClick} pageNum={"놀이터"} newPosts={setNewPosts}/>
+                <PageCreate pageNum={3} onPostSubmit={handlePostSubmit} setNewPosts={setNewPosts} />
+                <PageView handlePostClick={handleClick} pageNum={"놀이터"} newPosts={newPosts} setNewPosts={setNewPosts}/>
             </>
         );
     }, []);

@@ -21,7 +21,7 @@ import {HiBell} from "react-icons/hi"
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts}) => {
+const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts ,setNewPosts }) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
@@ -34,8 +34,9 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
     const [likedPosts, setLikedPosts] = useState([]);
     const [d3num, setD3num] =  useState(null);
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const [ nweetEtc, setNweetEtc ] = useState(null);
     const etcRef = useRef();
-    const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+
 
     const config = {
         headers: {
@@ -72,11 +73,13 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
             });
     };
 
+
     useEffect(() => {
         if (localStorage.getItem('accessToken')) {
             fetchPosts();
         }
-    }, [user.uno, selectedPostUno]);
+    }, [uno, selectedPostUno]);
+
     const fetchPosts = async (params) => {
         try {
             const response = await axios.get(`${API_URL}/post/getlist/${pageNum}`, config);
@@ -86,13 +89,17 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
             console.error(error);
         }
     };
+
+    if(newPosts){
+        fetchPosts();
+        setNewPosts(false);
+    }
     const handleHeartClick = async (postId, hexist) => {
         const formData = {
             pno: postId,
         };
         try {
             if (hexist) {
-                console.log("댓글 취소 요청입니다.");
                 console.log(config.headers)
                 console.log(formData.pno)
                 const response = await axios.delete(`${API_URL}/heart/delete`, {data: formData ,
@@ -184,15 +191,24 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
-    const toggleNweetEct = () => {
-        setNweetEtc((prev) => !prev);
+    const toggleNweetEct = (postId) => {
+        setNweetEtc(postId === nweetEtc ? null : postId);
     };
-    // console.log(newPosts);
-    // useEffect(() => {
-    //     if (newPosts) {
-    //         fetchPosts();
-    //     }
-    // }, [newPosts]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (etcRef.current && !etcRef.current.contains(event.target)) {
+                setNweetEtc(null);
+                setDropdownPostId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <>
@@ -228,16 +244,15 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     </div>
                                 </div>
                                 {uno === post.uno && (
-                                    <div className={styled.nweet__edit} ref={etcRef}>
-                                        <div className={styled.nweet__editIcon} onClick={toggleNweetEct}>
+                                    <div className={styled.nweet__edit}  >
+                                        <div className={styled.nweet__editIcon} onClick={() => toggleNweetEct(post.pno)}>
                                             <IoWarningOutline />
                                             <div className={styled.horizontal__bg}></div>
                                         </div>
-                                        {nweetEtc && (
-                                            <PostEtcBtn
-                                                setNweetEtc={setNweetEtc}
-                                                postNum={post.pno}
-                                            />
+                                        {nweetEtc === post.pno && (
+                                            <div ref={etcRef}>
+                                                <PostEtcBtn postNum={post.pno} fetchPosts={fetchPosts} />
+                                            </div>
                                         )}
                                     </div>
                                 )}
@@ -255,33 +270,33 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     onChange={handleSlideChange}
                                 >
                                     {post.file.map((file) => (
-                                            <div key={file.fno}>
-                                                {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                    <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
-                                                ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
-                                                    <video controls>
-                                                        <source
-                                                            src={`${API_URL}/file/read/${file.fno}`}
-                                                            type={`video/${file.fname.split('.').pop()}`}
-                                                        />
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                    <audio controls>
-                                                        <source
-                                                            src={`${API_URL}/file/read/${file.fno}`}
-                                                            type={`audio/${file.fname.split('.').pop()}`}
-                                                        />
-                                                        Your browser does not support the audio tag.
-                                                    </audio>
-                                                ) : (
-                                                    <div className="file-wrap">{file.fname}</div>
-                                                )}
-                                            </div>
+                                        <div key={file.fno}>
+                                            {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
+                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
+                                            ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
+                                                <video controls>
+                                                    <source
+                                                        src={`${API_URL}/file/read/${file.fno}`}
+                                                        type={`video/${file.fname.split('.').pop()}`}
+                                                    />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            ) : file.fname.match(/.(mp3|wav)$/i) ? (
+                                                <audio controls>
+                                                    <source
+                                                        src={`${API_URL}/file/read/${file.fno}`}
+                                                        type={`audio/${file.fname.split('.').pop()}`}
+                                                    />
+                                                    Your browser does not support the audio tag.
+                                                </audio>
+                                            ) : (
+                                                <div className="file-wrap">{file.fname}</div>
+                                            )}
+                                        </div>
                                     ))}
                                 </Carousel>
                             )}
-                           </div>
+                        </div>
                         <nav className={styled.nweet__actions}>
                             <div className={`${styled.actionBox} ${styled.like} `}>
                                 <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno, post.hexist)}>
@@ -313,7 +328,9 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                 className={`${styled.actionBox}`}
                             >
                                 <div className={styled.actions__icon}>
-                                    <FiDownload  onClick={() => downloadFile(post.file[fileNum])} />
+                                    {post.file[fileNum] && (
+                                        <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
+                                    )}
                                 </div>
                                 <div className={styled.actions__text}>
                                     {post.lcount === 0 ? null : (
@@ -328,6 +345,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     <FiMoreHorizontal />
                                 </div>
                                 {dropdownPostId === post.pno && (
+                                    <div  ref={etcRef}>
                                     <Dropdown.Menu show style={{left : '73.5%'}}>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
                                             <p><IoMdPeople/> 전체 그래프</p>
@@ -339,6 +357,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                             <p><HiBell/>신고하기</p>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
+                                    </div>
                                 )}
                                 {modalPostId === post.pno && (
                                     <div style={modalStyles}>

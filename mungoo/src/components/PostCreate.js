@@ -11,7 +11,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PostCreate = ({pageNum, onPostSubmit}) => {
+const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     const [formData, setFormData] = useState({
         title: '',
         content: '',    
@@ -124,11 +124,8 @@ const PostCreate = ({pageNum, onPostSubmit}) => {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
                 }});
-            alert('게시글이 성공적으로 작성되었습니다.');
-            const newPost = response.data; // 새로운 게시글 데이터
 
-            // 상태 업데이트: 새로운 게시글 추가
-            onPostSubmit(newPost);
+            alert('게시글이 성공적으로 작성되었습니다.');
 
             setFormData({
                 title: '',
@@ -137,6 +134,7 @@ const PostCreate = ({pageNum, onPostSubmit}) => {
                 audioList: [],
                 videoList: [],
             });
+            setNewPosts(true);
 
         } catch (error) {
             console.error(error);

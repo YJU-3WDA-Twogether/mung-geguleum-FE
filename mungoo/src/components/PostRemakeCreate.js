@@ -9,8 +9,7 @@ import styled from "../styles/PostCreate.module.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// 작성후 초기화 시키기
-const PostRemakeCreate = () => {
+const PostRemakeCreate = ({setNewPosts}) => {
     const [showPopup, setShowPopup] = useState(false);
     const [user, setUser] = useState({});
     const config = {
@@ -159,6 +158,7 @@ const PostRemakeCreate = () => {
                 audioList: [],
                 videoList: [],
             });
+            setNewPosts(true);
         } catch (error) {
             console.error(error);
             alert('게시글 작성 중 오류가 발생했습니다.');
