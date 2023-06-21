@@ -11,8 +11,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PostCreate = ({pageNum}) => {
-
+const PostCreate = ({pageNum, onPostSubmit}) => {
     const [formData, setFormData] = useState({
         title: '',
         content: '',    
@@ -21,12 +20,6 @@ const PostCreate = ({pageNum}) => {
         videoList: [],
     });
     const [user, setUser] = useState({});
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-    };
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -122,12 +115,21 @@ const PostCreate = ({pageNum}) => {
                 console.log(file)
             });
 
+            const hashtags = formData.content.match(/#[^\s#]*/g);
+            if (hashtags) {
+                data.append('hashtag',  hashtags.map(tag => tag.slice(1)));
+            }
             const response = await axios.post(`${API_URL}/post/create`, data,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
                 }});
             alert('게시글이 성공적으로 작성되었습니다.');
+            const newPost = response.data; // 새로운 게시글 데이터
+
+            // 상태 업데이트: 새로운 게시글 추가
+            onPostSubmit(newPost);
+
             setFormData({
                 title: '',
                 content: '',

@@ -8,8 +8,6 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PostEtcBtn = ({
-                         nweetAttachment,
-                         nweetObj,
                          toggleEdit,
                          postNum
                      }) => {
@@ -17,7 +15,7 @@ const PostEtcBtn = ({
         const ok = window.confirm("구름을 삭제할까요?");
 
         if (ok === true) {
-            const response = await axios.delete(`${API_URL}/post/delete`, {data: postNum ,
+            const response = await axios.delete(`${API_URL}/post/delete/${postNum}`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 }});

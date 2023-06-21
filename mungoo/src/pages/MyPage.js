@@ -30,9 +30,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     }, []);
 
     const handleClick = (n) => {
-        setSelected(n, () => {
-            console.log(selected);
-        });
+        setSelected(n);
     };
     useEffect(() => {
         if (selectedPostUno) {

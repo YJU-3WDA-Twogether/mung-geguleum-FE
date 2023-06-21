@@ -7,9 +7,9 @@ function App() {
     const [userObj, setUserObj] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem('accessToken');
         if (storedUser) {
-            setUserObj(JSON.parse(storedUser));
+            setUserObj(storedUser);
         }
         setInit(true);
     }, []);

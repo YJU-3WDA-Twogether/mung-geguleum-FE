@@ -6,10 +6,15 @@ import { TopCategory } from "../topCatgory/TopCategory";
 function StoriesPage({handlePostClick}) {
     const [pageView, setPageView] = useState(null);
 
+    const [newPosts, setNewPosts] = useState([]);
     const handleClick  = (uno) => {
         handlePostClick(uno);
         console.log('Post clicked:', uno);
     };
+    const handlePostSubmit = (newPost) => {
+        setNewPosts((prevPosts) => [...prevPosts, newPost]);
+    };
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -24,8 +29,8 @@ function StoriesPage({handlePostClick}) {
                     text={"놀이터"}
                     iconName={<HiOutlineBell />}
                 />
-                <PageCreate pageNum={3}/>
-                <PageView handlePostClick={handleClick} pageNum={"놀이터"}/>
+                <PageCreate pageNum={3} onPostSubmit={handlePostSubmit}/>
+                <PageView handlePostClick={handleClick} pageNum={"놀이터"} newPosts={setNewPosts}/>
             </>
         );
     }, []);

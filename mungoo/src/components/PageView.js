@@ -21,7 +21,7 @@ import {HiBell} from "react-icons/hi"
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) => {
+const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts}) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
@@ -189,9 +189,16 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
     const toggleNweetEct = () => {
         setNweetEtc((prev) => !prev);
     };
+    // console.log(newPosts);
+    // useEffect(() => {
+    //     if (newPosts) {
+    //         fetchPosts();
+    //     }
+    // }, [newPosts]);
 
     return (
         <>
+
             {posts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
@@ -219,12 +226,12 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                                         </p>
                                         <p style={{ margin: "0 4px" }}>·</p>
                                         <p className={styled.nweet__createdAt}>
-                                            {post.regDate}
+                                            {new Date(post.regDate).toLocaleString()}
                                         </p>
                                     </div>
                                 </div>
                                 {uno === post.uno && (
-                                <div className={styled.nweet__edit} ref={etcRef}>
+                                    <div className={styled.nweet__edit} ref={etcRef}>
                                         <div className={styled.nweet__editIcon} onClick={toggleNweetEct}>
                                             <IoWarningOutline />
                                             <div className={styled.horizontal__bg}></div>
@@ -235,7 +242,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum}) =>
                                                 postNum={post.pno}
                                             />
                                         )}
-                                </div>
+                                    </div>
                                 )}
                             </div>
                         </div>

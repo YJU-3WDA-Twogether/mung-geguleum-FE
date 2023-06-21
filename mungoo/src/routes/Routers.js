@@ -18,7 +18,7 @@ function Routers({ isLoggedIn, userObj, handleLogout,setUserObj }) {
                 ) : (
                     <Route path="/" element={<Navigate to="/auth" />} />
                 )}
-                <Route path="/auth" element={<Auth setUserObj={setUserObj} />} />
+                <Route path="/auth" element={<Auth setUserObj={setUserObj} />}/>
             </Routes>
         </Router>
     );
