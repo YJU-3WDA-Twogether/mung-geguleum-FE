@@ -15,7 +15,7 @@ import pfile from "../image/Profile.jpg";
 function MyPostView() {
     const [selected, setSelected] = useState(1);
 
-    // [박진석, 23.06.21]
+    // [박진석|23.06.21] 좋아요, 댓글용 더미데이터들
     const dummyComments = {
         comments: [
           {
@@ -141,6 +141,101 @@ function MyPostView() {
         ],
       };
     
+    const dummyLikes = {
+        likes: [
+          {
+            pfile: "https://example.com/profile1.jpg",
+            uname: "John Doe",
+            ptitle: "Lorem Ipsum is simply dummy text",
+            pno: 1,
+          },
+          {
+            pfile: "https://example.com/profile2.jpg",
+            uname: "Emily Smith",
+            ptitle: "Aenean commodo ligula eget dolor",
+            pno: 2,
+          },
+          {
+            pfile: "https://example.com/profile3.jpg",
+            uname: "Alex Johnson",
+            ptitle: "Sed ut perspiciatis unde omnis iste natus error sit",
+            pno: 3,
+          },
+          {
+            pfile: "https://example.com/profile4.jpg",
+            uname: "Sophia Lee",
+            ptitle: "Duis aute irure dolor in reprehenderit",
+            pno: 4,
+          },
+          {
+            pfile: "https://example.com/profile5.jpg",
+            uname: "Michael Brown",
+            ptitle: "Excepteur sint occaecat cupidatat non proident",
+            pno: 5,
+          },
+          {
+            pfile: "https://example.com/profile6.jpg",
+            uname: "Olivia Wilson",
+            ptitle: "Ut enim ad minima veniam",
+            pno: 6,
+          },
+          {
+            pfile: "https://example.com/profile7.jpg",
+            uname: "James Anderson",
+            ptitle: "Quis autem vel eum iure reprehenderit qui",
+            pno: 7,
+          },
+          {
+            pfile: "https://example.com/profile8.jpg",
+            uname: "Emma Taylor",
+            ptitle: "Sunt in culpa qui officia deserunt mollit anim",
+            pno: 8,
+          },
+          {
+            pfile: "https://example.com/profile9.jpg",
+            uname: "William Johnson",
+            ptitle: "Nemo enim ipsam voluptatem quia voluptas",
+            pno: 9,
+          },
+          {
+            pfile: "https://example.com/profile10.jpg",
+            uname: "Ava Davis",
+            ptitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+            pno: 10,
+          },
+          {
+            pfile: "https://example.com/profile11.jpg",
+            uname: "Liam Martin",
+            ptitle: "Maecenas nec tincidunt libero, non lacinia nulla",
+            pno: 11,
+          },
+          {
+            pfile: "https://example.com/profile12.jpg",
+            uname: "Isabella White",
+            ptitle: "Fusce vulputate dapibus massa, non tristique ante tristique ac",
+            pno: 12,
+          },
+          {
+            pfile: "https://example.com/profile13.jpg",
+            uname: "Noah Rodriguez",
+            ptitle: "Praesent eget faucibus massa, sit amet tristique dui",
+            pno: 13,
+          },
+          {
+            pfile: "https://example.com/profile14.jpg",
+            uname: "Mia Martinez",
+            ptitle: "Phasellus consectetur libero id leo pharetra",
+            pno: 14,
+          },
+          {
+            pfile: "https://example.com/profile15.jpg",
+            uname: "Sophia Taylor",
+            ptitle: "Vivamus sit amet lorem nec sem consectetur",
+            pno: 15,
+          },
+        ],
+      };  
+
     const handleClick = (n) => {
         setSelected(n);
     };
@@ -175,38 +270,28 @@ function MyPostView() {
                 </div>
             </div>
             
-            {/* [23.06.22|박진석] 내기록 - 좋아요 부분 임시 추가 */}
+            {/* [23.06.22|박진석] 내기록 - 좋아요 부분 추가 (더미데이터로만 구성함) */}
             {selected === 1 && 
                 <div>
-                    좋아요좋요아
-                    {/* <div className="scrollable">
-                        {dummyComments.comment.map((i, index) => {
-                            const localDate = new Date(i.regDate).toLocaleString();
+                    <div className="commentScrollable">
+                        {dummyLikes.likes.map((i, index) => {
                             return (
                                 <React.Fragment key={index}>
-                                    <div className="container_reply" style={{borderBottom:"1px solid #ebebeb"}}>
+                                    <div className="container_like">
                                         <img
                                             src={pfile}
                                             alt="profileImg"
-                                            className={styled.profile__image}
-                                            width="30"
-                                            height="30"
+                                            className="profile_image"
                                         /> 
                                         <div className="comment-text">
-                                            <p>
-                                                <span className="comment-author">{i.uname}</span>
-                                                <span className="comment-content">{i.reply}</span>
-                                            </p>
-                                            <div className="comment-date">
-                                                <p style={{color:"#6667AB"}}>{localDate}</p>
-                                            </div>
-                                            
+                                            <p><span className="comment-user">{i.uname}</span></p>
+                                            <p><span className="comment-author">{i.ptitle}</span></p>
                                         </div>
                                     </div>
                                 </React.Fragment>
                             );
                         })}
-                    </div> */}
+                    </div>
                 </div>
             }
 
@@ -219,7 +304,7 @@ function MyPostView() {
              */}
             {selected === 2 &&
                 <div>
-                    <div className="scrollable">
+                    <div className="commentScrollable">
                         {dummyComments.comments.map((i, index) => {
                             const localDate = new Date(i.regDate).toLocaleString();
                             return (

@@ -67,11 +67,6 @@ body.modal-open {
     padding: 20px; /* 내부 간격 설정 */
 }
 
-.scrollable {
-    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
-    padding: 30px; /* 내부 간격 설정 */
-}
-
 .app {
     display: flex;
     flex-direction: column;
@@ -81,6 +76,13 @@ body.modal-open {
     display: flex;
     border-bottom: 1px solid #ebebeb;
     margin-top: 10px;
+}
+
+.container_like{
+    display: flex;
+    border-bottom: 1px solid #ebebeb;
+    margin-top: 10px;
+    padding-bottom: 8px;
 }
 
 .replySmit{
@@ -99,6 +101,12 @@ body.modal-open {
 .replyInput{
     padding-left: 30px;
     width: 300px;
+}
+
+/* 내기록 내부에서 스크롤하는 부분 패딩 수정 */
+.commentScrollable {
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
+    padding: 10px 30px; /* 내부 간격 설정 */
 }
 
 /* 프사 제외한 사용자, 제목, 댓글내용, 날짜 뭉탱이 div */
