@@ -47,7 +47,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
-            console.log(JSON.parse(storedUser))
         }
     }, []);
 
@@ -106,7 +105,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     }});
-                console.log(response.data);
 
                 setLikedPosts(likedPosts.filter((id) => id !== postId));
 
@@ -130,9 +128,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
         } catch (error) {
             console.error('Error updating heart data:', error);
         }
-    };
-    const handleClick = (uno) => {
-        handlePostClick(uno);
     };
 
     const handleSlideChange = (currentIndex) => {
@@ -263,7 +258,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                             <h4>{post.content}</h4>
                         </div>
 
-                        <div className={styled.nweet__image}>
+                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
                                 <Carousel
                                     showThumbs={false}
@@ -271,27 +266,10 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                 >
                                     {post.file.map((file) => (
                                         <div key={file.fno}>
-                                            {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
-                                            ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
-                                                <video controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`video/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                <audio controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`audio/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            ) : (
-                                                <div className="file-wrap">{file.fname}</div>
-                                            )}
+                                            <img src={`${file.fpath}`} alt="file"/>
+                                            <video controls>
+                                                <source src={`${file.fpath}`} type="video/webm"/>
+                                            </video>
                                         </div>
                                     ))}
                                 </Carousel>

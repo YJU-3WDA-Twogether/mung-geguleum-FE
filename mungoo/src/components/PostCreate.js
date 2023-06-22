@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostCreate.module.css";
@@ -20,7 +20,8 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
         videoList: [],
     });
     const [user, setUser] = useState({});
-
+    const [selectedFile, setSelectedFile] = useState([]);
+    const fileInput = useRef();
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -32,6 +33,8 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
+
+        setSelectedFile(prevFiles => [...prevFiles, ...Array.from(e.target.files)]);
 
         files.forEach((file) => {
             const extension = file.name.split('.').pop();
@@ -100,26 +103,36 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
 
         try {
             const data = new FormData();
+
+            await Promise.all(selectedFile.map(async (file) => {
+                try {
+                    const response = await axios.get(`${API_URL}/s3/url`, {
+                        params: { size: selectedFile.length },
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                        },
+                    });
+                    const preSignedUrl = response.data.preSignedUrl;
+                    const encodedFileName =  response.data.encodedFileName;
+                    data.append('file',encodedFileName);
+                    await axios.put(preSignedUrl, file, {
+                        headers: {
+                            'Content-Type': file.type
+                        }
+                    });
+                } catch (error) {
+                    console.error(`Error uploading file: ${file && file.name}`, error);
+                }
+            }));
             data.append('title', formData.title);
             data.append('content', formData.content);
             data.append('bno', pageNum);
-
-            const fileList = [
-                ...formData.fileList.map(({ file }) => ({ file, type: 'image' })),
-                ...formData.audioList.map(({ file }) => ({ file, type: 'audio' })),
-                ...formData.videoList.map(({ file }) => ({ file, type: 'video' })),
-            ];
-
-            fileList.forEach(({ file, type }) => {
-                data.append('file', file);
-                console.log(file)
-            });
 
             const hashtags = formData.content.match(/#[^\s#]*/g);
             if (hashtags) {
                 data.append('hashtag',  hashtags.map(tag => tag.slice(1)));
             }
-            const response = await axios.post(`${API_URL}/post/create`, data,{
+           const response = await axios.post(`${API_URL}/post/create`, data,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
@@ -134,6 +147,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                 audioList: [],
                 videoList: [],
             });
+            setSelectedFile([]) ;
             setNewPosts(true);
 
         } catch (error) {
@@ -220,7 +234,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                     </div>
                                 </label>
                                 <input
-                                    id="attach-file" type="file" accept="image/*, audio/*, video/*" onChange={handleFileChange}
+                                    id="attach-file" type="file" accept="image/*, audio/*, video/*" onChange={handleFileChange} multiple ref={fileInput}
                                 />
                             </div>
                             <input
