@@ -1,83 +1,102 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import UserAgreePage from "../pages/UserAgreePage";
 import styled from "../styles/AuthForm.module.css";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const AuthForm = ({ newAccount,setUserObj}) => {
-    const navigate = useNavigate ();
+const AuthForm = ({ newAccount, setUserObj }) => {
+  const navigate = useNavigate();
 
-    const INITIAL_FORM_DATA_ACCOUNT = {
-        uid: '',
-        password: '',
-    }
-    const INITIAL_FORM_DATA_REGISTRATION = {
-        uid: '',
-        uname: '',
-        password: '',
-        password2: '',
-        email: '',
-        nickname:'',
-    };
+  const INITIAL_FORM_DATA_ACCOUNT = {
+    uid: '',
+    password: '',
+  }
+  const INITIAL_FORM_DATA_REGISTRATION = {
+    uid: '',
+    uname: '',
+    password: '',
+    password2: '',
+    email: '',
+    nickname: '',
+  };
 
-    const [formData, setFormData] = useState(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
-    const [select, setSelect] = useState("");
+  const [formData, setFormData] = useState(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
+  const [select, setSelect] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [showAgreement, setShowAgreement] = useState(true);
 
-    useEffect(() => {
-        setFormData(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
-    }, [newAccount]);
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (newAccount) {
-            try {
-                const response = await axios.post(`${API_URL}/user/login`, formData);
-                localStorage.setItem("accessToken", response.data);
-                alert('로그인에 성공하였습니다.');
-                localStorage.setItem('user', JSON.stringify(response.data));
-                setUserObj(response.data); // 로그인 성공 후 App의 상태를 업데이트
-                console.log(response.data);
-                // const {uno,role} = jwt(response.data);
-                // console.log(uno);
-                // console.log(role);
-                navigate('/');
-            } catch (error) {
-                console.error(error);
-                alert('로그인 중 오류가 발생했습니다.');
-            }
+  const handleCloseAgreement = (agreed) => {
+    setShowAgreement(false);
+    setAgreed(agreed);
+  };
+
+  const handleAgreementCheckbox = (e) => {
+    setAgreed(e.target.checked);
+    setShowAgreement(e.target.checked);
+  };
+
+
+  
+  useEffect(() => {
+    setFormData(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
+  }, [newAccount]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newAccount) {
+      try {
+        const response = await axios.post(`${API_URL}/user/login`, formData);
+        localStorage.setItem("accessToken", response.data);
+        alert('로그인에 성공하였습니다.');
+        localStorage.setItem('user', JSON.stringify(response.data));
+        setUserObj(response.data);
+        navigate('/');
+      } catch (error) {
+        console.error(error);
+        alert('로그인 중 오류가 발생했습니다.');
+      }
+    } else {
+      try {
+        const response = await axios.post(`${API_URL}/user/create`, formData);
+        console.log(response.data);
+        if (response.data === true) {
+          alert('회원가입이 완료되었습니다.');
+          try {
+            const loginResponse = await axios.post(`${API_URL}/user/login`, {
+              uid: formData.uid,
+              password: formData.password,
+            });
+            localStorage.setItem("accessToken", loginResponse.data);
+            localStorage.setItem('user', JSON.stringify(loginResponse.data));
+            setUserObj(loginResponse.data);
+            navigate('/');
+          } catch (error) {
+            console.error(error);
+            alert('로그인 중 오류가 발생했습니다.');
+          }
+        } else if (response.data === false) {
+          alert('회원가입 중 오류가 발생했습니다.');
         } else {
-            try {
-                const response = await axios.post(`${API_URL}/user/create`, formData);
-                console.log(response.data);
-                if (response.data === true) {
-                    alert('회원가입이 완료되었습니다.');
-                    try {
-                        const loginResponse = await axios.post(`${API_URL}/user/login`, {
-                            uid: formData.uid,
-                            password: formData.password,
-                        });
-                        localStorage.setItem("accessToken", loginResponse.data);
-                        localStorage.setItem('user', JSON.stringify(loginResponse.data));
-                        setUserObj(loginResponse.data);
-                        navigate('/');
-                    } catch (error) {
-                        console.error(error);
-                        alert('로그인 중 오류가 발생했습니다.');
-                    }
-                } else if (response.data === false) {
-                    alert('회원가입 중 오류가 발생했습니다.');
-                } else {
-                    alert('알 수 없는 오류가 발생했습니다.');
-                }
-            } catch (error) {
-                console.error(error);
-                alert('회원가입 중 오류가 발생했습니다.');
-            }
+          alert('알 수 없는 오류가 발생했습니다.');
         }
-    };
+      } catch (error) {
+        console.error(error);
+        alert('회원가입 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const handleAgreement = () => {
+    setAgreed(!agreed);
+  };
+
+    
 
     return (
         <div className={styled.container}>
@@ -110,6 +129,7 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                     </>
                 ) : (
                     <>
+      
                         <input
                             className={`${styled.authInput} ${
                                 select === "uid" && styled.select
@@ -181,14 +201,46 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                             placeholder="닉네임"
                             value={formData.nickname}
                             onChange={handleChange}
-                        />
-                    </>
+                        /> 
+                      <div className={styled.agreement}>
+                                    <input
+                                        type="checkbox"
+                                        id="agreement"
+                                        checked={agreed}
+                                        onChange={handleAgreementCheckbox}
+                                    />
+                                    <label htmlFor="agreement">회원 약관에 동의합니다.</label>
+                        </div>                           
+                                                
+                    </>    
+
                 )}
-                <input
-                    type="submit"
-                    className={`${styled.authInput} ${styled.authSubmit}`}
-                    value={newAccount ? "로그인 하기" : "가입하기"}
-                />
+                {!newAccount && agreed && (
+                 <div className={styled.container}>
+                 {showAgreement && (
+                   <div className={styled.agreementForm}>
+                     <div className={styled.agreementContent}>
+                       <h3>이용약관</h3>
+                       <p>
+                        <UserAgreePage/>
+                       </p>
+                     </div>
+                     <button className={styled.closeButton} onClick={handleCloseAgreement}>
+                       동의
+                     </button>
+                     <button className={styled.closeButton} onClick={() => handleCloseAgreement(false)}>
+                       비동의
+                     </button>
+                   </div>
+                 )}
+               </div>
+        )}             
+              <input
+                      type="submit"
+                      className={`${styled.authInput} ${styled.authSubmit}`}
+                      value={newAccount ? "로그인 하기" : "가입하기"}
+                      disabled={!agreed && !newAccount}
+                    />
             </form>
         </div>
     );
