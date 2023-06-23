@@ -250,3 +250,27 @@ p:first-child {
         margin-bottom: 10px;
     }
 }
+
+
+/* 회원 탈퇴 버튼 */
+.profile_out {
+    text-align: center;
+  }
+  
+  .profile_out {
+    padding: 0.5rem 1rem;
+    background-color: #6667AB;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+  
+  .profile_out:hover {
+    background-color: #4B4C7F;
+  }
+  
+  .profile_out:focus {
+    outline: none;
+  }
+  

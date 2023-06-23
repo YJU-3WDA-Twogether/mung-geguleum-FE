@@ -12,7 +12,7 @@ import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 import pfile from "../image/Profile.jpg";
 import styled from '../styles/MainNavigation.module.css';
 
-function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
+function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery }) {
     const userEtcRef = useRef();
     const navigate = useNavigate();
 
@@ -65,6 +65,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
                             <ul>
                                 <li>
                                     <div className={styled.leftBar__list} onClick={() => {
+                                        setSearchQuery("");
                                         handlePostUno();
                                         onSelectPost('Best');
                                     }}>
@@ -76,6 +77,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
                                 </li>
                                 <li>
                                     <div className={styled.leftBar__list} onClick={() => {
+                                        setSearchQuery("");
                                         handlePostUno();
                                         onSelectPost('Music');
                                     }}>
@@ -87,6 +89,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
                                 </li>
                                 <li>
                                     <div className={styled.leftBar__list} onClick={() => {
+                                        setSearchQuery("");
                                         handlePostUno();
                                         onSelectPost('Remake');
                                     }}>
@@ -98,6 +101,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
                                 </li>
                                 <li>
                                     <div className={styled.leftBar__list} onClick={() => {
+                                        setSearchQuery("");
                                         handlePostUno();
                                         onSelectPost('Stories');
                                     }}>
@@ -110,6 +114,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno }) {
                                 {!isAdmin && ( // Render 마이페이지 only when isAdmin is false
                                     <li>
                                         <div className={styled.leftBar__list} onClick={() => {
+                                            setSearchQuery("");
                                             handlePostUno();
                                             onSelectPost('My');
                                         }}>

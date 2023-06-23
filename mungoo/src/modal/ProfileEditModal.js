@@ -7,12 +7,15 @@ import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
 
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 
-const ProfileEditModal = ({ open, onClose, handleProfileEdit  }) => {
+const ProfileEditModal = ({ open, onClose, handleProfileEdit,handleWithdrawal   }) => {
   
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedBgImage, setSelectedBgImage] = useState(null);
+  const [user, setUser] = useState({});
+
 
   const inputRef = useRef();
 

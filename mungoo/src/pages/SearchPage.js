@@ -1,27 +1,24 @@
-import axios from 'axios';
+import axios from "axios";
 import jwt from "jwt-decode";
 import React, { useEffect, useRef, useState } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { FiDownload, FiMoreHorizontal } from "react-icons/fi";
+import { HiBell, HiOutlineBell } from "react-icons/hi";
+import { IoMdPeople, IoMdPerson } from "react-icons/io";
 import { IoWarningOutline } from "react-icons/io5";
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import 'slick-carousel/slick/slick-theme.css';
-import 'slick-carousel/slick/slick.css';
+import { Carousel } from "react-responsive-carousel";
 import PostEtcBtn from "../button/PostEtcBtn";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
-import D3 from '../pages/D3';
-import '../styles/Pagination.css';
 import styled from '../styles/PostView.module.css';
-
-
+import { TopCategory } from "../topCatgory/TopCategory";
+import D3 from "./D3";
 const API_URL = process.env.REACT_APP_API_URL;
 
+function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostClick}) {
 
-const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts}) => {
     const [posts, setPosts] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
@@ -36,12 +33,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const etcRef = useRef();
     const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
-    const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 5;
-    const totalPages = Math.ceil(posts.length / postsPerPage);
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -83,17 +75,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
         }
     }, [user.uno, selectedPostUno]);
 
-    console.log("테스트"+localStorage.getItem('accessToken'))
-
-    const fetchPosts = async (params) => {
-        try {
-            const response = await axios.get(`${API_URL}/post/getlist/${pageNum}`, config);
-            console.log(response.data.content);
-            setPosts(response.data.content);
-        } catch (error) {
-            console.error(error);
-        }
-    };
     const handleHeartClick = async (postId, hexist) => {
         const formData = {
             pno: postId,
@@ -156,15 +137,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
         setShowModal(false);
         setModalPostId(null);
     };
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-          });
-      };
 //   모달창 CSS
     const modalStyles = {
         position: "fixed",
@@ -198,18 +170,43 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
 
 //   모달창 CSS
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
-
     const toggleNweetEct = () => {
         setNweetEtc((prev) => !prev);
     };
 
+
+    useEffect(() => {
+        if (searchQuery) {
+            fetchPosts();
+        }
+    }, [searchQuery]);
+
+    const fetchPosts = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/post/getSearchPost/${searchQuery}`,{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
+            console.log(response.data);
+            setPosts(response.data.content);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    console.log("검색페이지야" + searchQuery);
+
     return (
-        <>
+        <div>
+            <TopCategory
+                home={"home"}
+                text={"검색"}
+                iconName={<HiOutlineBell />}
+            />
             {posts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
@@ -261,7 +258,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                             <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                             <h4>{post.content}</h4>
                         </div>
-                            
+
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
                                 <Carousel
@@ -271,8 +268,8 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     {post.file.map((file) => (
                                         <div key={file.fno}>
                                             {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file" />
-                                            ) : file.fname.match(/.(mp4|webm)$/i) ? (
+                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
+                                            ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
                                                 <video controls>
                                                     <source
                                                         src={`${API_URL}/file/read/${file.fno}`}
@@ -344,13 +341,13 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                 {dropdownPostId === post.pno && (
                                     <Dropdown.Menu show style={{left : '73.5%'}}>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                            전체 그래프
+                                            <p><IoMdPeople/> 전체 그래프</p>
                                         </Dropdown.Item>
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                            단일 그래프
+                                            <p><IoMdPerson/>단일 그래프</p>
                                         </Dropdown.Item>
                                         <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                          신고하기
+                                            <p><HiBell/>신고하기</p>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 )}
@@ -371,8 +368,9 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     </div>
                                 )}
                             </div>
-                        </nav>
 
+
+                        </nav>
                     </div>
                 </li>
             ))}
@@ -382,27 +380,8 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
-   <ul className="pagination">
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-        (pageNumber) => (
-          <li
-            key={pageNumber}
-            className={`page-item ${
-              pageNumber === currentPage ? "active" : ""
-            }`}
-          >
-            <button
-              className="page-link"
-              onClick={() => handlePageChange(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          </li>
-        )
-      )}
-    </ul>
-        </>
+        </div>
     );
-};
+}
 
-export default PostView;
+export default SearchPage;

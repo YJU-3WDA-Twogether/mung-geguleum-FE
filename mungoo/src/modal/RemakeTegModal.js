@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
 import '../styles/RemakeModal.css';
 import '../styles/RemakeTegModal.css';
@@ -11,7 +12,7 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
   const PAGE_SIZE = 5;
   const API_URL = process.env.REACT_APP_API_URL;
   const [selectedPosts, setSelectedPosts] = useState([]);
-
+  const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
   const config = {
     headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -28,23 +29,16 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     setShowPopup(false);
   };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
-    const params = {
-      uno: user.uno,
-    };
-    fetchData(params);
-  }, [user]);
+    useEffect(() => {
+      fetchData();
+    }, []);
 
   const fetchData = async (params) => {
     try {
-      const response = await axios.get(`${API_URL}/log/getdownlist`, config);
+      const response = await axios.get(`${API_URL}/log/getdownlist`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },});
       setData(response.data.content);
       setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
     } catch (error) {
@@ -78,7 +72,6 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
       alert('재창작 태그를 선택해주세요.');
     }
   };
-
   return (
     <>
       <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
@@ -87,12 +80,14 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
             <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
               <table className="RemakeTagTable">
                 <tbody>
-                  {pageData.map((item, index) => (
+
+                  {pageData.map((item, index) =>
+                      (
                     <tr key={item.lno}>
                       <td className="RemakeTagCell">{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                       <td className="RemakeTagCell">{item.ptitle}</td>
                       <td className="RemakeTagCell">{item.unickname}</td>
-                      <td className="RemakeTagCell">{item.regDate}</td>
+                      <td className="RemakeTagCell">{new Date(item.regDate).toLocaleString()}</td>
                       <td className="RemakeTagCell">
                         <input
                           type="checkbox"

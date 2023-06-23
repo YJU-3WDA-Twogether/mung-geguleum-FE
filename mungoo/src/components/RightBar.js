@@ -1,15 +1,12 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+
+import React from "react";
 import { SearchBar } from "../components/SearchBar";
 import styled from "../styles/RightBar.module.css";
-const RightBar = ({ userObj }) => {
-    const location = useLocation();
-    const [hiddenSearch, setHiddenSearch] = useState(false);
-
+const RightBar = ({ searchQuery,  setSearchQuery}) => {
 
     return (
         <article className={styled.container}>
-            <SearchBar userObj={userObj} />
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         </article>
     );
 };
