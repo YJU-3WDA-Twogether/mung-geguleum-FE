@@ -1,10 +1,10 @@
 import axios from 'axios';
 import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
+import Tag from "../image/images.png";
 import '../styles/RemakeModal.css';
-import '../styles/RemakeTegModal.css';
 
-const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
+const RemakeTegModal = ({ showPopup, setShowPopup,onSelectPost, onSelectPosts }) => {
   const [user, setUser] = useState({});
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,7 +59,9 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
       updatedPosts = [...selectedPosts.slice(0, index), ...selectedPosts.slice(index + 1)];
     }
     setSelectedPosts(updatedPosts);
+    onSelectPost(updatedPosts);
     onSelectPosts(updatedPosts);
+    console.log(updatedPosts);
   };
 
   const pageData = data.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -74,13 +76,18 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
   };
   return (
     <>
+                
       <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
         <div className="Remake layer-popup show">
-          <div className="Remake modal-dialog">
-            <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
+          <div className="Remake modal-dialog"> 
+            <div className="Remake modal-content" style={{ borderRadius: '10px' }}>     
+            <div className="logo-container">
+              <img src={Tag} 
+              alt="Tag"
+               className="logo-image" />
+            </div>  
               <table className="RemakeTagTable">
                 <tbody>
-
                   {pageData.map((item, index) =>
                       (
                     <tr key={item.lno}>
