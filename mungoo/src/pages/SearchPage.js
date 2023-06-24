@@ -1,21 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {HiBell, HiOutlineBell} from "react-icons/hi";
-import { TopCategory } from "../topCatgory/TopCategory";
 import axios from "axios";
-import styled from '../styles/PostView.module.css';
-import PostView from "../components/PageView";
-import pfile from "../image/Profile.jpg";
-import {IoWarningOutline} from "react-icons/io5";
-import PostEtcBtn from "../button/PostEtcBtn";
-import {Carousel} from "react-responsive-carousel";
-import {FaHeart, FaRegComment, FaRegHeart} from "react-icons/fa";
-import {FiDownload, FiMoreHorizontal} from "react-icons/fi";
-import Dropdown from "react-bootstrap/Dropdown";
-import {IoMdPeople, IoMdPerson} from "react-icons/io";
-import D3 from "./D3";
-import PageModal from "../modal/PageModal";
 import jwt from "jwt-decode";
-import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
+import React, { useEffect, useRef, useState } from 'react';
+import Dropdown from "react-bootstrap/Dropdown";
+import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
+import { FiDownload, FiMoreHorizontal } from "react-icons/fi";
+import { HiBell, HiOutlineBell } from "react-icons/hi";
+import { IoMdPeople, IoMdPerson } from "react-icons/io";
+import { IoWarningOutline } from "react-icons/io5";
+import { Carousel } from "react-responsive-carousel";
+import PostEtcBtn from "../button/PostEtcBtn";
+import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
+import pfile from "../image/Profile.jpg";
+import PageModal from "../modal/PageModal";
+import styled from '../styles/PostView.module.css';
+import { TopCategory } from "../topCatgory/TopCategory";
+import D3 from "./D3";
 const API_URL = process.env.REACT_APP_API_URL;
 
 function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostClick}) {
@@ -33,7 +32,14 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
     const [d3num, setD3num] =  useState(null);
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const etcRef = useRef();
-    const [ nweetEtc, setNweetEtc ] = useState(null);
+    const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 5;
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
 
     const config = {
         headers: {
@@ -138,6 +144,16 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         setShowModal(false);
         setModalPostId(null);
     };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
+
 //   모달창 CSS
     const modalStyles = {
         position: "fixed",
@@ -174,6 +190,10 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
+    const toggleNweetEct = () => {
+        setNweetEtc((prev) => !prev);
+    };
+
 
     useEffect(() => {
         if (searchQuery) {
@@ -181,10 +201,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         }
     }, [searchQuery]);
 
-    const params = {
-        searchQuery: searchQuery,
-    };
-    const fetchPosts = async (params) => {
+    const fetchPosts = async () => {
         try {
             const response = await axios.get(`${API_URL}/post/getSearchPost/${searchQuery}`,{
                 headers: {
@@ -198,24 +215,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         }
     };
 
-    const toggleNweetEct = (postId) => {
-        setNweetEtc(postId === nweetEtc ? null : postId);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (etcRef.current && !etcRef.current.contains(event.target)) {
-                setNweetEtc(null);
-                setDropdownPostId(null);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    console.log("검색페이지야" + searchQuery);
 
     return (
         <div>
@@ -224,7 +224,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 text={"검색"}
                 iconName={<HiOutlineBell />}
             />
-            {posts.map((post) => (
+            {currentPosts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
                         <div className={styled.nweet__container} key={post.pno}>
@@ -255,19 +255,6 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                         </p>
                                     </div>
                                 </div>
-                                {uno === post.uno && (
-                                    <div className={styled.nweet__edit}  >
-                                        <div className={styled.nweet__editIcon} onClick={() => toggleNweetEct(post.pno)}>
-                                            <IoWarningOutline />
-                                            <div className={styled.horizontal__bg}></div>
-                                        </div>
-                                        {nweetEtc === post.pno && (
-                                            <div ref={etcRef}>
-                                                <PostEtcBtn postNum={post.pno} fetchPosts={fetchPosts}/>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                         <div className={styled.nweet__text}>
@@ -340,9 +327,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                 className={`${styled.actionBox}`}
                             >
                                 <div className={styled.actions__icon}>
-                                    {post.file[fileNum] && (
-                                        <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
-                                    )}
+                                    <FiDownload  onClick={() => downloadFile(post.file[fileNum])} />
                                 </div>
                                 <div className={styled.actions__text}>
                                     {post.lcount === 0 ? null : (
@@ -357,19 +342,17 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                     <FiMoreHorizontal />
                                 </div>
                                 {dropdownPostId === post.pno && (
-                                    <div  ref={etcRef}>
-                                        <Dropdown.Menu show style={{left : '73.5%'}}>
-                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                                <p><IoMdPeople/> 전체 그래프</p>
-                                            </Dropdown.Item>
-                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                                <p><IoMdPerson/>단일 그래프</p>
-                                            </Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                                <p><HiBell/>신고하기</p>
-                                            </Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </div>
+                                    <Dropdown.Menu show style={{left : '73.5%'}}>
+                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
+                                            <p><IoMdPeople/> 전체 그래프</p>
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
+                                            <p><IoMdPerson/>단일 그래프</p>
+                                        </Dropdown.Item>
+                                        <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
+                                            <p><HiBell/>신고하기</p>
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
                                 )}
                                 {modalPostId === post.pno && (
                                     <div style={modalStyles}>
@@ -400,6 +383,25 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
+            <ul className="pagination">
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                    (pageNumber) => (
+                        <li
+                            key={pageNumber}
+                            className={`page-item ${
+                                pageNumber === currentPage ? "active" : ""
+                            }`}
+                        >
+                            <button
+                                className="page-link"
+                                onClick={() => handlePageChange(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                        </li>
+                    )
+                )}
+            </ul>
         </div>
     );
 }

@@ -7,12 +7,15 @@ import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
 
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 
-const ProfileEditModal = ({ open, onClose, handleProfileEdit  }) => {
-  
+const ProfileEditModal = ({ open, onClose, handleProfileEdit,handleWithdrawal   }) => {
+
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedBgImage, setSelectedBgImage] = useState(null);
+  const [user, setUser] = useState({});
+
 
   const inputRef = useRef();
 
@@ -25,7 +28,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit  }) => {
   };
 
   const onDeleteProfileClick = async () => {
-    const ok = window.confirm("프로필사진을 삭제하시겠어요?");  
+    const ok = window.confirm("프로필사진을 삭제하시겠어요?");
 
     if(ok){
       setSelectedProfileImage(pfile);
@@ -33,148 +36,148 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit  }) => {
   };
 
   const onDeleteBgClick = async  () => {
-     const ok = window.confirm("배경사진을 삭제하시겠어요?");  
-     
-     if(ok){
+    const ok = window.confirm("배경사진을 삭제하시겠어요?");
+
+    if(ok){
       setSelectedBgImage(bgfile);
-     }
+    }
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <div className={styled.container}>
-        <form className={styled.editForm}>
-          <div className={styled.topBox}>
-            <div className={styled.close} onClick={onClose}>
-              <GrClose />
-            </div>
-            <div className={styled.submit}>
-              <input
-                type="submit"
-                value="프로필 수정"
-                className={styled.editInput__arrow}
-              />
-            </div>
-          </div>
-          <div className={styled.setUserInfo}>
-            <div className={styled.backImage}>
-              <div className={styled.image__iconBox}>
-                <label htmlFor="attach-bgfile">
-                  {selectedBgImage !== bgfile? (
-                    <div className={styled.image__icons}>
-                      <div className={styled.image__icon}>
-                        <IoCameraReverseOutline />
-                      </div>               
-                    </div>
-                  ) : (
-                    <div className={styled.image__icon}>
-                    <IoCameraOutline />
-                  </div>              
-                  )}
-                </label>
-                {selectedBgImage && selectedBgImage !== bgfile && (
-                  <div className={styled.image__icon} onClick={onDeleteBgClick}>
-                    <IoCloseSharp />
-                  </div> 
-                )}
+      <Modal
+          open={open}
+          onClose={onClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <div className={styled.container}>
+          <form className={styled.editForm}>
+            <div className={styled.topBox}>
+              <div className={styled.close} onClick={onClose}>
+                <GrClose />
+              </div>
+              <div className={styled.submit}>
                 <input
-                  id="attach-bgfile"
-                  type="file"
-                  accept="image/*"
-                  style={{
-                    display: "none",
-                  }}
-                  onChange={handleBgImageChange}
+                    type="submit"
+                    value="프로필 수정"
+                    className={styled.editInput__arrow}
                 />
               </div>
-              <div className={styled.bgImageBox}>
-                {selectedBgImage && selectedBgImage !== bgfile ?  (         
-                    <img
-                      src={URL.createObjectURL(selectedBgImage)}
-                      alt="배경사진"
-                    />   
-                ) : (
-                  <img src={bgfile} alt="배경사진" />
-                )}
-              </div>
             </div>
-            <div className={styled.editBox}>
-              <div className={styled.edit}>
-                <div className={styled.profile__image}>
-                  <div className={styled.image__iconBox}>
-                    <label htmlFor="attach-file">
-                      {selectedProfileImage !== pfile ? (
+            <div className={styled.setUserInfo}>
+              <div className={styled.backImage}>
+                <div className={styled.image__iconBox}>
+                  <label htmlFor="attach-bgfile">
+                    {selectedBgImage !== bgfile? (
                         <div className={styled.image__icons}>
                           <div className={styled.image__icon}>
                             <IoCameraReverseOutline />
-                          </div>                    
+                          </div>
                         </div>
-                      ) : (
+                    ) : (
                         <div className={styled.image__icon}>
                           <IoCameraOutline />
                         </div>
-                      )}
-                    </label>
-                    {selectedProfileImage && selectedProfileImage !== pfile && (
-                      <div className={styled.image__icon} onClick={onDeleteProfileClick}>
-                            <IoCloseSharp />
-                          </div>
                     )}
-                    <input
-                      id="attach-file"
+                  </label>
+                  {selectedBgImage && selectedBgImage !== bgfile && (
+                      <div className={styled.image__icon} onClick={onDeleteBgClick}>
+                        <IoCloseSharp />
+                      </div>
+                  )}
+                  <input
+                      id="attach-bgfile"
                       type="file"
                       accept="image/*"
                       style={{
                         display: "none",
                       }}
-                      onChange={handleProfileImageChange}
-                    />
-                  </div>
-                  {selectedProfileImage && selectedProfileImage !== pfile ? (
-                    <img
-                      src= {URL.createObjectURL(selectedProfileImage)}
-                      alt='프로필 이미지'
+                      onChange={handleBgImageChange}
+                  />
+                </div>
+                <div className={styled.bgImageBox}>
+                  {selectedBgImage && selectedBgImage !== bgfile ?  (
+                      <img
+                          src={URL.createObjectURL(selectedBgImage)}
+                          alt="배경사진"
                       />
                   ) : (
-                    <img src={pfile} alt='프로필 이미지' />
-                  )}           
+                      <img src={bgfile} alt="배경사진" />
+                  )}
                 </div>
               </div>
-              <div className={`${styled.edit}`}>
-                <div className={styled.edit__InputBox}>
-                  <p>이름</p>
-                  <input
-                    maxLength="25"
-                    className={styled.edit__Input}
-                    ref={inputRef}
-                    spellCheck="false"
-                    type="text"
-                    required
-                  />
+              <div className={styled.editBox}>
+                <div className={styled.edit}>
+                  <div className={styled.profile__image}>
+                    <div className={styled.image__iconBox}>
+                      <label htmlFor="attach-file">
+                        {selectedProfileImage !== pfile ? (
+                            <div className={styled.image__icons}>
+                              <div className={styled.image__icon}>
+                                <IoCameraReverseOutline />
+                              </div>
+                            </div>
+                        ) : (
+                            <div className={styled.image__icon}>
+                              <IoCameraOutline />
+                            </div>
+                        )}
+                      </label>
+                      {selectedProfileImage && selectedProfileImage !== pfile && (
+                          <div className={styled.image__icon} onClick={onDeleteProfileClick}>
+                            <IoCloseSharp />
+                          </div>
+                      )}
+                      <input
+                          id="attach-file"
+                          type="file"
+                          accept="image/*"
+                          style={{
+                            display: "none",
+                          }}
+                          onChange={handleProfileImageChange}
+                      />
+                    </div>
+                    {selectedProfileImage && selectedProfileImage !== pfile ? (
+                        <img
+                            src= {URL.createObjectURL(selectedProfileImage)}
+                            alt='프로필 이미지'
+                        />
+                    ) : (
+                        <img src={pfile} alt='프로필 이미지' />
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className={`${styled.edit}`}>
-                <div className={styled.edit__InputBox}>
-                  <p>자기 소개</p>
-                  <textarea
-                    row="3"
-                    className={`${styled.edit__Input} ${styled.edit__textarea}`}
-                    spellCheck="false"
-                    type="text"
-                    maxLength={100}
-                  />
+                <div className={`${styled.edit}`}>
+                  <div className={styled.edit__InputBox}>
+                    <p>이름</p>
+                    <input
+                        maxLength="25"
+                        className={styled.edit__Input}
+                        ref={inputRef}
+                        spellCheck="false"
+                        type="text"
+                        required
+                    />
+                  </div>
+                </div>
+                <div className={`${styled.edit}`}>
+                  <div className={styled.edit__InputBox}>
+                    <p>자기 소개</p>
+                    <textarea
+                        row="3"
+                        className={`${styled.edit__Input} ${styled.edit__textarea}`}
+                        spellCheck="false"
+                        type="text"
+                        maxLength={100}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </form>
-      </div>
-    </Modal>
+          </form>
+        </div>
+      </Modal>
   );
 };
 

@@ -304,7 +304,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                 type="submit"
                                 value="작성하기"
                                 className={styled.factoryInput__arrow}
-                                disabled={formData.title === "" && formData.content === "" }
+                                disabled={formData.title === "" || formData.content === "" }
                             />
                         </div>
                     </form>

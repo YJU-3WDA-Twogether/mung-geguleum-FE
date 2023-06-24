@@ -9,9 +9,11 @@ import styled from "../styles/PostCreate.module.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const PostRemakeCreate = ({setNewPosts}) => {
+// 작성후 초기화 시키기
+const PostRemakeCreate = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [user, setUser] = useState({});
+    const [selectedPosts, setSelectedPosts] = useState([]);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -100,6 +102,13 @@ const PostRemakeCreate = ({setNewPosts}) => {
         }
     };
 
+    const handleSelectPost = (item) => {
+        const updatedSelectedPosts = selectedPosts.includes(item)
+            ? selectedPosts.filter((selectedItem) => selectedItem !== item)
+            : [...selectedPosts, item];
+        setSelectedPosts(updatedSelectedPosts);
+    };
+
     // 재창작 태그를 선택하는 버튼 클릭시 모달 창 열기
     const handleRemakeTagClick = (e) => {
         e.preventDefault();
@@ -109,6 +118,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
     const handleSelectPosts = (posts) => {
         console.log(posts); // 선택된 데이터를 콘솔에 출력
         setRemakeTag(posts);
+
     };
 
     const handleSubmit = async (e) => {
@@ -158,15 +168,14 @@ const PostRemakeCreate = ({setNewPosts}) => {
                 audioList: [],
                 videoList: [],
             });
-            setNewPosts(true);
         } catch (error) {
             console.error(error);
             alert('게시글 작성 중 오류가 발생했습니다.');
         }
     };
     const [select, setSelect] = useState("");
-    return (
 
+    return (
         <>
             <div
                 className={`${styled.factoryForm} ${styled.modalBorder}`}
@@ -259,7 +268,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
                                 type="submit"
                                 value="작성하기"
                                 className={styled.factoryInput__arrow}
-                                disabled={formData.content === "" && formData.title === ""}
+                                disabled={formData.content === "" || formData.title === ""}
                             />
                         </div>
                     </form>
@@ -269,7 +278,14 @@ const PostRemakeCreate = ({setNewPosts}) => {
             {/* 재창작 태그 선택 버튼 */}
 
             {/* ... */}
-            <RemakeTegModal showPopup={showPopup} setShowPopup={setShowPopup} onSelectPosts={handleSelectPosts} />
+            <RemakeTegModal
+                showPopup={showPopup}
+                setShowPopup={setShowPopup}
+                onSelectPost={handleSelectPost}
+                onSelectPosts={handleSelectPosts}
+                selectedPosts={selectedPosts}
+            />
+
         </>
     );
 };

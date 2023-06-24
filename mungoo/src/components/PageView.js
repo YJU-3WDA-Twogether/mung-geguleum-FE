@@ -13,14 +13,11 @@ import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
 import jwt from "jwt-decode";
-import data from "bootstrap/js/src/dom/data";
-import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 import PostEtcBtn from "../button/PostEtcBtn";
 import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import {HiBell} from "react-icons/hi"
-import Slider from "react-slick";
+import '../styles/Pagination.css';
 
-import ComponentCarousel from 'react-awesome-component-carousel';
 const API_URL = process.env.REACT_APP_API_URL;
 
 
@@ -40,7 +37,12 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const [ nweetEtc, setNweetEtc ] = useState(null);
     const etcRef = useRef();
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 5;
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -131,7 +133,14 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
             console.error('Error updating heart data:', error);
         }
     };
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
 
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
 
     const pnoClick = (postId) => {
@@ -248,7 +257,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
 
     return (
         <>
-            {posts.map((post) => (
+            {currentPosts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
                         <div className={styled.nweet__container} key={post.pno}>
@@ -407,17 +416,17 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                 </div>
                                 {dropdownPostId === post.pno && (
                                     <div  ref={etcRef}>
-                                    <Dropdown.Menu show style={{left : '73.5%'}}>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                            <p><IoMdPeople/> 전체 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                            <p><IoMdPerson/>단일 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2" onClick={() => { handleBell(post.pno);  setDropdownPostId(null);}}>
-                                            <p><HiBell/>신고하기</p>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
+                                        <Dropdown.Menu show style={{left : '73.5%'}}>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
+                                                <p><IoMdPeople/> 전체 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
+                                                <p><IoMdPerson/>단일 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item href="#/action-2" onClick={() => { handleBell(post.pno);  setDropdownPostId(null);}}>
+                                                <p><HiBell/>신고하기</p>
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
                                     </div>
                                 )}
                                 {modalPostId === post.pno && (
@@ -449,6 +458,48 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
+            <ul className="pagination">
+                {currentPage > 1 && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 10)}
+                        >
+                            Prev
+                        </button>
+                    </li>
+                )}
+                {Array.from({ length: totalPages }, (_, index) => index + 1)
+                    .slice(
+                        Math.max(0, currentPage - 3),
+                        Math.min(totalPages, currentPage + 2)
+                    )
+                    .map((pageNumber) => (
+                        <li
+                            key={pageNumber}
+                            className={`page-item ${
+                                pageNumber === currentPage ? "active" : ""
+                            }`}
+                        >
+                            <button
+                                className="page-link"
+                                onClick={() => handlePageChange(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                        </li>
+                    ))}
+                {currentPage < totalPages && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(Math.min(currentPage + 10, totalPages))}
+                        >
+                            Next
+                        </button>
+                    </li>
+                )}
+            </ul>
         </>
     );
 };

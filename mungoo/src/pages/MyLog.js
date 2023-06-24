@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
 import axios from 'axios';
+import jwt from "jwt-decode";
+import React, { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/Calender.css';
-import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
-function MyLog({selectedPostUno}) {
+function MyLog({ selectedPostUno }) {
     const [value, setValue] = useState(new Date());
     const [year, setYear] = useState(value.getFullYear());
     const [month, setMonth] = useState(value.getMonth() + 1);
     const [result, setResult] = useState({});
     const [selectedDate, setSelectedDate] = useState(null);
-    const selectedData = result[selectedDate];
+    const [currentPage, setCurrentPage] = useState(1);
     const [user, setUser] = useState({});
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
 
@@ -26,6 +26,7 @@ function MyLog({selectedPostUno}) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
+
     useEffect(() => {
         if (uno) {
             if (selectedPostUno) {
@@ -44,6 +45,12 @@ function MyLog({selectedPostUno}) {
         }
     }, [displayDate, uno, selectedPostUno]);
 
+    useEffect(() => {
+        setYear(value.getFullYear());
+        setMonth(value.getMonth() + 1);
+        setSelectedDate(new Date(value.getFullYear(), value.getMonth(), value.getDate() + 1).toISOString().slice(0, 10));
+        setCurrentPage(1); // 페이지를 1로 초기화
+    }, [value]);
 
     const fetchData = async (params) => {
         try {
@@ -91,44 +98,69 @@ function MyLog({selectedPostUno}) {
         setSelectedDate(new Date(value.getFullYear(), value.getMonth(), value.getDate()+1).toISOString().slice(0, 10));
     };
 
-    useEffect(() => {
-        setYear(value.getFullYear());
-        setMonth(value.getMonth() + 1);
-        setSelectedDate(new Date(value.getFullYear(), value.getMonth(), value.getDate() +1).toISOString().slice(0, 10));
-    }, [value]);
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const goToNextPage = () => {
+        const totalPages = Math.ceil(result[selectedDate].length / 5); // 페이지당 5개의 행
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const startIndex = (currentPage - 1) * 5; // 페이지당 5개의 행
+    const endIndex = startIndex + 5;
+    const selectedData = Array.isArray(result[selectedDate]) ? result[selectedDate].slice(startIndex, endIndex) : [];
 
     return (
         <>
-        <div className="Calender-Header">
-            <Calendar onChange={onChange} value={value} calendarType="US" tileContent={tileContent} locale="ko-KR" />
-            {/*데이터 테이블*/}
-            <div className="Calender-info">
-            <p className="Calender-Title">{value.toLocaleDateString()}의 활동</p>
-            {Array.isArray(selectedData) && selectedData.length > 0 ? (
-                <table className="Calender-table">
-                    <thead className="Calender-thead">
-                    <tr>
-                        <th>제목</th>
-                        <th>닉네임</th>
-                        <th>상태</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {selectedData.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.title}</td>
-                            <td>{item.nickname}</td>
-                            <td>{item.status}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p className="Calender-data">해당 날짜에 데이터가 없습니다.</p>
-            )}
-        </div>
-        </div>
-            {/*데이터 테이블*/}
+            <div className="Calender-Header">
+                <Calendar onChange={onChange} value={value} calendarType="US" tileContent={tileContent} locale="ko-KR" />
+                {/* 데이터 테이블 */}
+                <div className="Calender-info">
+                    <p className="Calender-Title">{value.toLocaleDateString()}의 활동</p>
+                    {Array.isArray(selectedData) && selectedData.length > 0 ? (
+                        <table className="Calender-table">
+                            <thead className="Calender-thead">
+                            <tr>
+                                <th>제목</th>
+                                <th>닉네임</th>
+                                <th>상태</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {selectedData.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.title}</td>
+                                    <td>{item.nickname}</td>
+                                    <td>{item.status}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="Calender-data">해당 날짜에 데이터가 없습니다.</p>
+                    )}
+                    {result[selectedDate] && result[selectedDate].length > 5 && ( // 페이지당 5개 이상의 행이 있는 경우에만 페이징 버튼을 표시  //페이징 기능 추가
+                        <div className="pagination">
+                            <button onClick={goToPreviousPage} disabled={currentPage === 1} className='backButton'>
+                                이전 페이지
+                            </button>
+                            <span className='nowPage'>{currentPage}</span>
+                            <button
+                                onClick={goToNextPage}
+                                disabled={currentPage === Math.ceil(result[selectedDate].length / 5)} className='frontButton'
+                            >
+                                다음 페이지
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* 데이터 테이블 */}
         </>
     );
 }

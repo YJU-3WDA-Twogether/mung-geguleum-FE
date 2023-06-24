@@ -1,0 +1,20 @@
+.Offusernick {
+    font-family: YourFontName;
+    font-size: 20px;
+    font-weight: bold;
+    color: #6667AB;
+}
+
+.bold-border {
+    border-width: 2px; /* 리스트 선의 두께 */
+    border-style: solid; /* 실선 스타일 */
+    border-color: black; /* 선의 색상 */
+}
+
+.alarm-content {
+    font-family: Arial;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+

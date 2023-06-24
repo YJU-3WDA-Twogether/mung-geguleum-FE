@@ -10,7 +10,7 @@ import jwt from "jwt-decode";
 import {IoWarningOutline} from "react-icons/io5";
 import PostEtcBtn from "../button/PostEtcBtn";
 import Dropdown from "react-bootstrap/Dropdown";
-import {IoMdPeople, IoMdPerson} from "react-icons/io";
+import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import {HiBell} from "react-icons/hi";
 import D3 from "./D3";
 import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
@@ -128,10 +128,6 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             console.error('Error updating heart data:', error);
         }
     };
-    const handleSlideChange = (currentIndex) => {
-        setFileNum(currentIndex);
-    };
-
     const pnoClick = (postId) => {
         setSelectedPostId(postId);
         setClickedPostId(postId);
@@ -203,6 +199,47 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    const [postSlides, setPostSlides] = useState({});
+
+    const handleSlideChange = (postId, index) => {
+        setPostSlides(prevSlides => ({
+            ...prevSlides,
+            [postId]: index
+        }));
+    };
+    const handleButtonClick = (postId, increment) => {
+        const post = posts.find((post) => post.pno === postId);
+        if (post) {
+            setPostSlides((prevSlides) => {
+                const currentIndex = prevSlides[postId] || 0;
+                const newIndex = (currentIndex + increment + post.file.length) % post.file.length;
+                return {
+                    ...prevSlides,
+                    [postId]: newIndex,
+                };
+            });
+
+            setFileNum((prevNum) => (prevNum + increment + post.file.length) % post.file.length);
+        }
+    };
+    const handleBell = async (postId) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            };
+
+            const response = await axios.post(
+                `${API_URL}/log/report/${postId}`,
+                null,
+                config
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <>
             {posts.map((post) => (
@@ -216,7 +253,6 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                     src={pfile}
                                     alt="profileImg"
                                     className={styled.profile__image}
-                                    onClick={() => handlePostClick(post.uno)}
                                 />
                             </div>
                             <div className={styled.userInfo}>
@@ -258,36 +294,61 @@ function MyPostView({handlePostClick,selectedPostUno}) {
 
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <Carousel
-                                    showThumbs={false}
-                                    onChange={handleSlideChange}
-                                >
-                                    {post.file.map((file) => (
-                                        <div key={file.fno}>
-                                            {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
-                                            ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
-                                                <video controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`video/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                <audio controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`audio/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            ) : (
-                                                <div className="file-wrap">{file.fname}</div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </Carousel>
+                                <div style={{ position: 'relative' }}>
+                                    <Carousel
+                                        showStatus={false}
+                                        showArrows={false}
+                                        showThumbs={false}
+                                        selectedItem={postSlides[post.pno] || 0}
+                                        onChange={(selectedIndex) => handleSlideChange(post.pno, selectedIndex)}
+                                    >
+                                        {post.file.map((file) => (
+                                            <div key={file.fno}>
+                                                {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
+                                                file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
+                                                    <img src={file.fpath} alt="file" />
+                                                ) : (
+                                                    <video controls>
+                                                        <source src={file.fpath} type="video/webm" />
+                                                    </video>
+                                                )}
+                                            </div>
+
+                                        ))}
+                                    </Carousel>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, -1)}
+                                        style={{
+                                            position: 'absolute',
+                                            left: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowBack size={35} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, 1)}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowForward size={35} />
+                                    </button>
+                                </div>
                             )}
                         </div>
                         <nav className={styled.nweet__actions}>
@@ -346,7 +407,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                             <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
                                                 <p><IoMdPerson/>단일 그래프</p>
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
+                                            <Dropdown.Item  onClick={() => { handleBell(post.pno);  setDropdownPostId(null);}}>
                                                 <p><HiBell/>신고하기</p>
                                             </Dropdown.Item>
                                         </Dropdown.Menu>

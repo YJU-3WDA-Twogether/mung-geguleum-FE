@@ -1,10 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import '../styles/RemakeModal.css';
-import '../styles/RemakeTegModal.css';
 import jwt from "jwt-decode";
+import React, { useEffect, useState } from 'react';
+import Tag from "../image/images.png";
+import '../styles/RemakeModal.css';
 
-const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
+const RemakeTegModal = ({ showPopup, setShowPopup,onSelectPost, onSelectPosts }) => {
   const [user, setUser] = useState({});
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,9 +15,9 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
   const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
   const config = {
     headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
     },
-};
+  };
 
   const handleOutsideClick = (e) => {
     if (e.target.className === 'layer-popup show') {
@@ -29,15 +29,15 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     setShowPopup(false);
   };
 
-    useEffect(() => {
-      fetchData();
-    }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async (params) => {
     try {
       const response = await axios.get(`${API_URL}/log/getdownlist`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         },});
       setData(response.data.content);
       setTotalPages(Math.ceil(response.data.content.length / PAGE_SIZE));
@@ -58,9 +58,10 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     } else {
       updatedPosts = [...selectedPosts.slice(0, index), ...selectedPosts.slice(index + 1)];
     }
-
     setSelectedPosts(updatedPosts);
+    onSelectPost(updatedPosts);
     onSelectPosts(updatedPosts);
+    console.log(updatedPosts);
   };
 
   const pageData = data.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -74,56 +75,61 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     }
   };
   return (
-    <>
-      <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
-        <div className="Remake layer-popup show">
-          <div className="Remake modal-dialog">
-            <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
-              <table className="RemakeTagTable">
-                <tbody>
+      <>
 
+        <div className={`Remake layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
+          <div className="Remake layer-popup show">
+            <div className="Remake modal-dialog">
+              <div className="Remake modal-content" style={{ borderRadius: '10px' }}>
+                <div className="logo-container">
+                  <img src={Tag}
+                       alt="Tag"
+                       className="logo-image" />
+                </div>
+                <table className="RemakeTagTable">
+                  <tbody>
                   {pageData.map((item, index) =>
                       (
-                    <tr key={item.lno}>
-                      <td className="RemakeTagCell">{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
-                      <td className="RemakeTagCell">{item.ptitle}</td>
-                      <td className="RemakeTagCell">{item.unickname}</td>
-                      <td className="RemakeTagCell">{new Date(item.regDate).toLocaleString()}</td>
-                      <td className="RemakeTagCell">
-                        <input
-                          type="checkbox"
-                          checked={selectedPosts.indexOf(item) !== -1}
-                          onChange={() => handleSelectPost(item)}
-                          className="RemakeTagCheckbox"
-                        />
-                      </td>
-                    </tr>
+                          <tr key={item.lno}>
+                            <td className="RemakeTagCell">{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
+                            <td className="RemakeTagCell">{item.ptitle}</td>
+                            <td className="RemakeTagCell">{item.unickname}</td>
+                            <td className="RemakeTagCell">{new Date(item.regDate).toLocaleString()}</td>
+                            <td className="RemakeTagCell">
+                              <input
+                                  type="checkbox"
+                                  checked={selectedPosts.indexOf(item) !== -1}
+                                  onChange={() => handleSelectPost(item)}
+                                  className="RemakeTagCheckbox"
+                              />
+                            </td>
+                          </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <div className="Remake pagination">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                          type="button"
+                          key={page}
+                          className={`page-button ${page === currentPage ? 'active' : ''}`}
+                          onClick={() => handlePageClick(page)}
+                      >
+                        {page}
+                      </button>
                   ))}
-                </tbody>
-              </table>
-              <div className="Remake pagination">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    type="button"
-                    key={page}
-                    className={`page-button ${page === currentPage ? 'active' : ''}`}
-                    onClick={() => handlePageClick(page)}
-                  >
-                    {page}
-                  </button>
-                ))}
+                </div>
+                <button type="button" className="Remake-Selected" onClick={handleCompleteSelection}>
+                  선택 완료
+                </button>
               </div>
-              <button type="button" className="Remake-Selected" onClick={handleCompleteSelection}>
-                선택 완료
-              </button>
             </div>
+            <button type="button" className="close-button" onClick={closeModal}>
+              X
+            </button>
           </div>
-          <button type="button" className="close-button" onClick={closeModal}>
-            X
-          </button>
         </div>
-      </div>
-    </>
+      </>
   );
 };
 

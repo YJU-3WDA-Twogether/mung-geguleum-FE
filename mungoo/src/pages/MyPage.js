@@ -1,17 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
-import styled from "../styles/Mypage.module.css";
+import jwt from "jwt-decode";
+import React, { useEffect, useState } from 'react';
+import { BsCalendar3 } from "react-icons/bs";
+import { IoMdExit } from "react-icons/io";
+import { IoArrowBackOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
-import {BsCalendar3}  from "react-icons/bs";
+import ProfileEditModal from '../modal/ProfileEditModal';
+import style from "../styles/MyPageBtn.module.css";
+import styled from "../styles/Mypage.module.css";
+import { TopCategory } from "../topCatgory/TopCategory";
+import MyLikeView from "./MyLikeView";
 import MyLog from "./MyLog";
 import MyPostView from "./MyPostView";
-import {IoArrowBackOutline} from "react-icons/io5";
-import {IoMdExit} from "react-icons/io";
-import {TopCategory} from "../topCatgory/TopCategory";
-import style from "../styles/MyPageBtn.module.css";
-import MyLikeView from "./MyLikeView";
-import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
@@ -19,7 +20,27 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     const [user, setUser] = useState({});
     const [user2, setUser2]= useState({});
     const [selected, setSelected] = useState(1);
+    const [openModal, setOpenModal] = useState(false);
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    const handleProfileEdit = () => {
+        // Handle the profile edit logic here
+        // This function will be called when the "Save" button is clicked inside the modal
+        // Perform the necessary actions, such as updating the user's profile data
+        // You can access form data or perform API calls here
+        // Once the editing is done, you can close the modal by calling handleCloseModal()
+        handleCloseModal();
+    };
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -30,7 +51,9 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     }, []);
 
     const handleClick = (n) => {
-        setSelected(n);
+        setSelected(n, () => {
+            console.log(selected);
+        });
     };
     useEffect(() => {
         if (selectedPostUno) {
@@ -42,11 +65,14 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
         try {
             const response = await axios.get(`${API_URL}/user/read/${pno}`);
             const userInfo = response.data;
+            // 받아온 회원 정보를 사용하거나 상태에 저장 등 필요한 작업 수행
             setUser2(userInfo);
+            // ...
         } catch (error) {
             console.error('Error fetching user info:', error);
         }
     };
+
 
     return (
         <section className={styled.container}>
@@ -62,17 +88,23 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     <div className={styled.backImage}>
                         <img src={bgfile} alt="배경사진" />
                     </div>
-
                     <div className={styled.profile}>
                         <div className={styled.profile__edit}>
                             <div className={styled.profile__image}>
                                 <img src={pfile} alt="프로필 이미지" />
                             </div>
                             {selectedPostUno === user2.uno ? null : (
-                                <div className={styled.profile__editBtn}>
+                                <div className={styled.profile__editBtn} onClick={handleOpenModal}
+                                >
                                     프로필 수정
                                 </div>
                             )}
+
+                            <ProfileEditModal
+                                open={openModal}
+                                onClose={handleCloseModal}
+                                handleProfileEdit={handleProfileEdit}
+                            />
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
@@ -89,7 +121,6 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                         </div>
                     </div>
                 </div>
-
                 <nav className={styled.categoryList}>
                     <div
                         onClick={() => handleClick(1)}
