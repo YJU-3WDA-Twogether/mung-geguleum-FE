@@ -84,6 +84,7 @@
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-collapse: collapse;
+
 }
 
 .RemakeTagCell {
@@ -154,4 +155,28 @@
 .Remake-Selected:hover {
   background-color: #4B4C7F;
 }
+
+
+.logo-container {
+  text-align: center; /* 로고를 가운데 정렬합니다. */
+  margin-top: 20px; /* 로고와 테이블 사이의 간격을 조절합니다. */
+}
+
+.logo-image {
+  width: auto; /* 로고 이미지의 가로 크기를 조절합니다. */
+  height: auto; /* 세로 크기를 자동으로 조절합니다. */
+}
+
+
+.title-container {
+  text-align: center; /* 타이틀을 가운데 정렬합니다. */
+  margin-top: 10px; /* 이미지와 타이틀 사이의 간격을 조절합니다. */
+}
+
+
+
+
+
+
+
 

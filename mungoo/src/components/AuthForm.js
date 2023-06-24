@@ -13,6 +13,7 @@ const AuthForm = ({ newAccount, setUserObj }) => {
     uid: '',
     password: '',
   }
+  
   const INITIAL_FORM_DATA_REGISTRATION = {
     uid: '',
     uname: '',

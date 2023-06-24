@@ -33,6 +33,13 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const etcRef = useRef();
     const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 5;
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
 
     const config = {
         headers: {
@@ -137,6 +144,16 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         setShowModal(false);
         setModalPostId(null);
     };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+      };
+
 //   모달창 CSS
     const modalStyles = {
         position: "fixed",
@@ -207,7 +224,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 text={"검색"}
                 iconName={<HiOutlineBell />}
             />
-            {posts.map((post) => (
+            {currentPosts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
                         <div className={styled.nweet__container} key={post.pno}>
@@ -380,6 +397,25 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
+            <ul className="pagination">
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+        (pageNumber) => (
+          <li
+            key={pageNumber}
+            className={`page-item ${
+              pageNumber === currentPage ? "active" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          </li>
+        )
+      )}
+    </ul>
         </div>
     );
 }

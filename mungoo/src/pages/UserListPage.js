@@ -38,11 +38,11 @@ const UserListPage = () => {
     );
   });
 
-  const updateUserGrade = async (uno, grade) => {
+  const updateUserGrade = async (user) => {
     try {
+      console.log(user);
       const response = await axios.put(
-        `${API_URL}/user/update/${uno}`,
-        { grade },
+        `${API_URL}/user/update/${user.uno}`, user,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -110,7 +110,7 @@ const UserListPage = () => {
               <td>
                 <select
                   value={user.grade}
-                  onChange={(e) => updateUserGrade(user.uno, e.target.value)}
+                  onChange={(e) => updateUserGrade(user, e.target.value)}
                 >
                   <option value="ADMIN">ADMIN</option>
                   <option value="BEN">BEN</option>
