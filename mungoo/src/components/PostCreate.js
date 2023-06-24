@@ -76,10 +76,6 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
         e.target.value = null;
     };
 
-    useEffect(() => {
-        console.log(selectedFile); // 업데이트된 값이 출력됨
-    }, [selectedFile]);
-
     const handleFileDelete = (type, index) => {
         console.log("hi2")
         let newFiles;
