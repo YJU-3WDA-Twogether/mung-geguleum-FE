@@ -13,6 +13,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 const PostRemakeCreate = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [user, setUser] = useState({});
+    const [selectedPosts, setSelectedPosts] = useState([]);
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -101,6 +102,13 @@ const PostRemakeCreate = () => {
         }
     };
 
+    const handleSelectPost = (item) => {
+        const updatedSelectedPosts = selectedPosts.includes(item)
+          ? selectedPosts.filter((selectedItem) => selectedItem !== item)
+          : [...selectedPosts, item];
+        setSelectedPosts(updatedSelectedPosts);
+      };
+
     // 재창작 태그를 선택하는 버튼 클릭시 모달 창 열기
     const handleRemakeTagClick = (e) => {
         e.preventDefault();
@@ -110,6 +118,7 @@ const PostRemakeCreate = () => {
     const handleSelectPosts = (posts) => {
         console.log(posts); // 선택된 데이터를 콘솔에 출력
         setRemakeTag(posts);
+
     };
 
     const handleSubmit = async (e) => {
@@ -261,7 +270,7 @@ const PostRemakeCreate = () => {
                                 type="submit"
                                 value="작성하기"
                                 className={styled.factoryInput__arrow}
-                                disabled={formData.content === "" && formData.title === ""}
+                                disabled={formData.title === "" || formData.content === "" || selectedPosts.length === 0}
                             />
                         </div>
                     </form>
@@ -271,8 +280,14 @@ const PostRemakeCreate = () => {
             {/* 재창작 태그 선택 버튼 */}
 
             {/* ... */}
-            <RemakeTegModal showPopup={showPopup} setShowPopup={setShowPopup} onSelectPosts={handleSelectPosts} />
-        </>
+            <RemakeTegModal
+                showPopup={showPopup}
+                setShowPopup={setShowPopup}
+                onSelectPost={handleSelectPost}
+                onSelectPosts={handleSelectPosts}
+                selectedPosts={selectedPosts}
+             />
+      </>
     );
 };
 
