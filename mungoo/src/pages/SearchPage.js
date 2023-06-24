@@ -5,7 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { FiDownload, FiMoreHorizontal } from "react-icons/fi";
 import { HiBell, HiOutlineBell } from "react-icons/hi";
-import { IoMdPeople, IoMdPerson } from "react-icons/io";
+import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import { IoWarningOutline } from "react-icons/io5";
 import { Carousel } from "react-responsive-carousel";
 import PostEtcBtn from "../button/PostEtcBtn";
@@ -20,6 +20,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostClick}) {
 
     const [posts, setPosts] = useState([]);
+    const carouselRef = useRef(null);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
@@ -31,16 +32,14 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
     const [likedPosts, setLikedPosts] = useState([]);
     const [d3num, setD3num] =  useState(null);
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const [ nweetEtc, setNweetEtc ] = useState(null);
     const etcRef = useRef();
-    const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 5;
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-
     const config = {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -50,7 +49,6 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
-            console.log(JSON.parse(storedUser))
         }
     }, []);
 
@@ -65,9 +63,8 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             } })
             .then(response => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
-                link.href = url;
+                link.href = URL.createObjectURL(response.data);
                 link.download = file.fname;
                 link.click();
             })
@@ -76,11 +73,26 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
             });
     };
 
+
     useEffect(() => {
-        if (localStorage.getItem('accessToken')) {
+        if (searchQuery) {
             fetchPosts();
         }
-    }, [user.uno, selectedPostUno]);
+    }, [searchQuery]);
+
+    const fetchPosts = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/post/getSearchPost/${searchQuery}`,{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
+            console.log(response.data);
+            setPosts(response.data.content);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleHeartClick = async (postId, hexist) => {
         const formData = {
@@ -88,14 +100,12 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         };
         try {
             if (hexist) {
-                console.log("댓글 취소 요청입니다.");
                 console.log(config.headers)
                 console.log(formData.pno)
                 const response = await axios.delete(`${API_URL}/heart/delete`, {data: formData ,
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     }});
-                console.log(response.data);
 
                 setLikedPosts(likedPosts.filter((id) => id !== postId));
 
@@ -120,13 +130,15 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
             console.error('Error updating heart data:', error);
         }
     };
-    const handleClick = (uno) => {
-        handlePostClick(uno);
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
     };
 
-    const handleSlideChange = (currentIndex) => {
-        setFileNum(currentIndex);
-    };
 
     const pnoClick = (postId) => {
         setSelectedPostId(postId);
@@ -144,16 +156,6 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
         setShowModal(false);
         setModalPostId(null);
     };
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    };
-
 //   모달창 CSS
     const modalStyles = {
         position: "fixed",
@@ -190,35 +192,68 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
     const toggleDropdown = (postId) => {
         setDropdownPostId(postId === dropdownPostId ? null : postId);
     };
-    const toggleNweetEct = () => {
-        setNweetEtc((prev) => !prev);
+    const toggleNweetEct = (postId) => {
+        setNweetEtc(postId === nweetEtc ? null : postId);
     };
 
-
     useEffect(() => {
-        if (searchQuery) {
-            fetchPosts();
-        }
-    }, [searchQuery]);
+        const handleClickOutside = (event) => {
+            if (etcRef.current && !etcRef.current.contains(event.target)) {
+                setNweetEtc(null);
+                setDropdownPostId(null);
+            }
+        };
 
-    const fetchPosts = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/post/getSearchPost/${searchQuery}`,{
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+    const [postSlides, setPostSlides] = useState({});
+
+    const handleSlideChange = (postId, index) => {
+        setPostSlides(prevSlides => ({
+            ...prevSlides,
+            [postId]: index
+        }));
+    };
+    const handleButtonClick = (postId, increment) => {
+        const post = posts.find((post) => post.pno === postId);
+        if (post) {
+            setPostSlides((prevSlides) => {
+                const currentIndex = prevSlides[postId] || 0;
+                const newIndex = (currentIndex + increment + post.file.length) % post.file.length;
+                return {
+                    ...prevSlides,
+                    [postId]: newIndex,
+                };
             });
+
+            setFileNum((prevNum) => (prevNum + increment + post.file.length) % post.file.length);
+        }
+    };
+    const handleBell = async (postId) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            };
+
+            const response = await axios.post(
+                `${API_URL}/log/report/${postId}`,
+                null,
+                config
+            );
             console.log(response.data);
-            setPosts(response.data.content);
         } catch (error) {
             console.error(error);
         }
     };
 
-    console.log("검색페이지야" + searchQuery);
-
     return (
-        <div>
+        <>
             <TopCategory
                 home={"home"}
                 text={"검색"}
@@ -255,45 +290,82 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                         </p>
                                     </div>
                                 </div>
+                                {uno === post.uno && (
+                                    <div className={styled.nweet__edit}  >
+                                        <div className={styled.nweet__editIcon} onClick={() => toggleNweetEct(post.pno)}>
+                                            <IoWarningOutline />
+                                            <div className={styled.horizontal__bg}></div>
+                                        </div>
+                                        {nweetEtc === post.pno && (
+                                            <div ref={etcRef}>
+                                                <PostEtcBtn postNum={post.pno} fetchPosts={fetchPosts} />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className={styled.nweet__text}>
                             <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                             <h4>{post.content}</h4>
                         </div>
-
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <Carousel
-                                    showThumbs={false}
-                                    onChange={handleSlideChange}
-                                >
-                                    {post.file.map((file) => (
-                                        <div key={file.fno}>
-                                            {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                <img src={`${API_URL}/file/read/${file.fno}`} alt="file"/>
-                                            ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
-                                                <video controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`video/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                <audio controls>
-                                                    <source
-                                                        src={`${API_URL}/file/read/${file.fno}`}
-                                                        type={`audio/${file.fname.split('.').pop()}`}
-                                                    />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            ) : (
-                                                <div className="file-wrap">{file.fname}</div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </Carousel>
+                                <div style={{ position: 'relative' }}>
+                                    <Carousel
+                                        showStatus={false}
+                                        showArrows={false}
+                                        showThumbs={false}
+                                        selectedItem={postSlides[post.pno] || 0}
+                                        onChange={(selectedIndex) => handleSlideChange(post.pno, selectedIndex)}
+                                    >
+                                        {post.file.map((file) => (
+                                            <div key={file.fno}>
+                                                {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
+                                                file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
+                                                    <img src={file.fpath} alt="file" />
+                                                ) : (
+                                                    <video controls>
+                                                        <source src={file.fpath} type="video/webm" />
+                                                    </video>
+                                                )}
+                                            </div>
+
+                                        ))}
+                                    </Carousel>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, -1)}
+                                        style={{
+                                            position: 'absolute',
+                                            left: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowBack size={35} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, 1)}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowForward size={35} />
+                                    </button>
+                                </div>
                             )}
                         </div>
                         <nav className={styled.nweet__actions}>
@@ -327,7 +399,10 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                 className={`${styled.actionBox}`}
                             >
                                 <div className={styled.actions__icon}>
-                                    <FiDownload  onClick={() => downloadFile(post.file[fileNum])} />
+                                    {post.file[fileNum] && (
+                                        <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
+                                    )}
+
                                 </div>
                                 <div className={styled.actions__text}>
                                     {post.lcount === 0 ? null : (
@@ -342,17 +417,19 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                     <FiMoreHorizontal />
                                 </div>
                                 {dropdownPostId === post.pno && (
-                                    <Dropdown.Menu show style={{left : '73.5%'}}>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
-                                            <p><IoMdPeople/> 전체 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
-                                            <p><IoMdPerson/>단일 그래프</p>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
-                                            <p><HiBell/>신고하기</p>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
+                                    <div  ref={etcRef}>
+                                        <Dropdown.Menu show style={{left : '73.5%'}}>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,0); setDropdownPostId(null); }}>
+                                                <p><IoMdPeople/> 전체 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
+                                                <p><IoMdPerson/>단일 그래프</p>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item href="#/action-2" onClick={() => { handleBell(post.pno);  setDropdownPostId(null);}}>
+                                                <p><HiBell/>신고하기</p>
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </div>
                                 )}
                                 {modalPostId === post.pno && (
                                     <div style={modalStyles}>
@@ -384,8 +461,22 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                 handlePostClick={handlePostClick}
             />
             <ul className="pagination">
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-                    (pageNumber) => (
+                {currentPage > 1 && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 10)}
+                        >
+                            Prev
+                        </button>
+                    </li>
+                )}
+                {Array.from({ length: totalPages }, (_, index) => index + 1)
+                    .slice(
+                        Math.max(0, currentPage - 3),
+                        Math.min(totalPages, currentPage + 2)
+                    )
+                    .map((pageNumber) => (
                         <li
                             key={pageNumber}
                             className={`page-item ${
@@ -399,11 +490,20 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                 {pageNumber}
                             </button>
                         </li>
-                    )
+                    ))}
+                {currentPage < totalPages && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(Math.min(currentPage + 10, totalPages))}
+                        >
+                            Next
+                        </button>
+                    </li>
                 )}
             </ul>
-        </div>
+        </>
     );
-}
+};
 
 export default SearchPage;
