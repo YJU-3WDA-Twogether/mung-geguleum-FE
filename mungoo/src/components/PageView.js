@@ -210,7 +210,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
 
     return (
         <>
-            {posts.map((post) => (
+            {currentPosts.map((post) => (
                 <li className={styled.nweet}>
                     <div className={styled.nweet__wrapper} >
                         <div className={styled.nweet__container} key={post.pno}>
@@ -382,25 +382,50 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
             />
-   <ul className="pagination">
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-        (pageNumber) => (
-          <li
-            key={pageNumber}
-            className={`page-item ${
-              pageNumber === currentPage ? "active" : ""
-            }`}
-          >
-            <button
-              className="page-link"
-              onClick={() => handlePageChange(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          </li>
-        )
-      )}
-    </ul>
+<ul className="pagination">
+  {currentPage > 1 && (
+    <li className="page-item">
+      <button
+        className="page-link"
+        onClick={() => handlePageChange(currentPage - 10)}
+      >
+        Prev
+      </button>
+    </li>
+  )}
+  {Array.from({ length: totalPages }, (_, index) => index + 1)
+    .slice(
+      Math.max(0, currentPage - 3),
+      Math.min(totalPages, currentPage + 2)
+    )
+    .map((pageNumber) => (
+      <li
+        key={pageNumber}
+        className={`page-item ${
+          pageNumber === currentPage ? "active" : ""
+        }`}
+      >
+        <button
+          className="page-link"
+          onClick={() => handlePageChange(pageNumber)}
+        >
+          {pageNumber}
+        </button>
+      </li>
+    ))}
+  {currentPage < totalPages && (
+    <li className="page-item">
+      <button
+        className="page-link"
+        onClick={() => handlePageChange(Math.min(currentPage + 10, totalPages))}
+      >
+        Next
+      </button>
+    </li>
+  )}
+</ul>
+
+
         </>
     );
 };
