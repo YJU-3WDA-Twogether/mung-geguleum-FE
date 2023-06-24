@@ -176,7 +176,7 @@ const AuthForm = ({ newAccount, setUserObj }) => {
               onChange={handlePasswordCheck} // 비밀번호 확인 함수 사용
             />
             {!passwordMatch && formData.password2 && (
-              <p className={styled.errorMessage} style={{color: 'red'}}>비밀번호가 일치하지 않습니다.</p>
+              <p className={styled.errorMessage}>비밀번호가 일치하지 않습니다.</p>
             )}
             <input
               className={`${styled.authInput} ${
@@ -191,7 +191,7 @@ const AuthForm = ({ newAccount, setUserObj }) => {
               onChange={handleEmailValidation} // 이메일 유효성 검사 함수 사용
             />
             {!emailValid && formData.email && (
-              <p className={styled.errorMessage} style={{color: 'red'}}>유효한 이메일 형식이 아닙니다.</p>
+              <p className={styled.errorMessage}>유효한 이메일 형식이 아닙니다.</p>
             )}
             <input
               className={`${styled.authInput} ${

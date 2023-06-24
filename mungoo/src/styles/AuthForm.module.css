@@ -54,6 +54,11 @@
     margin: 10px 0 20px;
 }
 
+.errorMessage {
+    color: red;
+    margin-bottom: 1%;
+}
+
 .container .wrapper .authInput.select {
     border: 1px solid #6667ab;
     caret-color: #6667ab;
