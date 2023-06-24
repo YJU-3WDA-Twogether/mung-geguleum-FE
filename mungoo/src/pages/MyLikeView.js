@@ -12,9 +12,8 @@ import '../styles/MyComment.css';
 // import pfile from "../image/Profile.jpg";
 
 
-
 import React, {useEffect, useRef, useState} from 'react';
-// import styled from "../styles/PostView.module.css";
+import style1 from "../styles/PostView.module.css";
 import pfile from "../image/Profile.jpg";
 import {Carousel} from "react-responsive-carousel";
 import {FaHeart, FaRegComment, FaRegHeart} from "react-icons/fa";
@@ -32,237 +31,13 @@ import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-
-
 function MyPostView({handlePostClick,selectedPostUno}) {
   const [selected, setSelected] = useState(1);
-
-  // [박진석|23.06.21] 좋아요, 댓글용 더미데이터들
-  // const dummyComments = {
-  //   comments: [
-  //     {
-  //       pfile: "https://example.com/profile1.jpg",
-  //       uname: "사용자1",
-  //       ptitle: "게시글 제목 1",
-  //       reply: "첫 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-20T10:30:00",
-  //       pno: 1,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile2.jpg",
-  //       uname: "사용자2",
-  //       ptitle: "게시글 제목 2",
-  //       reply: "두 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-21T11:45:00",
-  //       pno: 2,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile3.jpg",
-  //       uname: "사용자3",
-  //       ptitle: "게시글 제목 3",
-  //       reply: "세 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-22T13:20:00",
-  //       pno: 3,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile4.jpg",
-  //       uname: "사용자4",
-  //       ptitle: "게시글 제목 4",
-  //       reply: "네 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-23T15:10:00",
-  //       pno: 4,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile5.jpg",
-  //       uname: "사용자5",
-  //       ptitle: "게시글 제목 5",
-  //       reply: "다섯 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-24T17:25:00",
-  //       pno: 5,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile6.jpg",
-  //       uname: "사용자6",
-  //       ptitle: "게시글 제목 6",
-  //       reply: "여섯 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-25T09:55:00",
-  //       pno: 6,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile7.jpg",
-  //       uname: "사용자7",
-  //       ptitle: "게시글 제목 7",
-  //       reply: "일곱 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-26T14:40:00",
-  //       pno: 7,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile8.jpg",
-  //       uname: "사용자8",
-  //       ptitle: "게시글 제목 8",
-  //       reply: "여덟 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-27T12:20:00",
-  //       pno: 8,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile9.jpg",
-  //       uname: "사용자9",
-  //       ptitle: "게시글 제목 9",
-  //       reply: "아홉 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-28T16:30:00",
-  //       pno: 9,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile10.jpg",
-  //       uname: "사용자10",
-  //       ptitle: "게시글 제목 10",
-  //       reply: "열 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-29T11:50:00",
-  //       pno: 10,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile11.jpg",
-  //       uname: "사용자11",
-  //       ptitle: "게시글 제목 11",
-  //       reply: "열한 번째 댓글 내용입니다.",
-  //       regDate: "2023-06-30T13:15:00",
-  //       pno: 11,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile12.jpg",
-  //       uname: "사용자12",
-  //       ptitle: "게시글 제목 12",
-  //       reply: "열두 번째 댓글 내용입니다.",
-  //       regDate: "2023-07-01T15:40:00",
-  //       pno: 12,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile13.jpg",
-  //       uname: "사용자13",
-  //       ptitle: "게시글 제목 13",
-  //       reply: "열세 번째 댓글 내용입니다.",
-  //       regDate: "2023-07-02T17:20:00",
-  //       pno: 13,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile14.jpg",
-  //       uname: "사용자14",
-  //       ptitle: "게시글 제목 14",
-  //       reply: "열네 번째 댓글 내용입니다.",
-  //       regDate: "2023-07-03T10:15:00",
-  //       pno: 14,
-  //     },
-  //     {
-  //       pfile: "https://example.com/profile15.jpg",
-  //       uname: "사용자15",
-  //       ptitle: "게시글 제목 15",
-  //       reply: "열다섯 번째 댓글 내용입니다.",
-  //       regDate: "2023-07-04T12:45:00",
-  //       pno: 15,
-  //     },
-  //   ],
-  // };
-
-  const dummyLikes = {
-    likes: [
-      {
-        pfile: "https://example.com/profile1.jpg",
-        uname: "John Doe",
-        ptitle: "Lorem Ipsum is simply dummy text",
-        pno: 1,
-      },
-      {
-        pfile: "https://example.com/profile2.jpg",
-        uname: "Emily Smith",
-        ptitle: "Aenean commodo ligula eget dolor",
-        pno: 2,
-      },
-      {
-        pfile: "https://example.com/profile3.jpg",
-        uname: "Alex Johnson",
-        ptitle: "Sed ut perspiciatis unde omnis iste natus error sit",
-        pno: 3,
-      },
-      {
-        pfile: "https://example.com/profile4.jpg",
-        uname: "Sophia Lee",
-        ptitle: "Duis aute irure dolor in reprehenderit",
-        pno: 4,
-      },
-      {
-        pfile: "https://example.com/profile5.jpg",
-        uname: "Michael Brown",
-        ptitle: "Excepteur sint occaecat cupidatat non proident",
-        pno: 5,
-      },
-      {
-        pfile: "https://example.com/profile6.jpg",
-        uname: "Olivia Wilson",
-        ptitle: "Ut enim ad minima veniam",
-        pno: 6,
-      },
-      {
-        pfile: "https://example.com/profile7.jpg",
-        uname: "James Anderson",
-        ptitle: "Quis autem vel eum iure reprehenderit qui",
-        pno: 7,
-      },
-      {
-        pfile: "https://example.com/profile8.jpg",
-        uname: "Emma Taylor",
-        ptitle: "Sunt in culpa qui officia deserunt mollit anim",
-        pno: 8,
-      },
-      {
-        pfile: "https://example.com/profile9.jpg",
-        uname: "William Johnson",
-        ptitle: "Nemo enim ipsam voluptatem quia voluptas",
-        pno: 9,
-      },
-      {
-        pfile: "https://example.com/profile10.jpg",
-        uname: "Ava Davis",
-        ptitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        pno: 10,
-      },
-      {
-        pfile: "https://example.com/profile11.jpg",
-        uname: "Liam Martin",
-        ptitle: "Maecenas nec tincidunt libero, non lacinia nulla",
-        pno: 11,
-      },
-      {
-        pfile: "https://example.com/profile12.jpg",
-        uname: "Isabella White",
-        ptitle: "Fusce vulputate dapibus massa, non tristique ante tristique ac",
-        pno: 12,
-      },
-      {
-        pfile: "https://example.com/profile13.jpg",
-        uname: "Noah Rodriguez",
-        ptitle: "Praesent eget faucibus massa, sit amet tristique dui",
-        pno: 13,
-      },
-      {
-        pfile: "https://example.com/profile14.jpg",
-        uname: "Mia Martinez",
-        ptitle: "Phasellus consectetur libero id leo pharetra",
-        pno: 14,
-      },
-      {
-        pfile: "https://example.com/profile15.jpg",
-        uname: "Sophia Taylor",
-        ptitle: "Vivamus sit amet lorem nec sem consectetur",
-        pno: 15,
-      },
-    ],
-  };
 
   const handleClick = (n) => {
     setSelected(n);
   };
 
-  
   const [posts, setPosts] = useState([]);
   const [fileNum,setFileNum] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -319,6 +94,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                   uno: selectedPostUno,
               };
               fetchPosts(params);
+              
           } else {
               const params = {
                   uno: uno,
@@ -329,9 +105,11 @@ function MyPostView({handlePostClick,selectedPostUno}) {
       }
 
   }, [user.uno, selectedPostUno]);
+
+  // [23.06.24|박진석] Axios 이용해 서버에서 내 댓글 리스트 가져온 후, Post 배열에 담음
   const fetchReply = async (params) => {
       try {
-          console.log(`fetchReply() - params: ` + params);
+        console.log(`fetchReply() - params: ` + params);
           const response = await axios.get(`${API_URL}/reply/getMyReply`,{
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -344,24 +122,25 @@ function MyPostView({handlePostClick,selectedPostUno}) {
           console.error(error);
       }
   };
+
+  // [23.06.24|박진석] Axios 이용해 서버에서 내 좋아요 리스트 가져온 후, Post 배열에 담음
   const fetchPosts = async (params) => {
     try {
         console.log(`fetchPosts() - params:` + params)
-        // const response = await axios.get(`${API_URL}/post/getMyPost/${params.uno}`);
-        const response = await axios.get(`${API_URL}/Reply/getmyreply`,{
+        const response = await axios.get(`${API_URL}/heart/getMyHeart`,{
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        }
-        });
+        }});
+        
+        // 임시로 그냥 내 게시글 가져옴
+        // const response = await axios.get(`${API_URL}/post/getMyPost/${params.uno}`);
+
         console.log(`fetchPosts() - response.data.content:` + response.data.content);
-        console.log("getMyPosts 시도중");
         setPosts(response.data.content);
     } catch (error) {
         console.error(error);
     }
 };
-
-
 
   const handleHeartClick = async (postId, hexist) => {
       const formData = {
@@ -460,16 +239,13 @@ function MyPostView({handlePostClick,selectedPostUno}) {
 
 //   모달창 CSS
 
-
-
-
   return (
     <>
       <div className={styled.container}>
         <div className={styled.main__container}>
           <nav className={styled.categoryList}>
             <div
-              onClick={() => handleClick(1)}
+              onClick={() => {handleClick(1); fetchPosts();}}
               className={`${style.container} ${style.sizeContainer}`}
             >
               <div
@@ -495,61 +271,43 @@ function MyPostView({handlePostClick,selectedPostUno}) {
       {/* [23.06.22|박진석] 내기록 - 좋아요 부분 추가 (더미데이터로만 구성함) */}
       {selected === 1 &&
         <div>
-          <div className="commentScrollable">
-            {/* {dummyLikes.likes.map((i, index) => {
-                            return (
-                                <React.Fragment key={index}>
-                                    <div className="container_like">
-                                        <img
-                                            src={pfile}
-                                            alt="profileImg"
-                                            className="profile_image"
-                                        /> 
-                                        <div className="comment-text">
-                                            <p><span className="comment-user">{i.uname}</span></p>
-                                            <p><span className="comment-author">{i.ptitle}</span></p>
-                                        </div>
-                                    </div>
-                                </React.Fragment>
-                            );
-                        })} */}
-
+          <div className="Scrollable">
             {posts.map((post) => (
-              <li className={styled.nweet}>
-                <div className={styled.nweet__wrapper} >
-                  <div className={styled.nweet__container} key={post.pno}>
+              <li className={style1.nweet}>
+                <div className={style1.nweet__wrapper} >
+                  <div className={style1.nweet__container} key={post.pno}>
                     <div
-                      className={styled.nweet__profile}
+                      className={style1.nweet__profile}
                     >
                       <img
                         src={pfile}
                         alt="profileImg"
-                        className={styled.profile__image}
+                        className={style1.profile__image}
                         onClick={() => handlePostClick(post.uno)}
                       />
                     </div>
-                    <div className={styled.userInfo}>
-                      <div className={styled.userInfo__name}>
+                    <div className={style1.userInfo}>
+                      <div className={style1.userInfo__name}>
                         <div
-                          className={styled.userInfo__one}
+                          className={style1.userInfo__one}
                         >
                           <p>{post.nickname}</p>
                         </div>
-                        <div className={styled.userInfo__two}>
+                        <div className={style1.userInfo__two}>
                           <p onClick={() => handlePostClick(post.uno)}>
                             @{post.uid}
                           </p>
                           <p style={{ margin: "0 4px" }}>·</p>
-                          <p className={styled.nweet__createdAt}>
+                          <p className={style1.nweet__createdAt}>
                             {new Date(post.regDate).toLocaleString()}
                           </p>
                         </div>
                       </div>
                       {uno === post.uno && (
-                        <div className={styled.nweet__edit} ref={etcRef}>
-                          <div className={styled.nweet__editIcon} onClick={toggleNweetEct}>
+                        <div className={style1.nweet__edit} ref={etcRef}>
+                          <div className={style1.nweet__editIcon} onClick={toggleNweetEct}>
                             <IoWarningOutline />
-                            <div className={styled.horizontal__bg}></div>
+                            <div className={style1.horizontal__bg}></div>
                           </div>
                           {nweetEtc && (
                             <PostEtcBtn
@@ -561,12 +319,12 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                       )}
                     </div>
                   </div>
-                  <div className={styled.nweet__text}>
+                  <div className={style1.nweet__text}>
                     <p style={{ fontWeight: 'bold', fontSize: '18px', color: '#6667ab', paddingBottom: '5px' }}>{post.title}</p>
                     <h4>{post.content}</h4>
                   </div>
 
-                  <div className={styled.nweet__image}>
+                  <div className={style1.nweet__image}>
                     {post.file.length > 0 && (
                       <Carousel
                         showThumbs={false}
@@ -600,26 +358,26 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                       </Carousel>
                     )}
                   </div>
-                  <nav className={styled.nweet__actions}>
-                    <div className={`${styled.actionBox} ${styled.like} `}>
-                      <div className={styled.actions__icon} onClick={() => handleHeartClick(post.pno, post.hexist)}>
+                  <nav className={style1.nweet__actions}>
+                    <div className={`${style1.actionBox} ${style1.like} `}>
+                      <div className={style1.actions__icon} onClick={() => handleHeartClick(post.pno, post.hexist)}>
                         {post.hexist ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
                       </div>
-                      <div className={styled.actions__text}>
+                      <div className={style1.actions__text}>
                         {post.hcount === 0 ? null : (
-                          <p className={styled.like}>
+                          <p className={style1.like}>
                             {post.hcount}
                           </p>
                         )}
                       </div>
                     </div>
-                    <div className={`${styled.actionBox} ${styled.comment}`}>
+                    <div className={`${style1.actionBox} ${style1.comment}`}>
                       <div
-                        className={styled.actions__icon}
+                        className={style1.actions__icon}
                       >
                         <FaRegComment onClick={() => pnoClick(post.pno)} />
                       </div>
-                      <div className={styled.actions__text}>
+                      <div className={style1.actions__text}>
                         {post.rcount === 0 ? null : (
                           <p>
                             {post.rcount}
@@ -628,12 +386,12 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                       </div>
                     </div>
                     <div
-                      className={`${styled.actionBox}`}
+                      className={`${style1.actionBox}`}
                     >
-                      <div className={styled.actions__icon}>
+                      <div className={style1.actions__icon}>
                         <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
                       </div>
-                      <div className={styled.actions__text}>
+                      <div className={style1.actions__text}>
                         {post.lcount === 0 ? null : (
                           <p>
                             {post.lcount}
@@ -641,8 +399,8 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                         )}
                       </div>
                     </div>
-                    <div className={`${styled.actionBox}`}>
-                      <div className={styled.actions__icon} onClick={() => toggleDropdown(post.pno)}>
+                    <div className={`${style1.actionBox}`}>
+                      <div className={style1.actions__icon} onClick={() => toggleDropdown(post.pno)}>
                         <FiMoreHorizontal />
                       </div>
                       {dropdownPostId === post.pno && (
@@ -675,8 +433,6 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                         </div>
                       )}
                     </div>
-
-
                   </nav>
                 </div>
               </li>
@@ -687,11 +443,14 @@ function MyPostView({handlePostClick,selectedPostUno}) {
 
       {/* [23.06.21|박진석] 내기록 - 댓글 부분 추가 */}
       {/* 
-            [23.06.22|박진석] 댓글 
-            내 댓글 구현을 위한 데이터(예정): pfile(원본게시글 유저 프사), uname(원본게시글 유저 닉넴), ptitle(게시글제목), reply(댓글 내용),
-                                            regDate(수정날짜), pno(게시글 번호 - 링크 클릭시 상세정보 페이지로 이동하기 위한 번호)
-            백엔드 협조 예정: https://github.com/YJU-3WDA-Twogether/mung-geguleum-backend/issues/22
-             */}
+        [23.06.22|박진석] 댓글 
+        내 댓글 구현을 위한 데이터(예정): pfile(원본게시글 유저 프사), uname(원본게시글 유저 닉넴), ptitle(게시글제목), reply(댓글 내용),
+                                        regDate(수정날짜), pno(게시글 번호 - 링크 클릭시 상세정보 페이지로 이동하기 위한 번호)
+        백엔드 협조 예정: https://github.com/YJU-3WDA-Twogether/mung-geguleum-backend/issues/22
+      */}
+      {/* 
+        [23.06.24|박진석] 내 댓글 보기 구현 완료 
+      */}
       {selected === 2 &&
         <div>
           <div className="commentScrollable">
