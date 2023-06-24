@@ -48,7 +48,7 @@ function MyLog({selectedPostUno}) {
     const fetchData = async (params) => {
         try {
             const response = await axios.get(`${API_URL}/log/getlist`, { params });
-            const data = response.data.content;
+            const data = response.data;
 
             const newResult = {};
 

@@ -1,17 +1,19 @@
 import axios from 'axios';
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostCreate.module.css";
-
+import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
+    const carouselRef = useRef(null);
     const [formData, setFormData] = useState({
         title: '',
         content: '',    
@@ -21,20 +23,10 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     });
     const [user, setUser] = useState({});
     const [selectedFile, setSelectedFile] = useState([]);
-    const fileInput = useRef();
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-            console.log(JSON.parse(storedUser))
-        }
-    }, []);
 
     const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-
-        setSelectedFile(prevFiles => [...prevFiles, ...Array.from(e.target.files)]);
 
         files.forEach((file) => {
             const extension = file.name.split('.').pop();
@@ -44,19 +36,30 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                     case 'jpg':
                     case 'jpeg':
                     case 'gif':
+                    case 'PNG':
+                    case 'JPG':
+                    case 'JPEG':
+                    case 'GIF':
                         return 'fileList';
                     case 'mp3':
                     case 'wav':
                     case 'ogg':
+                    case 'MP3':
+                    case 'WAV':
+                    case 'OGG':
                         return 'audioList';
                     case 'mp4':
                     case 'avi':
                     case 'mkv':
+                    case 'MP4':
+                    case 'AVI':
+                    case 'MKV':
                         return 'videoList';
                     default:
                         return null;
                 }
             })();
+
             if (fileType === null) {
                 alert('지원하지 않는 파일 형식입니다.');
             } else if (formData[fileType].reduce((acc, { file }) => acc + file.size, 0) + file.size > MAX_FILE_SIZE) {
@@ -66,13 +69,19 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                     ...prevState,
                     [fileType]: [...prevState[fileType], { file }],
                 }));
+                setSelectedFile((prevFiles) => [...prevFiles, file]);
             }
         });
+
         e.target.value = null;
     };
 
-    const handleFileDelete = (type, index) => {
+    useEffect(() => {
+        console.log(selectedFile); // 업데이트된 값이 출력됨
+    }, [selectedFile]);
 
+    const handleFileDelete = (type, index) => {
+        console.log("hi2")
         let newFiles;
 
         if (type === 'image') {
@@ -97,6 +106,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                 videoList: newFiles,
             }));
         }
+        setSelectedFile((prevFiles) => prevFiles.filter((_, i) => i !== index));
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -104,8 +114,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
         try {
             const data = new FormData();
 
-            await Promise.all(selectedFile.map(async (file) => {
-                try {
+            try {
                     const response = await axios.get(`${API_URL}/s3/url`, {
                         params: { size: selectedFile.length },
                         headers: {
@@ -114,16 +123,26 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                     });
                     const preSignedUrl = response.data.preSignedUrl;
                     const encodedFileName =  response.data.encodedFileName;
-                    data.append('file',encodedFileName);
-                    await axios.put(preSignedUrl, file, {
-                        headers: {
-                            'Content-Type': file.type
-                        }
-                    });
-                } catch (error) {
-                    console.error(`Error uploading file: ${file && file.name}`, error);
-                }
-            }));
+                    console.log(encodedFileName)
+                await Promise.all(selectedFile.map(async (file, i) => {
+                    try {
+                        data.append('file', encodedFileName[i]+"."+file.name.split('.').pop());
+                        console.log(encodedFileName[i]);
+                        console.log(file.type);
+                        await axios.put(preSignedUrl[i], file, {
+                            headers: {
+                                'Content-Type': file.type
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error uploading file:', error);
+                    }
+                }));
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+
+
             data.append('title', formData.title);
             data.append('content', formData.content);
             data.append('bno', pageNum);
@@ -132,7 +151,8 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
             if (hashtags) {
                 data.append('hashtag',  hashtags.map(tag => tag.slice(1)));
             }
-           const response = await axios.post(`${API_URL}/post/create`, data,{
+            console.log(data);
+            const response = await axios.post(`${API_URL}/post/create`, data,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
@@ -155,6 +175,9 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
             alert('게시글 작성 중 오류가 발생했습니다.');
         }
     };
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const totalSlides = formData.fileList.length + formData.audioList.length + formData.videoList.length;
+
     const [select, setSelect] = useState("");
     return (
         <>
@@ -199,7 +222,14 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                 (formData.fileList.length > 0 || formData.audioList.length > 0 || formData.videoList.length > 0) &&
                                 <div className={styled.factoryForm__attachment}>
                                     <div className={styled.factoryForm__Image} >
-                                        <Carousel showThumbs={false}>
+                                        <div style={{ position: 'relative' }}>
+                                            <Carousel
+                                                showStatus={false}
+                                                showArrows={false}
+                                                showThumbs={false}
+                                                selectedItem={currentSlide}
+                                                onChange={(index) => setCurrentSlide(index)}
+                                            >
                                             {
                                                 [
                                                     ...formData.fileList.map((file, index) => ({ type: 'image', file, index })),
@@ -219,6 +249,39 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                                 ))
                                             }
                                         </Carousel>
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentSlide((currentSlide - 1 + totalSlides) % totalSlides)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    left: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent', // 배경색을 투명하게
+                                                    border: 'none', // 테두리를 없앰
+                                                    color: '#6667ab', // 필요에 따라 아이콘 색상 조정
+                                                    fontSize: '1.5rem' // 필요에 따라 아이콘 크기 조정
+                                                }}
+                                            >
+                                                <IoIosArrowBack size={35}/>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentSlide((currentSlide + 1) % totalSlides)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent', // 배경색을 투명하게
+                                                    border: 'none', // 테두리를 없앰
+                                                    color: '#6667ab', // 필요에 따라 아이콘 색상 조정
+                                                    fontSize: '1.5rem' // 필요에 따라 아이콘 크기 조정
+                                                }}
+                                            >
+                                                <IoIosArrowForward  size={35}/>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -234,7 +297,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                     </div>
                                 </label>
                                 <input
-                                    id="attach-file" type="file" accept="image/*, audio/*, video/*" onChange={handleFileChange} multiple ref={fileInput}
+                                    id="attach-file" type="file" accept="image/*, audio/*, video/*" onChange={handleFileChange} multiple
                                 />
                             </div>
                             <input

@@ -3,7 +3,7 @@ import React, { useEffect, useState ,useRef} from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { FiDownload, FiMoreHorizontal } from "react-icons/fi";
-import {IoWarningOutline} from "react-icons/io5";
+import {IoCloseSharp, IoWarningOutline} from "react-icons/io5";
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -16,13 +16,17 @@ import jwt from "jwt-decode";
 import data from "bootstrap/js/src/dom/data";
 import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 import PostEtcBtn from "../button/PostEtcBtn";
-import {IoMdPeople, IoMdPerson} from "react-icons/io";
+import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import {HiBell} from "react-icons/hi"
+import Slider from "react-slick";
+
+import ComponentCarousel from 'react-awesome-component-carousel';
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts ,setNewPosts }) => {
+const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, newPosts ,setNewPosts  }) => {
     const [posts, setPosts] = useState([]);
+    const carouselRef = useRef(null);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
@@ -36,7 +40,6 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
     const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
     const [ nweetEtc, setNweetEtc ] = useState(null);
     const etcRef = useRef();
-
 
     const config = {
         headers: {
@@ -61,9 +64,8 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             } })
             .then(response => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
-                link.href = url;
+                link.href = URL.createObjectURL(response.data);
                 link.download = file.fname;
                 link.click();
             })
@@ -130,9 +132,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
         }
     };
 
-    const handleSlideChange = (currentIndex) => {
-        setFileNum(currentIndex);
-    };
+
 
     const pnoClick = (postId) => {
         setSelectedPostId(postId);
@@ -204,6 +204,47 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    const [postSlides, setPostSlides] = useState({});
+
+    const handleSlideChange = (postId, index) => {
+        setPostSlides(prevSlides => ({
+            ...prevSlides,
+            [postId]: index
+        }));
+    };
+    const handleButtonClick = (postId, increment) => {
+        const post = posts.find((post) => post.pno === postId);
+        if (post) {
+            setPostSlides((prevSlides) => {
+                const currentIndex = prevSlides[postId] || 0;
+                const newIndex = (currentIndex + increment + post.file.length) % post.file.length;
+                return {
+                    ...prevSlides,
+                    [postId]: newIndex,
+                };
+            });
+
+            setFileNum((prevNum) => (prevNum + increment + post.file.length) % post.file.length);
+        }
+    };
+    const handleBell = async (postId) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            };
+
+            const response = await axios.post(
+                `${API_URL}/log/report/${postId}`,
+                null,
+                config
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <>
@@ -257,22 +298,63 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                             <p style={{fontWeight:'bold', fontSize:'18px', color:'#6667ab', paddingBottom:'5px'}}>{post.title}</p>
                             <h4>{post.content}</h4>
                         </div>
-
-                         <div className={styled.nweet__image}>
+                        <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <Carousel
-                                    showThumbs={false}
-                                    onChange={handleSlideChange}
-                                >
-                                    {post.file.map((file) => (
-                                        <div key={file.fno}>
-                                            <img src={`${file.fpath}`} alt="file"/>
-                                            <video controls>
-                                                <source src={`${file.fpath}`} type="video/webm"/>
-                                            </video>
-                                        </div>
-                                    ))}
-                                </Carousel>
+                                <div style={{ position: 'relative' }}>
+                                    <Carousel
+                                        showStatus={false}
+                                        showArrows={false}
+                                        showThumbs={false}
+                                        selectedItem={postSlides[post.pno] || 0}
+                                        onChange={(selectedIndex) => handleSlideChange(post.pno, selectedIndex)}
+                                    >
+                                        {post.file.map((file) => (
+                                            <div key={file.fno}>
+                                                {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
+                                                file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
+                                                    <img src={file.fpath} alt="file" />
+                                                ) : (
+                                                    <video controls>
+                                                        <source src={file.fpath} type="video/webm" />
+                                                    </video>
+                                                )}
+                                            </div>
+
+                                        ))}
+                                    </Carousel>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, -1)}
+                                        style={{
+                                            position: 'absolute',
+                                            left: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowBack size={35} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleButtonClick(post.pno, 1)}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            color: '#000',
+                                            fontSize: '1.5rem',
+                                        }}
+                                    >
+                                        <IoIosArrowForward size={35} />
+                                    </button>
+                                </div>
                             )}
                         </div>
                         <nav className={styled.nweet__actions}>
@@ -309,6 +391,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                     {post.file[fileNum] && (
                                         <FiDownload onClick={() => downloadFile(post.file[fileNum])} />
                                     )}
+
                                 </div>
                                 <div className={styled.actions__text}>
                                     {post.lcount === 0 ? null : (
@@ -331,7 +414,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                         <Dropdown.Item onClick={() => { handleActionClick(post.pno,1); setDropdownPostId(null); }}>
                                             <p><IoMdPerson/>단일 그래프</p>
                                         </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2" onClick={() => setDropdownPostId(null)}>
+                                        <Dropdown.Item href="#/action-2" onClick={() => { handleBell(post.pno);  setDropdownPostId(null);}}>
                                             <p><HiBell/>신고하기</p>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>

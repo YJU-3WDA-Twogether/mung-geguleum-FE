@@ -58,6 +58,7 @@ const RemakeTegModal = ({ showPopup, setShowPopup, onSelectPosts }) => {
     } else {
       updatedPosts = [...selectedPosts.slice(0, index), ...selectedPosts.slice(index + 1)];
     }
+
     setSelectedPosts(updatedPosts);
     onSelectPosts(updatedPosts);
   };

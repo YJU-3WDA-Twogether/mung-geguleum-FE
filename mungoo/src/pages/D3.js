@@ -134,7 +134,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
         };
 
         const updateDisplay = () => {
-            node.attr('r', 30)
+            node.attr('r', 15)
                 .attr('fill', (_, i) => `url(#img${i})`)
                 .attr('stroke-width', Math.abs(-100) / 5);
             link.attr('stroke-width', 1).attr('opacity', 1);
