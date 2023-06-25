@@ -68,3 +68,8 @@
         align-items: center;
     }
 }
+
+.errorMessage {
+    color: red;
+    margin-bottom: 1%;
+}

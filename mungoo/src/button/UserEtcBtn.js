@@ -9,7 +9,7 @@ import jwt from "jwt-decode";
 const UserEtcBtn = ({ creatorInfo, userEtc, onLogOutClick }) => {
 
     const [user, setUser] = useState({});
-    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const {uno,nickname,uid,role,fpath} = jwt(localStorage.getItem('accessToken'));
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -25,7 +25,7 @@ const UserEtcBtn = ({ creatorInfo, userEtc, onLogOutClick }) => {
                     <div className={styled.leftBar__userInfo}>
                         <div className={styled.userInfo__profile}>
                             <img
-                                src={pfile}
+                                src={fpath}
                                 alt="profileImg"
                                 className={styled.profile__image}
                             />

@@ -1,13 +1,13 @@
-import React, { useState,useEffect} from "react";
-import { useNavigate  } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import jwt from "jwt-decode";
 import styled from "../styles/AuthForm.module.css";
+import { color } from "d3";
 const API_URL = process.env.REACT_APP_API_URL;
 
-
-const AuthForm = ({ newAccount,setUserObj}) => {
-    const navigate = useNavigate ();
+const AuthForm = ({ newAccount, setUserObj }) => {
+    const navigate = useNavigate();
 
     const INITIAL_FORM_DATA_ACCOUNT = {
         uid: '',
@@ -19,18 +19,22 @@ const AuthForm = ({ newAccount,setUserObj}) => {
         password: '',
         password2: '',
         email: '',
-        nickname:'',
+        nickname: '',
     };
 
     const [formData, setFormData] = useState(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
     const [select, setSelect] = useState("");
+    const [passwordMatch, setPasswordMatch] = useState(true); // 비밀번호 일치 여부 상태 추가
+    const [emailValid, setEmailValid] = useState(true); // 이메일 유효성 검사 상태 추가
 
     useEffect(() => {
         setFormData(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
     }, [newAccount]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newAccount) {
@@ -39,7 +43,7 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                 localStorage.setItem("accessToken", response.data);
                 alert('로그인에 성공하였습니다.');
                 localStorage.setItem('user', JSON.stringify(response.data));
-                setUserObj(response.data); // 로그인 성공 후 App의 상태를 업데이트
+                setUserObj(response.data);
                 console.log(response.data);
                 navigate('/');
             } catch (error) {
@@ -75,6 +79,21 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                 alert('회원가입 중 오류가 발생했습니다.');
             }
         }
+    };
+
+    // 비밀번호 확인 함수
+    const handlePasswordCheck = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setPasswordMatch(formData.password === value); // 비밀번호와 비밀번호 확인 값 비교
+    };
+
+    // 이메일 유효성 검사 함수
+    const handleEmailValidation = (e) => {
+        const { value } = e.target;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setEmailValid(emailRegex.test(value)); // 이메일 형식 검사
+        handleChange(e); // 이메일 값을 상태에 저장
     };
 
     return (
@@ -154,8 +173,11 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                             name="password2"
                             placeholder="비밀번호 확인"
                             value={formData.password2}
-                            onChange={handleChange}
+                            onChange={handlePasswordCheck} // 비밀번호 확인 함수 사용
                         />
+                        {!passwordMatch && formData.password2 && (
+                            <p className={styled.errorMessage}>비밀번호가 일치하지 않습니다.</p>
+                        )}
                         <input
                             className={`${styled.authInput} ${
                                 select === "email" && styled.select
@@ -166,8 +188,11 @@ const AuthForm = ({ newAccount,setUserObj}) => {
                             name="email"
                             placeholder="이메일"
                             value={formData.email}
-                            onChange={handleChange}
+                            onChange={handleEmailValidation} // 이메일 유효성 검사 함수 사용
                         />
+                        {!emailValid && formData.email && (
+                            <p className={styled.errorMessage}>유효한 이메일 형식이 아닙니다.</p>
+                        )}
                         <input
                             className={`${styled.authInput} ${
                                 select === "nickname" && styled.select

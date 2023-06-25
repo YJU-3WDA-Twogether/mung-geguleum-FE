@@ -4,6 +4,7 @@ import MusicPage from "../pages/MusicPage";
 import StoriesPage from "../pages/StoriesPage";
 import RemakePage from "../pages/RemakePage";
 import MyPage from "../pages/MyPage";
+import AdminPage from "../pages/AdminPage";
 import SearchPage from "../pages/SearchPage";
 
 function PostController({ PostName, handlePostClick,selectedPostUno,MainClose,searchQuery,setSearchQuery}) {
@@ -28,6 +29,9 @@ function PostController({ PostName, handlePostClick,selectedPostUno,MainClose,se
             break;
         case 'My':
             page = <MyPage handlePostClick={handlePostClick} selectedPostUno={selectedPostUno} MainClose={MainClose}/>;
+            break;
+        case 'ADMIN':
+            page = <AdminPage handlePostClick={handlePostClick} />;
             break;
         case 'Search':
             page = <SearchPage searchQuery={searchQuery} setSearchQuery={setSearchQuery} handlePostClick={handlePostClick} selectedPostUno={selectedPostUno}/>;

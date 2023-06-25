@@ -282,10 +282,9 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                                             className={style1.nweet__profile}
                                         >
                                             <img
-                                                src={pfile}
+                                                src={post.fpath}
                                                 alt="profileImg"
                                                 className={style1.profile__image}
-                                                onClick={() => handlePostClick(post.uno)}
                                             />
                                         </div>
                                         <div className={style1.userInfo}>
@@ -409,6 +408,12 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                             </li>
                         ))}
                     </div>
+                    <PageModal
+                        showPopup={showPopup && selectedPostId === clickedPostId}
+                        setShowPopup={setShowPopup}
+                        postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+                        handlePostClick={handlePostClick}
+                    />
                 </div>
             }
 
@@ -424,14 +429,12 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
       */}
             {selected === 2 &&
                 <div>
-                    <div className="commentScrollable">
                         {reply.map((reply) => {
                             const localDate = new Date(reply.modDate).toLocaleString();
                             return (
-
-                                <div className="container_reply">
+                                <div className="container_reply" onClick={() => pnoClick(reply.pno)} style={{ borderBottom:"1px solid #ebebeb"}}>
                                     <img
-                                        src={pfile}
+                                        src={reply.fpath}
                                         alt="profileImg"
                                         className="profile_image"
                                     />
@@ -443,14 +446,17 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                                         <span className="comment-content">{reply.reply}</span>
                                         <div>
                                             <p style={{ color: "#6667AB" }}>{localDate}</p>
-                                            {console.log(`regdate: ` + reply.modDate)}
                                         </div>
-
                                     </div>
                                 </div>
                             );
                         })}
-                    </div>
+                    <PageModal
+                        showPopup={showPopup && selectedPostId === clickedPostId}
+                        setShowPopup={setShowPopup}
+                        postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
+                        handlePostClick={handlePostClick}
+                    />
                 </div>
             }
         </>

@@ -1,0 +1,91 @@
+/* UserList.css */
+.UserList {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #6667AB;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.UserList-h1 {
+    font-size: 28px;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+.UserList-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.UserList-table th,
+.UserList-table td {
+    padding: 10px;
+    color:#6667AB;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+}
+
+.UserList-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+}
+
+.UserList-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.UserList-table .DeleteIcon {
+    display: flex;
+    justify-content: center;
+}
+
+.UserList-table .DeleteIcon svg {
+    cursor: pointer;
+}
+
+.UserList-table .DeleteIcon svg:hover {
+    transform: scale(1.2);
+}
+
+.UserList-Input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.UserList-Input::placeholder {
+    color: #999;
+}
+
+.UserList-Input:focus {
+    outline: none;
+    border-color: #6667AB;
+    box-shadow: 0 0 0 3px rgba(203, 136, 230, 0.25);
+}
+
+
+.UserList-Update {
+    float: right;
+    background-color: black;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.UserList-Update:hover {
+    background-color: darkgray;
+}
+
