@@ -37,18 +37,18 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
     const closeModal = () => {
         setShowPopup(false);
     };
-
+    const postread = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/post/read/${postId}`);
+            const data = response.data;
+            setPostData(data);
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching node data:', error);
+        }
+    };
     useEffect(() => {
-        const postread = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/post/read/${postId}`);
-                const data = response.data;
-                setPostData(data);
-                console.log(data);
-            } catch (error) {
-                console.error('Error fetching node data:', error);
-            }
-        };
+
 
         if (postId) {
             postread();
@@ -73,15 +73,8 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
         try {
             const response = await axios.post(`${API_URL}/reply/create`, formData, config);
             console.log(response.data);
-
-            if (postData) {
-                setPostData({
-                    ...postData,
-                    reply: [...postData.reply, { ...formData, rno: response.data.rno }]
-                });
-                // Reset comment input field
-                setComment("");
-            }
+            setComment("");
+            postread();
         } catch (err) {
             console.error(err);
             alert('오류가 발생했습니다.');

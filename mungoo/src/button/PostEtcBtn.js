@@ -40,17 +40,17 @@ const PostEtcBtn = ({
 
     return (
         <div className={styled.container}>
-            <div className={`${styled.btn} ${styled.updateBtn}`} 
-                onClick={onUpdateClick}
-            >
-                <FiEdit />
-                <p>수정하기</p>
-            </div>
-            <PostEditModal
-                showPopup={showPopup}
-                setShowPopup={setShowPopup}
-                closeModal={closeModal}
-            />
+            {/*<div className={`${styled.btn} ${styled.updateBtn}`} */}
+            {/*    onClick={onUpdateClick}*/}
+            {/*>*/}
+            {/*    <FiEdit />*/}
+            {/*    <p>수정하기</p>*/}
+            {/*</div>*/}
+            {/*<PostEditModal*/}
+            {/*    showPopup={showPopup}*/}
+            {/*    setShowPopup={setShowPopup}*/}
+            {/*    closeModal={closeModal}*/}
+            {/*/>*/}
             <div
                 className={`${styled.btn} ${styled.deleteBtn}`}
                 onClick={onDeleteClick}

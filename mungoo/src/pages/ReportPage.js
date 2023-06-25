@@ -22,8 +22,6 @@ const ReportPage = () => {
     };
 
     useEffect(() => {
-
-
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${API_URL}/log/getreportlist`, config);
@@ -36,15 +34,30 @@ const ReportPage = () => {
         fetchData();
     }, []);
 
+    // const onDeleteClick = async (postNum) => {
+    //     const ok = window.confirm("구름을 삭제할까요?");
+    //
+    //     if (ok === true) {
+    //         const response = await axios.delete(`${API_URL}/post/delete/${postNum}`,{
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+    //             }});
+    //     }
+    // };
+
+
     return (
         <>
             <div>
                 {Array.isArray(data) && data.map((item) => (
-                    <div key={item.lno}  onClick={() => pnoClick(item.pno)} style={{ marginBottom: '10px',  borderBottom:"1px solid #ebebeb"}} >
+                    <div style={{ borderBottom:"1px solid #ebebeb"}}>
+                    <div key={item.lno}  onClick={() => pnoClick(item.pno)}  >
                         <div className='alarm-content' style={{height:"50px"}}>
                             <p>{new Date(item.regDate).toLocaleDateString()}</p>
                             {item.ptitle}게시글을  {item.unickname}님에게 {item.lsname}를 받았습니다.
                         </div>
+                    </div>
+                        <button  onClick={onDeleteClick(item.pno)} >삭제</button>
                     </div>
                 ))}
                 <div>
