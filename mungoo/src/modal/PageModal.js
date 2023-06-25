@@ -126,7 +126,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                     <div key={file.fno}>
                                                         {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                         file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                            <img src={file.fpath} alt="file" style={{ width: '100%', height: 'auto' }} />
+                                                            <img src={file.fpath} alt="file" style={{ width: '100%', height: '450px' }} />
                                                         ) : (
                                                             <video controls style={{ width: '100%', height: '600px'}}>
                                                                 <source src={file.fpath} type="video/webm" />
@@ -172,7 +172,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                     </div>
                             </div>
                         )}
-                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px'}}>
+                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px' ,overflow: 'hidden'}}>
                             {postData && (
                                 <>
                                     <div className="fixedUp" >

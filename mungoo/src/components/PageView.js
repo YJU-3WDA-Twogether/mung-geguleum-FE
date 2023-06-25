@@ -9,7 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import pfile from "../image/Profile.jpg";
-import mp3 from "../image/전종찬_testaudio_drum.mp3";
+// import mp3 from "../image/전종찬_testaudio_drum.mp3";
 import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
@@ -310,7 +310,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                         </div>
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative' ,width:'640px'}} >
                                     <Carousel
                                         showStatus={false}
                                         showArrows={false}
@@ -322,13 +322,13 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                             <div key={file.fno}>
                                                 {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                 file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                    <img src={file.fpath} alt="file" />
+                                                    <img src={file.fpath} alt="file" style={{height:"450px"}} />
                                                 ) : file.ftype === '.mp3' ? (
                                                     <video controls style={{backgroundImage:`${pfile}`}} controlsList="nodownload">
                                                         <source src={file.fpath} type="audio/mp3" />
                                                     </video>
                                                 ) : (
-                                                    <video controls controlsList="nodownload">
+                                                    <video controls controlsList="nodownload" >
                                                         <source src={file.fpath} type="video/webm" />
                                                     </video>
                                                 )}
