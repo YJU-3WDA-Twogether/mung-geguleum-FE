@@ -1,10 +1,15 @@
-
+// import React, { useEffect, useState } from "react";
+// import { Route, Switch, useLocation } from "react-router-dom";
 
 import styled from "../styles/SelectNoInfo.module.css";
 import style from "../styles/SelectMenuBtn.module.css";
+import MyLog from "./MyLog";
+
+import PageView from "../components/PageView";
 
 import '../styles/MyComment.css';
-
+// import styled from "../styles/PostView.module.css";
+// import pfile from "../image/Profile.jpg";
 
 
 import React, {useEffect, useRef, useState} from 'react';
@@ -26,7 +31,7 @@ import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-function MyPostView({handlePostClick,selectedPostUno}) {
+function MyLikeView({handlePostClick,selectedPostUno}) {
     const [selected, setSelected] = useState(1);
 
     const handleClick = (n) => {
@@ -34,6 +39,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     };
 
     const [posts, setPosts] = useState([]);
+    const [reply, setReply] = useState([]);
     const [fileNum,setFileNum] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
@@ -89,28 +95,33 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                     uno: selectedPostUno,
                 };
                 fetchPosts(params);
+                console.log(`useEffect() - params(selectedPostUno O): ` + params);
+
             } else {
                 const params = {
                     uno: uno,
                 };
                 fetchPosts(params);
+                console.log(`useEffect() - params(selectedPostUno X): ` + params);
             }
-            console.log(uno)
+            console.log(`useEffect() - uno: ` + uno)
         }
 
     }, [user.uno, selectedPostUno]);
 
     // [23.06.24|박진석] Axios 이용해 서버에서 내 댓글 리스트 가져온 후, Post 배열에 담음
-    const fetchReply = async (params) => {
+    const fetchReply = async () => {
         try {
-            console.log(`fetchReply() - params: ` + params);
             const response = await axios.get(`${API_URL}/reply/getMyReply`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 }
             });
             console.log(`fetchReply() - response.data.content: ` + response.data.content);
-            setPosts(response.data.content);
+            setReply(response.data.content);
+            // [23.06.25|박준홍] 문제 해결! - fetchReply()에서 setReply()를 수행하는 게 아닌 setPost()를 수행하여 같은 Post[]를 사용하기 때문에 발생함
+            // 새로운 reply[] 배열을 추가하여 setReply()를 추가하여 배열을 공유하지 않고 분리하여 문제를 해결함
+            // 준홍씨 개쩔어
 
         } catch (error) {
             console.error(error);
@@ -118,17 +129,13 @@ function MyPostView({handlePostClick,selectedPostUno}) {
     };
 
     // [23.06.24|박진석] Axios 이용해 서버에서 내 좋아요 리스트 가져온 후, Post 배열에 담음
-    const fetchPosts = async (params) => {
+    const fetchPosts = async () => {
         try {
-            console.log(`fetchPosts() - params:` + params)
             const response = await axios.get(`${API_URL}/heart/getMyHeart`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                }}
-            );
+                }});
 
-            // 임시로 그냥 내 게시글 가져옴
-            // const response = await axios.get(`${API_URL}/post/getMyPost/${params.uno}`);
 
             console.log(`fetchPosts() - response.data.content:` + response.data.content);
             setPosts(response.data.content);
@@ -320,38 +327,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                     </div>
 
                                     <div className={style1.nweet__image}>
-                                        {post.file.length > 0 && (
-                                            <Carousel
-                                                showThumbs={false}
-                                                onChange={handleSlideChange}
-                                            >
-                                                {post.file.map((file) => (
-                                                    <div key={file.fno}>
-                                                        {file.fname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                                            <img src={`${API_URL}/file/read/${file.fno}`} alt="file" />
-                                                        ) : file.fname.match(/.(mp4|webm|mime)$/i) ? (
-                                                            <video controls>
-                                                                <source
-                                                                    src={`${API_URL}/file/read/${file.fno}`}
-                                                                    type={`video/${file.fname.split('.').pop()}`}
-                                                                />
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        ) : file.fname.match(/.(mp3|wav)$/i) ? (
-                                                            <audio controls>
-                                                                <source
-                                                                    src={`${API_URL}/file/read/${file.fno}`}
-                                                                    type={`audio/${file.fname.split('.').pop()}`}
-                                                                />
-                                                                Your browser does not support the audio tag.
-                                                            </audio>
-                                                        ) : (
-                                                            <div className="file-wrap">{file.fname}</div>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </Carousel>
-                                        )}
+
                                     </div>
                                     <nav className={style1.nweet__actions}>
                                         <div className={`${style1.actionBox} ${style1.like} `}>
@@ -449,9 +425,10 @@ function MyPostView({handlePostClick,selectedPostUno}) {
             {selected === 2 &&
                 <div>
                     <div className="commentScrollable">
-                        {posts.map((post) => {
-                            const localDate = new Date(post.modDate).toLocaleString();
+                        {reply.map((reply) => {
+                            const localDate = new Date(reply.modDate).toLocaleString();
                             return (
+
                                 <div className="container_reply">
                                     <img
                                         src={pfile}
@@ -460,13 +437,13 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                     />
                                     <div className="comment-text">
                                         <p>
-                                            <span className="comment-user">{post.nickname}</span>
-                                            <span className="comment-author">{post.postname}</span>
+                                            <span className="comment-user">{reply.nickname}</span>
+                                            <span className="comment-author">{reply.postname}</span>
                                         </p>
-                                        <span className="comment-content">{post.reply}</span>
+                                        <span className="comment-content">{reply.reply}</span>
                                         <div>
                                             <p style={{ color: "#6667AB" }}>{localDate}</p>
-                                            {console.log(`regdate: ` + post.modDate)}
+                                            {console.log(`regdate: ` + reply.modDate)}
                                         </div>
 
                                     </div>
@@ -479,4 +456,4 @@ function MyPostView({handlePostClick,selectedPostUno}) {
         </>
     );
 }
-export default MyPostView;
+export default MyLikeView;

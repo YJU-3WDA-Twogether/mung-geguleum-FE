@@ -15,14 +15,12 @@ function StoriesPage({handlePostClick}) {
         setNewPosts((prevPosts) => [...prevPosts, newPost]);
     };
 
-
-
     return <div>
         <TopCategory
         home={"home"}
         text={"놀이터"}
         iconName={<HiOutlineBell />}
-    />
+     />
         <PageCreate pageNum={3} onPostSubmit={handlePostSubmit} setNewPosts={setNewPosts} />
         <PageView handlePostClick={handleClick} pageNum={"놀이터"} newPosts={newPosts} setNewPosts={setNewPosts}/>
     </div>;

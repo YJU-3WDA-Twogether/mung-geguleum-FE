@@ -267,7 +267,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                 className={styled.nweet__profile}
                             >
                                 <img
-                                    src={pfile}
+                                    src={post.fpath}
                                     alt="profileImg"
                                     className={styled.profile__image}
                                     onClick={() => handlePostClick(post.uno)}
@@ -290,19 +290,6 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                         </p>
                                     </div>
                                 </div>
-                                {uno === post.uno && (
-                                    <div className={styled.nweet__edit}  >
-                                        <div className={styled.nweet__editIcon} onClick={() => toggleNweetEct(post.pno)}>
-                                            <IoWarningOutline />
-                                            <div className={styled.horizontal__bg}></div>
-                                        </div>
-                                        {nweetEtc === post.pno && (
-                                            <div ref={etcRef}>
-                                                <PostEtcBtn postNum={post.pno} fetchPosts={fetchPosts} />
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                         <div className={styled.nweet__text}>

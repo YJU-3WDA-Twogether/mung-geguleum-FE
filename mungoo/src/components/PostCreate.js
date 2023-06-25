@@ -8,12 +8,15 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import jwt from "jwt-decode";
 
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     const carouselRef = useRef(null);
+    const {uno,nickname,uid,role,fpath} = jwt(localStorage.getItem('accessToken'));
+
     const [formData, setFormData] = useState({
         title: '',
         content: '',    
@@ -77,7 +80,6 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     };
 
     const handleFileDelete = (type, index) => {
-        console.log("hi2")
         let newFiles;
 
         if (type === 'image') {
@@ -183,7 +185,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                 <div className={styled.factoryInput__container}>
                     <div className={styled.nweet__profile}>
                             <img
-                                src={pfile} /* 이미지 주소 추가 */
+                                src={fpath} /* 이미지 주소 추가 */
                                 alt="profileImg"
                                 className={styled.profile__image}
                             />

@@ -147,16 +147,18 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                             <p>내 활동</p>
                         </div>
                     </div>
-                    <div
-                        onClick={() => handleClick(2)}
-                        className={`${style.container} ${ style.sizeContainer}`}
-                    >
+                    {selectedPostUno === user2.uno ? null : (
                         <div
-                            className={`${style.btnBox} ${selected === 2 && style.selectedBox}`}
+                            onClick={() => handleClick(2)}
+                            className={`${style.container} ${ style.sizeContainer}`}
                         >
-                            <p>내 기록</p>
+                            <div
+                                className={`${style.btnBox} ${selected === 2 && style.selectedBox}`}
+                            >
+                                <p>내 기록</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div
                         onClick={() => handleClick(3)}
                         className={`${style.container} ${ style.sizeContainer}`}

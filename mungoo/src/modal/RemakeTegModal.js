@@ -35,7 +35,7 @@ const RemakeTegModal = ({ showPopup, setShowPopup,onSelectPost, onSelectPosts })
 
   const fetchData = async (params) => {
     try {
-      const response = await axios.get(`${API_URL}/log/getdownlist`, {
+      const response = await axios.get(`${API_URL}/log/getpostsourcelist`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         },});
@@ -87,13 +87,16 @@ const RemakeTegModal = ({ showPopup, setShowPopup,onSelectPost, onSelectPosts })
                        className="logo-image" />
                 </div>
                 <table className="RemakeTagTable">
+                  <th>
+
+                  </th>
                   <tbody>
                   {pageData.map((item, index) =>
                       (
                           <tr key={item.lno}>
                             <td className="RemakeTagCell">{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                             <td className="RemakeTagCell">{item.ptitle}</td>
-                            <td className="RemakeTagCell">{item.unickname}</td>
+                            <td className="RemakeTagCell">{item.punickname}</td>
                             <td className="RemakeTagCell">{new Date(item.regDate).toLocaleString()}</td>
                             <td className="RemakeTagCell">
                               <input

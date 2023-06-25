@@ -250,7 +250,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                 className={styled.nweet__profile}
                             >
                                 <img
-                                    src={pfile}
+                                    src={post.fpath}
                                     alt="profileImg"
                                     className={styled.profile__image}
                                 />

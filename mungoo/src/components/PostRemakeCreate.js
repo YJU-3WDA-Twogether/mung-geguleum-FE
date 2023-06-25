@@ -6,6 +6,7 @@ import { Carousel } from "react-responsive-carousel";
 import pfile from "../image/Profile.jpg";
 import RemakeTegModal from "../modal/RemakeTegModal";
 import styled from "../styles/PostCreate.module.css";
+import jwt from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -29,7 +30,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
     });
     const [category, setCategory] = useState();
     const [remakeTag, setRemakeTag] = useState(null);
-
+    const {uno,nickname,uid,role,fpath} = jwt(localStorage.getItem('accessToken'));
     const [selectedFile, setSelectedFile] = useState([]);
 
 
@@ -206,7 +207,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
                 <div className={styled.factoryInput__container}>
                     <div className={styled.nweet__profile}>
                         <img
-                            src={pfile} /* 이미지 주소 추가 */
+                            src={fpath} /* 이미지 주소 추가 */
                             alt="profileImg"
                             className={styled.profile__image}
                         />

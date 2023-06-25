@@ -184,7 +184,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                 <>
                                     <div className="fixedUp" >
                                         <img
-                                            src={pfile}
+                                            src={postData.fpath}
                                             alt="profileImg"
                                             className={styled.profile__image}
                                             onClick={() => handlePostClick(postData.uno)}
@@ -202,7 +202,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                 <React.Fragment key={index}>
                                                     <div className="container_reply">
                                                         <img
-                                                            src={pfile}
+                                                            src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
                                                         />
