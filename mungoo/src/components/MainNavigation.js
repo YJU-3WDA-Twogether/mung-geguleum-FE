@@ -24,7 +24,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno,setSearchQuery}
         }
     }, []);
 
-    const {uno,nickname,uid,role} = jwt(localStorage.getItem('accessToken'));
+    const {uno,nickname,uid,role,fpath} = jwt(localStorage.getItem('accessToken'));
 
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
         useNweetEctModalClick(userEtcRef);
@@ -135,7 +135,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno,setSearchQuery}
                         <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
                             <div className={styled.userInfo__profile}>
                                 <img
-                                    src={pfile}
+                                    src={fpath}
                                     alt="profileImg"
                                     className={styled.profile__image}
                                 />

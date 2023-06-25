@@ -57,16 +57,27 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     };
     useEffect(() => {
         if (selectedPostUno) {
-            fetchUserInfo(selectedPostUno);
+            fetchUserInfo(selectedPostUno,2);
+        }
+        else{
+            fetchUserInfo(uno,1);
         }
     }, [selectedPostUno]);
 
-    const fetchUserInfo = async (pno) => {
+    const update = () =>{
+        fetchUserInfo(uno,1);
+    }
+    const fetchUserInfo = async (pno,num) => {
         try {
             const response = await axios.get(`${API_URL}/user/read/${pno}`);
             const userInfo = response.data;
             // 받아온 회원 정보를 사용하거나 상태에 저장 등 필요한 작업 수행
-            setUser2(userInfo);
+            if(num===1){
+                setUser(userInfo);
+            }
+            else{
+                setUser2(userInfo);
+            }
             // ...
         } catch (error) {
             console.error('Error fetching user info:', error);
@@ -79,7 +90,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
             <div className={styled.main__container}>
 
                 <TopCategory
-                    text={selectedPostUno === null ? uid :user2.uid}
+                    text={selectedPostUno === null ? user.uid :user2.uid}
                     iconName={<IoArrowBackOutline />}
                     iconName2={<IoMdExit />}
                     MainClose={MainClose}
@@ -91,7 +102,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     <div className={styled.profile}>
                         <div className={styled.profile__edit}>
                             <div className={styled.profile__image}>
-                                <img src={pfile} alt="프로필 이미지" />
+                                <img src={selectedPostUno  === null ? user.fpath : user2.fpath} alt="프로필 이미지" />
                             </div>
                             {selectedPostUno === user2.uno ? null : (
                                 <div className={styled.profile__editBtn} onClick={handleOpenModal}
@@ -104,15 +115,19 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                                 open={openModal}
                                 onClose={handleCloseModal}
                                 handleProfileEdit={handleProfileEdit}
+                                nicknames ={user.nickname}
+                                imgs={user.fpath}
+                                introduces={user.introduce}
+                                updates={update}
                             />
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
-                                <p>{selectedPostUno  === null ? nickname :user2.nickname}</p>
-                                <p>@{selectedPostUno  === null  ? uid :user2.uid}</p>
+                                <p>{selectedPostUno  === null ? user.nickname :user2.nickname}</p>
+                                <p>@{selectedPostUno  === null  ? user.uid :user2.uid}</p>
                             </div>
                             <div className={styled.profile__desc}>
-                                <p>안녕하세요</p>
+                                <p>{selectedPostUno  === null ? user.introduce : user2.introduce}</p>
                             </div>
                             <div className={styled.profile__createdAt}>
                                 <BsCalendar3 />

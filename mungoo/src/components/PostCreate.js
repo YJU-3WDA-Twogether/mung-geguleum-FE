@@ -23,12 +23,12 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     });
     const [user, setUser] = useState({});
     const [selectedFile, setSelectedFile] = useState([]);
-
+    const [filename , setFilename] = useState([]);
     const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-
         files.forEach((file) => {
+            setFilename(file.name)
             const extension = file.name.split('.').pop();
             const fileType = (() => {
                 switch (extension) {
@@ -234,7 +234,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                                 ].map(({ type, file, index }) => (
                                                     <div key={index} className={styled.factoryForm__mediaContainer} style={{marginBottom : 5}}>
                                                         {type === 'image' && <img src={URL.createObjectURL(file.file)} />}
-                                                        {type === 'audio' && <audio src={URL.createObjectURL(file.file)} controls />}
+                                                        {type === 'audio' && <video src={URL.createObjectURL(file.file)} controls />}
                                                         {type === 'video' && <video src={URL.createObjectURL(file.file)} controls />}
                                                         <div
                                                             className={styled.factoryForm__clear}

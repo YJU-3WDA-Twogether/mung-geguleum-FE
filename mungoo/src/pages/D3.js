@@ -129,7 +129,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
                     .attr('height', 1)
                     .attr('width', 1)
                     .attr('preserveAspectRatio', 'none')
-                    .attr('xlink:href', pfile); // 이 부분은 실제 이미지 URL이어야 합니다.
+                    .attr('xlink:href', node.fpath); // 이 부분은 실제 이미지 URL이어야 합니다.
             });
         };
 

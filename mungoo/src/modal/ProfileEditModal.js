@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState ,useEffect} from 'react';
 import { GrClose } from "react-icons/gr";
 import { IoCameraOutline, IoCameraReverseOutline, IoCloseSharp } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
@@ -12,15 +12,19 @@ import jwt from "jwt-decode";
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }) => {
+const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,nicknames,imgs,introduces,updates}) => {
 
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedBgImage, setSelectedBgImage] = useState(null);
-  const [introduce, setIntroduce] = useState(""); // 자기 소개 상태값 추가
-  const [nickname, setNickname] = useState(""); // 닉네임 상태값 추가
-  const { uno, uid } = jwt(localStorage.getItem('accessToken'));
-
+  const [introduce, setIntroduce] = useState(introduces);
+  const [nickname, setNickname] = useState(nicknames);
+  const { uno, uid,role } = jwt(localStorage.getItem('accessToken'));
   const inputRef = useRef();
+
+  useEffect(() => {
+    setIntroduce(introduces);
+    setNickname(nicknames);
+  }, [introduces, nicknames]);
 
   const handleProfileImageChange = (e) => {
     setSelectedProfileImage(e.target.files[0]);
@@ -46,23 +50,73 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
     }
   };
 
-  const update = async () => {
-    const formData = new FormData();
-    formData.append('main', selectedProfileImage);
-    formData.append('back', selectedBgImage);
-    formData.append('introduce', introduce); // 자기 소개 값을 추가
-    formData.append('nickname', nickname); // 닉네임 값을 추가
+  const update = async (e) => {
+    e.preventDefault();
+
+    const user = {
+      nickname,
+      introduce,
+      grade: role,
+      file: [],
+    };
+
+    const response = await axios.get(`${API_URL}/s3/url`, {
+      params: { size: selectedProfileImage ? 1 : 0 }, // 이미지가 선택되었는지에 따라 size 값을 설정
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+    const preSignedUrl = response.data.preSignedUrl;
+    const encodedFileName =  response.data.encodedFileName;
+
+    const filesToUpload = [];
+
+    if (selectedProfileImage) {
+      filesToUpload.push(selectedProfileImage);
+    }
+
+
+    await Promise.all(filesToUpload.map(async (file, i) => {
+      try {
+        user.file.push({
+          fpath: encodedFileName[i],
+          fname: encodedFileName[i] + "." + file.name.split('.').pop(),
+          fcategory: "프로필",
+          ftype : file.name.split('.').pop(),
+          uno: uno,
+        });
+        console.log(encodedFileName[i]);
+        console.log(file.type);
+        await axios.put(preSignedUrl[i], file, {
+          headers: {
+            'Content-Type': file.type
+          }
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }));
 
     try {
-      const response = await axios.put(`${API_URL}/user/userUpdate`, formData, {
+      console.log(user);
+      if(filesToUpload.length===0){
+        user.file.push({
+          fpath: '기본',
+          fname: '기본',
+          fcategory: "프로필",
+          ftype : '기본',
+          uno: uno,
+        });
+      }
+      const response = await axios.put(`${API_URL}/user/update/${uno}`, user, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'Content-Type': 'multipart/form-data'
         }
       });
       console.log('Update response:', response.data);
       handleProfileEdit(response.data); // 프로필 수정 완료 후 처리할 작업 호출
-      onClose(); // 모달 닫기
+      updates();
+      onClose();
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -93,17 +147,6 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
               <div className={styled.backImage}>
                 <div className={styled.image__iconBox}>
                   <label htmlFor="attach-bgfile">
-                    {selectedBgImage !== bgfile ? (
-                        <div className={styled.image__icons}>
-                          <div className={styled.image__icon}>
-                            <IoCameraReverseOutline />
-                          </div>
-                        </div>
-                    ) : (
-                        <div className={styled.image__icon}>
-                          <IoCameraOutline />
-                        </div>
-                    )}
                   </label>
                   {selectedBgImage && selectedBgImage !== bgfile && (
                       <div className={styled.image__icon} onClick={onDeleteBgClick}>
@@ -121,14 +164,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
                   />
                 </div>
                 <div className={styled.bgImageBox}>
-                  {selectedBgImage && selectedBgImage !== bgfile ? (
-                      <img
-                          src={URL.createObjectURL(selectedBgImage)}
-                          alt="배경사진"
-                      />
-                  ) : (
-                      <img src={bgfile} alt="배경사진" />
-                  )}
+                  <img src={bgfile} alt="배경사진" />
                 </div>
               </div>
               <div className={styled.editBox}>
@@ -136,17 +172,11 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
                   <div className={styled.profile__image}>
                     <div className={styled.image__iconBox}>
                       <label htmlFor="attach-file">
-                        {selectedProfileImage !== pfile ? (
-                            <div className={styled.image__icons}>
-                              <div className={styled.image__icon}>
-                                <IoCameraReverseOutline />
-                              </div>
-                            </div>
-                        ) : (
-                            <div className={styled.image__icon}>
-                              <IoCameraOutline />
-                            </div>
-                        )}
+
+                          <div className={styled.image__icon}>
+                            <IoCameraOutline />
+                          </div>
+
                       </label>
                       {selectedProfileImage && selectedProfileImage !== pfile && (
                           <div className={styled.image__icon} onClick={onDeleteProfileClick}>
@@ -169,7 +199,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
                             alt='프로필 이미지'
                         />
                     ) : (
-                        <img src={pfile} alt='프로필 이미지' />
+                        <img src={imgs} alt='프로필 이미지' />
                     )}
                   </div>
                 </div>
@@ -183,8 +213,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal }
                         spellCheck="false"
                         type="text"
                         value={nickname}
-                        onChange={(e) => setNickname(e.target.value)} // 닉네임 변경 시 상태값 업데이트
-                        required
+                        onChange={(e) => setNickname(e.target.value)}
                     />
                   </div>
                 </div>

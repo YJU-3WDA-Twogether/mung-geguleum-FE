@@ -9,6 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import pfile from "../image/Profile.jpg";
+import mp3 from "../image/전종찬_testaudio_drum.mp3";
 import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
@@ -265,7 +266,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                 className={styled.nweet__profile}
                             >
                                 <img
-                                    src={pfile}
+                                    src={post.fpath}
                                     alt="profileImg"
                                     className={styled.profile__image}
                                     onClick={() => handlePostClick(post.uno)}
@@ -322,13 +323,16 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                 {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                 file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
                                                     <img src={file.fpath} alt="file" />
+                                                ) : file.ftype === '.mp3' ? (
+                                                    <video controls style={{backgroundImage:`${pfile}`}} controlsList="nodownload">
+                                                        <source src={file.fpath} type="audio/mp3" />
+                                                    </video>
                                                 ) : (
-                                                    <video controls>
+                                                    <video controls controlsList="nodownload">
                                                         <source src={file.fpath} type="video/webm" />
                                                     </video>
                                                 )}
                                             </div>
-
                                         ))}
                                     </Carousel>
                                     <button
