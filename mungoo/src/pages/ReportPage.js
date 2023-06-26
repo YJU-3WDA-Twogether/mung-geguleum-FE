@@ -20,17 +20,16 @@ const ReportPage = ({handlePostClick}) => {
         setClickedPostId(postId);
         setShowPopup(true);
     };
-
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/log/getreportlist`, config);
+            setData(response.data.content);
+            console.log(response.data.content);
+        } catch (error) {
+            console.error("Error fetching items:", error);
+        }
+    };
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/log/getreportlist`, config);
-                setData(response.data.content);
-                console.log(response.data.content);
-            } catch (error) {
-                console.error("Error fetching items:", error);
-            }
-        };
         fetchData();
     }, []);
 
@@ -38,11 +37,12 @@ const ReportPage = ({handlePostClick}) => {
         const ok = window.confirm("구름을 삭제할까요?");
 
         if (ok === true) {
-            const response = await axios.delete(`${API_URL}/admin/blackPostDelete/${postNum}`,{
+            const response = await axios.put(`${API_URL}/admin/blackPostDelete/${postNum}`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 }});
         }
+        fetchData();
     };
 
     return (
