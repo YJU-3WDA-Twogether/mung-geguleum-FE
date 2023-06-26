@@ -3,8 +3,9 @@ import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
-import pfile from "../image/Profile.jpg";
+
 import { IoAlertCircleOutline } from "react-icons/io5";
+import GuideModal from "../modal/GuideModal";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const D3 = ({handlePostClick, d3num, modalPostId}) => {
@@ -225,22 +226,25 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [clickedPostId, setClickedPostId] = useState(null);
-
+    const [showModal, setShowModal]  = useState(false);
     const ontest = () =>{
-      console.log("테스트");
+        setShowModal(true);
     };
 
     return (
         <>
             <IoAlertCircleOutline size={50} onClick={ontest}/>
             <svg ref={svgRef} width={1180} height={830}>
-
             </svg>
             <PageModal
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
                 handlePostClick={handlePostClick}
+            />
+            <GuideModal
+                showModal={showModal}
+                setShowModal={setShowModal}
             />
         </>
     );

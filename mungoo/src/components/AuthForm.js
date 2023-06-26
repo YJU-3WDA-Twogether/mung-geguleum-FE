@@ -4,6 +4,7 @@ import axios from "axios";
 import jwt from "jwt-decode";
 import styled from "../styles/AuthForm.module.css";
 import { color } from "d3";
+import UserAgreePage from "../pages/UserAgreePage";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const AuthForm = ({ newAccount, setUserObj }) => {
@@ -26,6 +27,8 @@ const AuthForm = ({ newAccount, setUserObj }) => {
     const [select, setSelect] = useState("");
     const [passwordMatch, setPasswordMatch] = useState(true); // 비밀번호 일치 여부 상태 추가
     const [emailValid, setEmailValid] = useState(true); // 이메일 유효성 검사 상태 추가
+    const [agreed, setAgreed] = useState(false);
+    const [showAgreement, setShowAgreement] = useState(true);
 
     useEffect(() => {
         setFormData(newAccount ? INITIAL_FORM_DATA_ACCOUNT : INITIAL_FORM_DATA_REGISTRATION);
@@ -35,6 +38,15 @@ const AuthForm = ({ newAccount, setUserObj }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleCloseAgreement = (agreed) => {
+        setShowAgreement(false);
+        setAgreed(agreed);
+    };
+
+    const handleAgreementCheckbox = (e) => {
+        setAgreed(e.target.checked);
+        setShowAgreement(e.target.checked);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newAccount) {
@@ -94,6 +106,9 @@ const AuthForm = ({ newAccount, setUserObj }) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setEmailValid(emailRegex.test(value)); // 이메일 형식 검사
         handleChange(e); // 이메일 값을 상태에 저장
+    };
+    const handleAgreement = () => {
+        setAgreed(!agreed);
     };
 
     return (
@@ -205,7 +220,36 @@ const AuthForm = ({ newAccount, setUserObj }) => {
                             value={formData.nickname}
                             onChange={handleChange}
                         />
+                        <div className={styled.agreement}>
+                            <input
+                                type="checkbox"
+                                id="agreement"
+                                checked={agreed}
+                                onChange={handleAgreementCheckbox}
+                            />
+                            <label htmlFor="agreement">회원 약관에 동의합니다.</label>
+                        </div>
                     </>
+                )}
+                {!newAccount && agreed && (
+                    <div className={styled.container}>
+                        {showAgreement && (
+                            <div className={styled.agreementForm}>
+                                <div className={styled.agreementContent}>
+                                    <h3>이용약관</h3>
+                                    <p>
+                                        <UserAgreePage/>
+                                    </p>
+                                </div>
+                                <button className={styled.closeButton} onClick={handleCloseAgreement}>
+                                    동의
+                                </button>
+                                <button className={styled.closeButton} onClick={() => handleCloseAgreement(false)}>
+                                    비동의
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 )}
                 <input
                     type="submit"

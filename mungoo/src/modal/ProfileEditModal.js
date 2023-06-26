@@ -2,6 +2,7 @@ import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import React, { useRef, useState ,useEffect} from 'react';
 import { GrClose } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 import { IoCameraOutline, IoCameraReverseOutline, IoCloseSharp } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
@@ -20,6 +21,7 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
   const [nickname, setNickname] = useState(nicknames);
   const { uno, uid,role } = jwt(localStorage.getItem('accessToken'));
   const inputRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIntroduce(introduces);
@@ -121,6 +123,25 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
       console.error('Error updating profile:', error);
     }
   };
+    const userDelete =  async() => {
+      try {
+        console.log(uno);
+        const response = await axios.delete(`${API_URL}/user/delete/${uno}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          },
+        });
+       await axios.get(`${API_URL}/user/logout`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          },
+        });
+        localStorage.clear();
+        navigate("/auth");
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
   return (
       <Modal
@@ -136,6 +157,13 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
                 <GrClose />
               </div>
               <div className={styled.submit}>
+                <input
+                    type="button"
+                    value="회원탈퇴"
+                    className={styled.editInput__arrow}
+                    style={{marginRight:"5px"}}
+                    onClick={userDelete}
+                />
                 <input
                     type="submit"
                     value="프로필 수정"

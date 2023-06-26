@@ -11,6 +11,9 @@ import UserEtcBtn from "../button/UserEtcBtn";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 import pfile from "../image/Profile.jpg";
 import styled from '../styles/MainNavigation.module.css';
+import axios from "axios";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery }) {
     const userEtcRef = useRef();
@@ -36,12 +39,20 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery
         setUserEtc((prev) => !prev);
     };
 
-    const onLogOutClick = () => {
+    const onLogOutClick = async() => {
         const ok = window.confirm("로그아웃 하시겠어요?");
         if (ok) {
             localStorage.clear();
             setUser({});
             navigate("/auth");
+
+                await axios.get(`${API_URL}/user/logout`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                });
+
+
         }
     };
 

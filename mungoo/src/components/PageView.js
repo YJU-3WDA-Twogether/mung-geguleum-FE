@@ -9,7 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import pfile from "../image/Profile.jpg";
-import mp3 from "../image/전종찬_testaudio_drum.mp3";
+// import mp3 from "../image/전종찬_testaudio_drum.mp3";
 import PageModal from "../modal/PageModal";
 import D3 from '../pages/D3';
 import styled from '../styles/PostView.module.css';
@@ -328,7 +328,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                         <source src={file.fpath} type="audio/mp3" />
                                                     </video>
                                                 ) : (
-                                                    <video controls controlsList="nodownload">
+                                                    <video controls  controlsList="nodownload">
                                                         <source src={file.fpath} type="video/webm" />
                                                     </video>
                                                 )}
