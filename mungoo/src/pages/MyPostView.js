@@ -343,7 +343,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                                     transform: 'translateY(-50%)',
                                                     backgroundColor: 'transparent',
                                                     border: 'none',
-                                                    color: '#000',
+                                                    color: '#6667ab',
                                                     fontSize: '1.5rem',
                                                 }}
                                             >
@@ -359,7 +359,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                                     transform: 'translateY(-50%)',
                                                     backgroundColor: 'transparent',
                                                     border: 'none',
-                                                    color: '#000',
+                                                    color: '#6667ab',
                                                     fontSize: '1.5rem',
                                                 }}
                                             >

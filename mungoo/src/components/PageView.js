@@ -358,7 +358,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                     transform: 'translateY(-50%)',
                                                     backgroundColor: 'transparent',
                                                     border: 'none',
-                                                    color: '#000',
+                                                    color: '#6667ab',
                                                     fontSize: '1.5rem',
                                                 }}
                                             >
@@ -374,7 +374,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                     transform: 'translateY(-50%)',
                                                     backgroundColor: 'transparent',
                                                     border: 'none',
-                                                    color: '#000',
+                                                    color: '#6667ab',
                                                     fontSize: '1.5rem',
                                                 }}
                                             >

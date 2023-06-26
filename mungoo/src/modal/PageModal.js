@@ -114,7 +114,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                 <div className="layer-popup show">
                     <div className="modal-dialog" style={{  borderRadius:  '10px 10px'}}>
                         {postData && postData.file && postData.file.length > 0 && (
-                            <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden' , width:'700px', backgroundColor:"black"} }>
+                            <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden' , width:'675px',background : "black"}}>
                                 {/* 파일 표시 영역 내용 */}
                                     <div>
                                         <div style={{ position: 'relative',width : '670px' }}>
@@ -164,7 +164,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                             transform: 'translateY(-50%)',
                                                             backgroundColor: 'transparent',
                                                             border: 'none',
-                                                            color: '#000',
+                                                            color: '#f2f4f6',
                                                             fontSize: '1.5rem',
                                                         }}
                                                     >
@@ -180,7 +180,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                             transform: 'translateY(-50%)',
                                                             backgroundColor: 'transparent',
                                                             border: 'none',
-                                                            color: '#000',
+                                                            color: '#f2f4f6',
                                                             fontSize: '1.5rem',
                                                         }}
                                                     >
