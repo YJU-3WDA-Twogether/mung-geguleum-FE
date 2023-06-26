@@ -218,6 +218,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                             src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
+                                                            onClick={() => handlePostClick(comment.uno)}
                                                         />
                                                         <div className="comment-text" >
                                                             <p style={{ whiteSpace: 'pre-wrap' }}>
