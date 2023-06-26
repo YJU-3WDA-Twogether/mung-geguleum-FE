@@ -34,7 +34,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
     const [selectedFile, setSelectedFile] = useState([]);
 
 
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 20MB
+    const MAX_FILE_SIZE = 1000 * 1024 * 1024; // 200MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
 

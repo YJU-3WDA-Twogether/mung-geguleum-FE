@@ -27,7 +27,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     const [user, setUser] = useState({});
     const [selectedFile, setSelectedFile] = useState([]);
     const [filename , setFilename] = useState([]);
-    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+    const MAX_FILE_SIZE = 2000 * 1024 * 1024; // 2000MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
         files.forEach((file) => {
