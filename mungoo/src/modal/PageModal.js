@@ -8,6 +8,7 @@ import {FiMoreHorizontal} from "react-icons/fi";
 import {Carousel} from "react-responsive-carousel";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 import {AiFillWarning} from "react-icons/ai";
+import '../styles/audio.css'
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -121,6 +122,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                 showStatus={false}
                                                 showArrows={false}
                                                 showThumbs={false}
+                                                showIndicators={false}
                                                 selectedItem={postSlides[postData.pno] || 0}
                                                 onChange={(selectedIndex) => handleSlideChange(postData.pno, selectedIndex)}
                                             >
@@ -128,48 +130,64 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                     <div key={file.fno}>
                                                         {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                         file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                            <img src={file.fpath} alt="file"  style={{height:"460px"}} />
-                                                        ) : (
-                                                            <video controls style={{ width: '100%', height: '600px'}}>
-                                                                <source src={file.fpath} type="video/webm" />
-                                                            </video>
-                                                        )}
+                                                            <img src={file.fpath} alt="file" style={{height:"450px"}}/>
+                                                        ) : file.ftype === '.mp3' || file.ftype === '.wav' || file.ftype === '.ogg' || file.ftype === '.MP3'
+                                                        || file.ftype === '.WAV' || file.ftype === '.OGG'
+                                                            ? (
+                                                                <div className='container'>
+                                                                    <div className='player' >
+                                                                        <div className='imgBx'>
+                                                                            <img src={postData.fpath}id="audio"/>
+                                                                        </div>
+                                                                        <audio controls>
+                                                                            <source  src={file.fpath}  />
+                                                                        </audio>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <video controls  controlsList="nodownload">
+                                                                    <source src={file.fpath} type="video/webm" />
+                                                                </video>
+                                                            )}
                                                     </div>
-
                                                 ))}
                                             </Carousel>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleButtonClick(postData.pno, -1)}
-                                                style={{
-                                                    position: 'absolute',
-                                                    left: '10px',
-                                                    top: '50%',
-                                                    transform: 'translateY(-50%)',
-                                                    backgroundColor: 'transparent',
-                                                    border: 'none',
-                                                    color: '#000',
-                                                    fontSize: '1.5rem',
-                                                }}
-                                            >
-                                                <IoIosArrowBack size={35} />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleButtonClick(postData.pno, 1)}
-                                                style={{
-                                                    position: 'absolute',
-                                                    right: '10px',
-                                                    top: '50%',
-                                                    transform: 'translateY(-50%)',
-                                                    backgroundColor: 'transparent',
-                                                    border: 'none',
-                                                    color: '#000',
-                                                    fontSize: '1.5rem',
-                                                }}
-                                            >
-                                                <IoIosArrowForward size={35} />
-                                            </button>
+                                            {postData.file.length > 0 && (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleButtonClick(postData.pno, -1)}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            left: '10px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)',
+                                                            backgroundColor: 'transparent',
+                                                            border: 'none',
+                                                            color: '#000',
+                                                            fontSize: '1.5rem',
+                                                        }}
+                                                    >
+                                                        <IoIosArrowBack size={35} />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleButtonClick(postData.pno, 1)}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: '10px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)',
+                                                            backgroundColor: 'transparent',
+                                                            border: 'none',
+                                                            color: '#000',
+                                                            fontSize: '1.5rem',
+                                                        }}
+                                                    >
+                                                        <IoIosArrowForward size={35} />
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                             </div>

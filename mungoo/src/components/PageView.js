@@ -18,6 +18,7 @@ import PostEtcBtn from "../button/PostEtcBtn";
 import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import {HiBell} from "react-icons/hi"
 import '../styles/Pagination.css';
+import '../styles/audio.css'
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -315,6 +316,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                         showStatus={false}
                                         showArrows={false}
                                         showThumbs={false}
+                                        showIndicators={false}
                                         selectedItem={postSlides[post.pno] || 0}
                                         onChange={(selectedIndex) => handleSlideChange(post.pno, selectedIndex)}
                                     >
@@ -323,10 +325,19 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                 {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                 file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
                                                     <img src={file.fpath} alt="file" style={{height:"450px"}}/>
-                                                ) : file.ftype === '.mp3' ? (
-                                                    <video controls style={{backgroundImage:`${pfile}`}} controlsList="nodownload">
-                                                        <source src={file.fpath} type="audio/mp3" />
-                                                    </video>
+                                                ) : file.ftype === '.mp3' || file.ftype === '.wav' || file.ftype === '.ogg' || file.ftype === '.MP3'
+                                                || file.ftype === '.WAV' || file.ftype === '.OGG'
+                                                    ? (
+                                                        <div className='container'>
+                                                            <div className='player' >
+                                                                <div className='imgBx'>
+                                                                    <img src={post.fpath}id="audio"/>
+                                                                </div>
+                                                                <audio controls>
+                                                                    <source  src={file.fpath}  />
+                                                                </audio>
+                                                            </div>
+                                                        </div>
                                                 ) : (
                                                     <video controls  controlsList="nodownload">
                                                         <source src={file.fpath} type="video/webm" />
@@ -335,38 +346,42 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                             </div>
                                         ))}
                                     </Carousel>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleButtonClick(post.pno, -1)}
-                                        style={{
-                                            position: 'absolute',
-                                            left: '10px',
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            backgroundColor: 'transparent',
-                                            border: 'none',
-                                            color: '#f2f4f6',
-                                            fontSize: '1.5rem',
-                                        }}
-                                    >
-                                        <IoIosArrowBack size={35} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleButtonClick(post.pno, 1)}
-                                        style={{
-                                            position: 'absolute',
-                                            right: '10px',
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            backgroundColor: 'transparent',
-                                            border: 'none',
-                                            color: '#f2f4f6',
-                                            fontSize: '1.5rem',
-                                        }}
-                                    >
-                                        <IoIosArrowForward size={35} />
-                                    </button>
+                                    {post.file.length > 0 && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleButtonClick(post.pno, -1)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    left: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent',
+                                                    border: 'none',
+                                                    color: '#000',
+                                                    fontSize: '1.5rem',
+                                                }}
+                                            >
+                                                <IoIosArrowBack size={35} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleButtonClick(post.pno, 1)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent',
+                                                    border: 'none',
+                                                    color: '#000',
+                                                    fontSize: '1.5rem',
+                                                }}
+                                            >
+                                                <IoIosArrowForward size={35} />
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </div>
