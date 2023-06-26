@@ -224,7 +224,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                         />
                                                         <div className="comment-text" >
                                                             <p style={{ whiteSpace: 'pre-wrap' }}>
-                                                                <span className="comment-author">{comment.uname}</span>
+                                                                <span className="comment-author">{comment.nickname}</span>
                                                                 <span className="comment-content">{comment.reply}</span>
                                                             </p>
                                                             <div className="comment-date">

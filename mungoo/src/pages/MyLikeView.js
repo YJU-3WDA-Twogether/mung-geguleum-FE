@@ -24,7 +24,7 @@ import jwt from "jwt-decode";
 import {IoWarningOutline} from "react-icons/io5";
 import PostEtcBtn from "../button/PostEtcBtn";
 import Dropdown from "react-bootstrap/Dropdown";
-import {IoMdPeople, IoMdPerson} from "react-icons/io";
+import {IoIosArrowBack, IoIosArrowForward, IoMdPeople, IoMdPerson} from "react-icons/io";
 import {HiBell} from "react-icons/hi";
 import D3 from "./D3";
 import {useNweetEctModalClick} from "../hooks/useNweetEctModalClick";
@@ -80,7 +80,7 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = file.fname;
+                link.download = file.fname+file.ftype;
                 link.click();
             })
             .catch(error => {
@@ -181,9 +181,6 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
             console.error('Error updating heart data:', error);
         }
     };
-    const handleSlideChange = (currentIndex) => {
-        setFileNum(currentIndex);
-    };
 
     const pnoClick = (postId) => {
         setSelectedPostId(postId);
@@ -240,6 +237,48 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
     };
 
 //   모달창 CSS
+
+    const [postSlides, setPostSlides] = useState({});
+
+    const handleSlideChange = (postId, index) => {
+        setPostSlides(prevSlides => ({
+            ...prevSlides,
+            [postId]: index
+        }));
+    };
+    const handleButtonClick = (postId, increment) => {
+        const post = posts.find((post) => post.pno === postId);
+        if (post) {
+            setPostSlides((prevSlides) => {
+                const currentIndex = prevSlides[postId] || 0;
+                const newIndex = (currentIndex + increment + post.file.length) % post.file.length;
+                return {
+                    ...prevSlides,
+                    [postId]: newIndex,
+                };
+            });
+
+            setFileNum((prevNum) => (prevNum + increment + post.file.length) % post.file.length);
+        }
+    };
+    const handleBell = async (postId) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            };
+
+            const response = await axios.post(
+                `${API_URL}/log/report/${postId}`,
+                null,
+                config
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <>
@@ -326,7 +365,82 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                                     </div>
 
                                     <div className={style1.nweet__image}>
-
+                                        <div className={styled.nweet__image}>
+                                            {post.file.length > 0 && (
+                                                <div style={{ position: 'relative' ,width : '650px'}}>
+                                                    <Carousel
+                                                        showStatus={false}
+                                                        showArrows={false}
+                                                        showThumbs={false}
+                                                        showIndicators={false}
+                                                        selectedItem={postSlides[post.pno] || 0}
+                                                        onChange={(selectedIndex) => handleSlideChange(post.pno, selectedIndex)}
+                                                    >
+                                                        {post.file.map((file) => (
+                                                            <div key={file.fno}>
+                                                                {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
+                                                                file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
+                                                                    <img src={file.fpath} alt="file" style={{height:"450px"}}/>
+                                                                ) : file.ftype === '.mp3' || file.ftype === '.wav' || file.ftype === '.ogg' || file.ftype === '.MP3'
+                                                                || file.ftype === '.WAV' || file.ftype === '.OGG'
+                                                                    ? (
+                                                                        <div className='container'>
+                                                                            <div className='player' >
+                                                                                <div className='imgBx'>
+                                                                                    <img src={post.fpath}id="audio"/>
+                                                                                </div>
+                                                                                <audio controls controlsList="nodownload">
+                                                                                    <source  src={file.fpath}  />
+                                                                                </audio>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <video controls  controlsList="nodownload">
+                                                                            <source src={file.fpath} type="video/webm" />
+                                                                        </video>
+                                                                    )}
+                                                            </div>
+                                                        ))}
+                                                    </Carousel>
+                                                    {post.file.length > 0 && (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleButtonClick(post.pno, -1)}
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    left: '10px',
+                                                                    top: '50%',
+                                                                    transform: 'translateY(-50%)',
+                                                                    backgroundColor: 'transparent',
+                                                                    border: 'none',
+                                                                    color: '#6667ab',
+                                                                    fontSize: '1.5rem',
+                                                                }}
+                                                            >
+                                                                <IoIosArrowBack size={35} />
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleButtonClick(post.pno, 1)}
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    right: '10px',
+                                                                    top: '50%',
+                                                                    transform: 'translateY(-50%)',
+                                                                    backgroundColor: 'transparent',
+                                                                    border: 'none',
+                                                                    color: '#6667ab',
+                                                                    fontSize: '1.5rem',
+                                                                }}
+                                                            >
+                                                                <IoIosArrowForward size={35} />
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                     <nav className={style1.nweet__actions}>
                                         <div className={`${style1.actionBox} ${style1.like} `}>

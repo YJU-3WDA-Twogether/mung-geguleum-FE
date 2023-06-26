@@ -70,7 +70,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
             .then(response => {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(response.data);
-                link.download = file.fname;
+                link.download = file.fname+file.ftype;
                 link.click();
             })
             .catch(error => {
