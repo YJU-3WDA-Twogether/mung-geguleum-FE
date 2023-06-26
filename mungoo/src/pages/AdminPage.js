@@ -45,7 +45,7 @@ const AdminPage = ({handlePostClick}) => {
                     </div>
                 </nav>
                 {selected === 1 && <UserListPage/>}
-                {selected === 3 && <ReportPage/>}
+                {selected === 3 && <ReportPage handlePostClick={handlePostClick}/>}
             </div>
         </section>
         </>

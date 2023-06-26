@@ -4,7 +4,7 @@ import PageModal from "../modal/PageModal";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const ReportPage = () => {
+const ReportPage = ({handlePostClick}) => {
     const [showPopup, setShowPopup] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [clickedPostId, setClickedPostId] = useState(null);
@@ -67,7 +67,7 @@ const ReportPage = () => {
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
-
+                handlePostClick={handlePostClick}
             />
         </>
     );

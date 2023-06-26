@@ -64,6 +64,19 @@ const AuthForm = ({ newAccount, setUserObj }) => {
             }
         } else {
             try {
+                // [23.06.26 | 박진석] axios 요청 전 비번 검사 후 불일치시 에러발생시킴
+                if (formData.password !== formData.password2) {
+                    // alert('비밀번호가 일치하지 않습니다.');
+                    throw new Error('registerPasswordError');
+                }
+
+                // [23.06.26 | 박진석] axios 요청 전 이메일 유효성 검사 후 불일치시 에러발생
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    // alert('유효한 이메일 형식이 아닙니다.');
+                    throw new Error('registerEmailError');
+                }
+
                 const response = await axios.post(`${API_URL}/user/create`, formData);
                 console.log(response.data);
                 if (response.data === true) {
@@ -87,8 +100,14 @@ const AuthForm = ({ newAccount, setUserObj }) => {
                     alert('알 수 없는 오류가 발생했습니다.');
                 }
             } catch (error) {
-                console.error(error);
-                alert('회원가입 중 오류가 발생했습니다.');
+                if (error.message === 'registerPasswordError') {
+                    alert('비밀번호가 일치하지 않습니다.');
+                } else if (error.message === 'registerEmailError') {
+                    alert('유효한 이메일 형식이 아닙니다.');
+                }
+                else {
+                    alert('회원가입 중 오류가 발생했습니다.');
+                }
             }
         }
     };
