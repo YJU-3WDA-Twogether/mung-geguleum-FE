@@ -139,7 +139,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                                         <div className='imgBx'>
                                                                             <img src={postData.fpath}id="audio"/>
                                                                         </div>
-                                                                        <audio controls>
+                                                                        <audio controls controlsList="nodownload">
                                                                             <source  src={file.fpath}  />
                                                                         </audio>
                                                                     </div>

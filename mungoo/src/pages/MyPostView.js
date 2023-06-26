@@ -318,7 +318,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                                                 <div className='imgBx'>
                                                                     <img src={post.fpath}id="audio"/>
                                                                 </div>
-                                                                <audio controls>
+                                                                <audio controls controlsList="nodownload">
                                                                     <source  src={file.fpath}  />
                                                                 </audio>
                                                             </div>

@@ -333,7 +333,7 @@ const PostView = ({ selectedPost, handlePostClick, selectedPostUno, pageNum, new
                                                                 <div className='imgBx'>
                                                                     <img src={post.fpath}id="audio"/>
                                                                 </div>
-                                                                <audio controls>
+                                                                <audio controls controlsList="nodownload">
                                                                     <source  src={file.fpath}  />
                                                                 </audio>
                                                             </div>

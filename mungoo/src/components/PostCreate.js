@@ -9,7 +9,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 import jwt from "jwt-decode";
-
+import '../styles/audio.css'
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -236,7 +236,18 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                                 ].map(({ type, file, index }) => (
                                                     <div key={index} className={styled.factoryForm__mediaContainer} style={{marginBottom : 5}}>
                                                         {type === 'image' && <img src={URL.createObjectURL(file.file)} />}
-                                                        {type === 'audio' && <video src={URL.createObjectURL(file.file)} controls />}
+                                                        {type === 'audio' &&
+                                                            <div className='container'>
+                                                                <div className='player' >
+                                                                    <div className='imgBx'>
+                                                                        <img src={fpath}id="audio"/>
+                                                                    </div>
+                                                                    <audio controls controlsList="nodownload">
+                                                                        <source  src={URL.createObjectURL(file.file)}  />
+                                                                    </audio>
+                                                                </div>
+                                                             </div>
+                                                        }
                                                         {type === 'video' && <video src={URL.createObjectURL(file.file)} controls />}
                                                         <div
                                                             className={styled.factoryForm__clear}
