@@ -1,0 +1,84 @@
+.User_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.User_editForm {
+    width: 400px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.setUserInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.editBox {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.edit {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.edit__InputBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit__InputBox p {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.edit__Input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit__textarea {
+    resize: none;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.UpdatebuttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: white;
+    border: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+button.closeButton {
+    background-color: #ccc;
+}
+
+button:hover {
+    background-color: #4B4C7F;
+    color: #f0f0f0;
+}
+
+button.closeButton:hover {
+    background-color: #999;
+}

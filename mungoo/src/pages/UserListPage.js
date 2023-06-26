@@ -10,23 +10,31 @@ const UserListPage = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [openUsermodal, setOpenUsermodal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null); // New state variable
-
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 5;
 
     const handleopenUsermodal = (user) => {
-        setSelectedUser(user); // Pass the selected user object
+        setSelectedUser(user);
         setOpenUsermodal(true);
     };
-
 
     const handleCloseUsermodal = () => {
         setOpenUsermodal(false);
     };
 
-
     const handleUserUpdate = () => {
         handleCloseUsermodal();
-    }
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -36,10 +44,9 @@ const UserListPage = () => {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     },
                     params: {
-                        query: searchQuery // Pass the search query as a parameter
+                        query: searchQuery
                     }
                 });
-                console.log(response.data);
                 setUsers(response.data.content);
             } catch (error) {
                 console.error(error);
@@ -49,25 +56,27 @@ const UserListPage = () => {
     }, [searchQuery]);
 
     const filteredUsers = users.filter((user) => {
-        // Apply your search logic here
-        // For example, check if the user's ID or name contains the search query
         return (
             user.uid.includes(searchQuery) || user.uname.includes(searchQuery)
         );
     });
 
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const displayedUsers = filteredUsers.slice(indexOfFirstPost, indexOfLastPost);
+    const totalPages = Math.ceil(filteredUsers.length / postsPerPage);
+
     const updateUserGrade = async (user) => {
         try {
-            console.log(user);
             const response = await axios.put(
-                `${API_URL}/user/update/${user.uno}`, user,
+                `${API_URL}/user/update/${user.uno}`,
+                user,
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     },
                 }
             );
-            // 등급 업데이트에 성공하면 서버로부터 업데이트된 사용자 정보를 받아와서 업데이트합니다.
             if (response.status === 200) {
                 const updatedUser = response.data;
                 setUsers((prevUsers) =>
@@ -83,7 +92,6 @@ const UserListPage = () => {
 
     const deleteUser = async (uno) => {
         try {
-            console.log(uno);
             const response = await axios.delete(`${API_URL}/user/delete/${uno}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -108,12 +116,6 @@ const UserListPage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <UserUpdateModal
-                open={openUsermodal}
-                onClose={handleCloseUsermodal}
-                handleUserUpdate={handleUserUpdate}
-                selectedUser={selectedUser} // Pass the selected user
-            />
             <table className="UserList-table">
                 <thead>
                 <tr>
@@ -126,24 +128,83 @@ const UserListPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredUsers.map((user) => (
+                {displayedUsers.map((user) => (
                     <tr key={user.uno}>
                         <td>{user.uid}</td>
                         <td>{user.uname}</td>
                         <td>{new Date(user.regDate).toLocaleDateString()}</td>
                         <td>{user.grade}</td>
                         <td>
-            <span className="DeleteIcon" onClick={() => deleteUser(user.uno)}>
-              <TiDelete style={{ fontSize: '24px' }} />
-            </span>
+                <span
+                    className="DeleteIcon"
+                    onClick={() => deleteUser(user.uno)}
+                >
+                  <TiDelete style={{ fontSize: '24px' }} />
+                </span>
                         </td>
                         <td>
-                            <button className="UserList-Update" onClick={() => handleopenUsermodal(user.uno)}>수정</button>
+                            <button
+                                className="UserList-Update"
+                                onClick={() => handleopenUsermodal(user)}
+                            >
+                                수정
+                            </button>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
+            {selectedUser && (
+                <UserUpdateModal
+                    open={openUsermodal}
+                    onClose={handleCloseUsermodal}
+                    handleUserUpdate={handleUserUpdate}
+                    selectedUser={selectedUser}
+                />
+            )}
+
+            <ul className="pagination">
+                {currentPage > 1 && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                        >
+                            Prev
+                        </button>
+                    </li>
+                )}
+                {Array.from({ length: totalPages }, (_, index) => index + 1)
+                    .slice(
+                        Math.max(0, currentPage - 3),
+                        Math.min(totalPages, currentPage + 2)
+                    )
+                    .map((pageNumber) => (
+                        <li
+                            key={pageNumber}
+                            className={`page-item ${
+                                pageNumber === currentPage ? 'active' : ''
+                            }`}
+                        >
+                            <button
+                                className="page-link"
+                                onClick={() => handlePageChange(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                        </li>
+                    ))}
+                {currentPage < totalPages && (
+                    <li className="page-item">
+                        <button
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        >
+                            Next
+                        </button>
+                    </li>
+                )}
+            </ul>
         </div>
     );
 };

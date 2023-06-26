@@ -34,16 +34,16 @@ const ReportPage = ({handlePostClick}) => {
         fetchData();
     }, []);
 
-    // const onDeleteClick = async (postNum) => {
-    //     const ok = window.confirm("구름을 삭제할까요?");
-    //
-    //     if (ok === true) {
-    //         const response = await axios.delete(`${API_URL}/post/delete/${postNum}`,{
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-    //             }});
-    //     }
-    // };
+    const onDeleteClick = async (postNum) => {
+        const ok = window.confirm("구름을 삭제할까요?");
+
+        if (ok === true) {
+            const response = await axios.delete(`${API_URL}/post/delete/${postNum}`,{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                }});
+        }
+    };
 
 
     return (
@@ -57,7 +57,7 @@ const ReportPage = ({handlePostClick}) => {
                             {item.ptitle}게시글을  {item.unickname}님에게 {item.lsname}를 받았습니다.
                         </div>
                     </div>
-                        <button  >삭제</button>
+                        <button onClick={() => onDeleteClick(item.pno)}>삭제</button>
                     </div>
                 ))}
                 <div>
