@@ -91,9 +91,11 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
                         return d.pno;
                     })
                 )
-                .force("charge", d3.forceManyBody())
-                .force("collide", d3.forceCollide())
-                .force("center", d3.forceCenter(width / 2, height / 2));
+                .force("charge", d3.forceManyBody()) // strength 값을 0으로 설정하여 노드의 움직임 비활성화
+                .force("collide", d3.forceCollide().radius(25).strength(0.5))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("x", d3.forceX().x((d) => Math.max(width / 2 - 200, Math.min(width / 2 + 200, d.x))).strength(0.1))
+                .force("y", d3.forceY().y((d) => Math.max(height / 2 - 200, Math.min(height / 2 + 200, d.y))).strength(0.1));
             updateForces();
 
             var helloNode = graphData.nodes.find(function (node) {
@@ -106,6 +108,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
                 simulation.alphaTarget(0).restart();
             }
         };
+
 
         const updateForces = () => {
             // get each force by name and update the properties
