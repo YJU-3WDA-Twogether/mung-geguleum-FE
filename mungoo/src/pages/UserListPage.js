@@ -10,11 +10,12 @@ const UserListPage = () => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [openUsermodal, setOpenUsermodal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // New state variable
-  
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 5;
 
   const handleopenUsermodal = (user) => {
-    setSelectedUser(user); // Pass the selected user object
+    setSelectedUser(user);
     setOpenUsermodal(true);
   };
 
@@ -24,7 +25,16 @@ const UserListPage = () => {
 
   const handleUserUpdate = () => {
     handleCloseUsermodal();
-  }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -34,7 +44,7 @@ const UserListPage = () => {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
           },
           params: {
-            query: searchQuery // Pass the search query as a parameter
+            query: searchQuery
           }
         });
         setUsers(response.data.content);
@@ -46,12 +56,15 @@ const UserListPage = () => {
   }, [searchQuery]);
 
   const filteredUsers = users.filter((user) => {
-    // Apply your search logic here
-    // For example, check if the user's ID or name contains the search query
     return (
       user.uid.includes(searchQuery) || user.uname.includes(searchQuery)
     );
   });
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const displayedUsers = filteredUsers.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(filteredUsers.length / postsPerPage);
 
   const updateUserGrade = async (user) => {
     try {
@@ -115,7 +128,7 @@ const UserListPage = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user) => (
+          {displayedUsers.map((user) => (
             <tr key={user.uno}>
               <td>{user.uid}</td>
               <td>{user.uname}</td>
@@ -141,14 +154,57 @@ const UserListPage = () => {
           ))}
         </tbody>
       </table>
-      {selectedUser && ( // Add this condition to render the modal only when selectedUser is not null
-      <UserUpdateModal
+      {selectedUser && (
+        <UserUpdateModal
           open={openUsermodal}
           onClose={handleCloseUsermodal}
           handleUserUpdate={handleUserUpdate}
-          selectedUser={selectedUser} // Pass the selected user
+          selectedUser={selectedUser}
         />
       )}
+
+      <ul className="pagination">
+        {currentPage > 1 && (
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Prev
+            </button>
+          </li>
+        )}
+        {Array.from({ length: totalPages }, (_, index) => index + 1)
+          .slice(
+            Math.max(0, currentPage - 3),
+            Math.min(totalPages, currentPage + 2)
+          )
+          .map((pageNumber) => (
+            <li
+              key={pageNumber}
+              className={`page-item ${
+                pageNumber === currentPage ? 'active' : ''
+              }`}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            </li>
+          ))}
+        {currentPage < totalPages && (
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </button>
+          </li>
+        )}
+      </ul>
     </div>
   );
 };
