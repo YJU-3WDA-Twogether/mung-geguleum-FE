@@ -255,6 +255,7 @@ const AuthForm = ({ newAccount, setUserObj }) => {
                     type="submit"
                     className={`${styled.authInput} ${styled.authSubmit}`}
                     value={newAccount ? "로그인 하기" : "가입하기"}
+                    disabled={!agreed && !newAccount}
                 />
             </form>
         </div>
