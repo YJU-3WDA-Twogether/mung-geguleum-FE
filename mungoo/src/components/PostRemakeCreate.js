@@ -301,7 +301,7 @@ const PostRemakeCreate = ({setNewPosts}) => {
                                 type="submit"
                                 value="작성하기"
                                 className={styled.factoryInput__arrow}
-                                disabled={formData.content === "" || formData.title === ""}
+                                disabled={formData.content === "" || formData.title === "" || selectedPosts.length === 0}
                             />
                         </div>
                     </form>
