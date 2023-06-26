@@ -251,7 +251,16 @@ const PostRemakeCreate = ({setNewPosts}) => {
                                                 ].map(({ type, file, index }) => (
                                                     <div key={index} className={styled.factoryForm__mediaContainer} style={{marginBottom : 5}}>
                                                         {type === 'image' && <img src={URL.createObjectURL(file.file)} />}
-                                                        {type === 'audio' && <audio src={URL.createObjectURL(file.file)} controls />}
+                                                        {type === 'audio' &&  <div className='container'>
+                                                            <div className='player' >
+                                                                <div className='imgBx'>
+                                                                    <img src={fpath} id="audio"/>
+                                                                </div>
+                                                                <audio controls controlsList="nodownload">
+                                                                    <source  src={URL.createObjectURL(file.file)}  />
+                                                                </audio>
+                                                            </div>
+                                                        </div>}
                                                         {type === 'video' && <video src={URL.createObjectURL(file.file)} controls />}
                                                         <div
                                                             className={styled.factoryForm__clear}
