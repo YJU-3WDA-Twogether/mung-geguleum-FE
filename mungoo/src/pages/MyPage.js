@@ -172,7 +172,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                 </nav>
                 {selected === 1 && <MyLog selectedPostUno={selectedPostUno} />}
                 {selected === 2 && <MyLikeView />}
-                {selected === 3 && <MyPostView selectedPostUno={selectedPostUno}/>}
+                {selected === 3 && <MyPostView handlePostClick={handlePostClick} selectedPostUno={selectedPostUno}/>}
             </div>
         </section>
     );

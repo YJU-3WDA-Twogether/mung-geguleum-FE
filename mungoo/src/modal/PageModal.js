@@ -37,9 +37,11 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
         }
     };
 
-    const closeModal = () => {
+    const closeModal = (e) => {
+        handlePostClick(e);
         setShowPopup(false);
     };
+
     const postread = async () => {
         try {
             const response = await axios.get(`${API_URL}/post/read/${postId}`);
@@ -200,7 +202,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                             src={postData.fpath}
                                             alt="profileImg"
                                             className={styled.profile__image}
-                                            onClick={() => handlePostClick(postData.uno)}
+                                            onClick={() => closeModal(postData.uno)}
                                         />
                                         <div style={{ paddingLeft: "8px" }}>
                                             <p> <span className="comment-author">{postData.title}</span>
@@ -218,7 +220,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                             src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
-                                                            onClick={() => handlePostClick(comment.uno)}
+                                                            onClick={() => closeModal(comment.uno)}
                                                         />
                                                         <div className="comment-text" >
                                                             <p style={{ whiteSpace: 'pre-wrap' }}>
