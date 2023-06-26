@@ -5,7 +5,7 @@ import styled from "../styles/UserUpdateModal.module.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const UserUpdateModal = ({ open, onClose, handleProfileEdit, handleWithdrawal, users, selectedUser }) => {
+const UserUpdateModal = ({ open, onClose, handleProfileEdit, handleWithdrawal, users, selectedUser,fetchUsers}) => {
     const [selectedProfileImage, setSelectedProfileImage] = useState(null);
     const [selectedBgImage, setSelectedBgImage] = useState(null);
     const [user, setUser] = useState({});
@@ -35,7 +35,6 @@ const UserUpdateModal = ({ open, onClose, handleProfileEdit, handleWithdrawal, u
                     }
                 }
             );
-
             if (response.status === 200) {
                 // Update the user's grade and nickname in the selectedUser state
                 setUser((prevUser) => ({
@@ -44,8 +43,8 @@ const UserUpdateModal = ({ open, onClose, handleProfileEdit, handleWithdrawal, u
                     nickname: updatedUser.nickname,
                     introduce: updatedUser.introduce
                 }));
-
                 // Close the modal
+                fetchUsers();
                 onClose();
             }
         } catch (error) {

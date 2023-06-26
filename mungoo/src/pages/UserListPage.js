@@ -36,22 +36,23 @@ const UserListPage = () => {
         });
     };
 
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/user/list`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                params: {
+                    query: searchQuery
+                }
+            });
+            setUsers(response.data.content);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/user/list`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                    params: {
-                        query: searchQuery
-                    }
-                });
-                setUsers(response.data.content);
-            } catch (error) {
-                console.error(error);
-            }
-        };
         fetchUsers();
     }, [searchQuery]);
 
@@ -66,29 +67,6 @@ const UserListPage = () => {
     const displayedUsers = filteredUsers.slice(indexOfFirstPost, indexOfLastPost);
     const totalPages = Math.ceil(filteredUsers.length / postsPerPage);
 
-    const updateUserGrade = async (user) => {
-        try {
-            const response = await axios.put(
-                `${API_URL}/user/update/${user.uno}`,
-                user,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                }
-            );
-            if (response.status === 200) {
-                const updatedUser = response.data;
-                setUsers((prevUsers) =>
-                    prevUsers.map((user) =>
-                        user.uno === updatedUser.uno ? updatedUser : user
-                    )
-                );
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const deleteUser = async (uno) => {
         try {
@@ -160,6 +138,7 @@ const UserListPage = () => {
                     onClose={handleCloseUsermodal}
                     handleUserUpdate={handleUserUpdate}
                     selectedUser={selectedUser}
+                    fetchUsers={fetchUsers}
                 />
             )}
 
