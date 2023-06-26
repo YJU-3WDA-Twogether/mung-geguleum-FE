@@ -7,6 +7,8 @@ import jwt from "jwt-decode";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {Carousel} from "react-responsive-carousel";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
+import {AiFillWarning} from "react-icons/ai";
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 상태값과 함수 전달받음
@@ -114,7 +116,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                             <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden' , width:'700px', backgroundColor:"black"} }>
                                 {/* 파일 표시 영역 내용 */}
                                     <div>
-                                        <div style={{ position: 'relative',width : '700px' }}>
+                                        <div style={{ position: 'relative',width : '670px' }}>
                                             <Carousel
                                                 showStatus={false}
                                                 showArrows={false}
@@ -173,7 +175,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                             </div>
                         )}
                         <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px',overflow:'none'}}>
-                            {postData && (
+                            {postData ? (
                                 <>
                                     <div className="fixedUp">
                                         <img
@@ -213,21 +215,30 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                             );
                                         })}
                                     </div>
+                                    <div className="fixedDown">
+                                        <form onSubmit={handleSubmit} >
+                                            <label>
+                                                <input type="text" value={comment}
+                                                       onChange={e => setComment(e.target.value)}
+                                                       placeholder="댓글.."
+                                                       className="replyInput"
+                                                />
+                                            </label>
+                                            <input className="replySmit" type="submit" value="작성" disabled={comment === ""}/>
+                                        </form>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                                        <div>
+                                            <AiFillWarning size={180} />
+                                            <h2>페이지가 삭제되었습니다.</h2>
+                                        </div>
+                                    </div>
                                 </>
                             )}
 
-                            <div className="fixedDown">
-                                <form onSubmit={handleSubmit} >
-                                    <label>
-                                        <input type="text" value={comment}
-                                               onChange={e => setComment(e.target.value)}
-                                               placeholder="댓글.."
-                                               className="replyInput"
-                                        />
-                                    </label>
-                                    <input className="replySmit" type="submit" value="작성" disabled={comment === ""}/>
-                                </form>
-                            </div>
                         </div>
                     </div>
                     <button className="close-button" onClick={closeModal}> X </button>
