@@ -37,13 +37,13 @@ const ReportPage = ({handlePostClick}) => {
         const ok = window.confirm("구름을 삭제할까요?");
 
         if (ok === true) {
-            const response = await axios.put(`${API_URL}/admin/blackPostDelete/${postNum}`,{
+            const response = await axios.put(`${API_URL}/admin/blackPostDelete/${postNum}`, {},{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 }});
         }
         fetchData();
-    };
+    }
 
     return (
         <>

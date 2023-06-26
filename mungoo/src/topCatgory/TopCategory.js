@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OffcanvasModal from "../modal/OffCanvasModal";
 import styled from "../styles/TopCategory.module.css";
+import axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const TopCategory = ({
   creatorInfo,
@@ -22,11 +24,17 @@ export const TopCategory = ({
   const handleOffcanvasClose = () => {
     setShowOffcanvas(false);
   };
-  const onLogOutClick = () => {
+  const onLogOutClick = async() => {
     const ok = window.confirm("로그아웃 하시겠어요?");
     if (ok) {
-      localStorage.clear();
       navigate("/auth");
+
+      await axios.get(`${API_URL}/user/logout`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+      });
+      localStorage.clear();
     }
   };
 

@@ -42,16 +42,15 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery
     const onLogOutClick = async() => {
         const ok = window.confirm("로그아웃 하시겠어요?");
         if (ok) {
-            localStorage.clear();
             setUser({});
             navigate("/auth");
 
-                await axios.get(`${API_URL}/user/logout`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    },
-                });
-
+            await axios.get(`${API_URL}/user/logout`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+            });
+            localStorage.clear();
 
         }
     };
