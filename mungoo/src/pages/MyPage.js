@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { BsCalendar3 } from "react-icons/bs";
 import { IoMdExit } from "react-icons/io";
 import { IoArrowBackOutline } from "react-icons/io5";
-import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
 import ProfileEditModal from '../modal/ProfileEditModal';
 import style from "../styles/MyPageBtn.module.css";
@@ -26,20 +25,20 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
 
     const handleOpenModal = () => {
         setOpenModal(true);
-      };
-    
-      const handleCloseModal = () => {
+    };
+
+    const handleCloseModal = () => {
         setOpenModal(false);
-      };
-    
-      const handleProfileEdit = () => {
+    };
+
+    const handleProfileEdit = () => {
         // Handle the profile edit logic here
         // This function will be called when the "Save" button is clicked inside the modal
         // Perform the necessary actions, such as updating the user's profile data
         // You can access form data or perform API calls here
         // Once the editing is done, you can close the modal by calling handleCloseModal()
         handleCloseModal();
-      };
+    };
 
 
     useEffect(() => {
@@ -57,16 +56,27 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
     };
     useEffect(() => {
         if (selectedPostUno) {
-            fetchUserInfo(selectedPostUno);
+            fetchUserInfo(selectedPostUno,2);
+        }
+        else{
+            fetchUserInfo(uno,1);
         }
     }, [selectedPostUno]);
 
-    const fetchUserInfo = async (pno) => {
+    const update = () =>{
+        fetchUserInfo(uno,1);
+    }
+    const fetchUserInfo = async (pno,num) => {
         try {
             const response = await axios.get(`${API_URL}/user/read/${pno}`);
             const userInfo = response.data;
             // 받아온 회원 정보를 사용하거나 상태에 저장 등 필요한 작업 수행
-            setUser2(userInfo);
+            if(num===1){
+                setUser(userInfo);
+            }
+            else{
+                setUser2(userInfo);
+            }
             // ...
         } catch (error) {
             console.error('Error fetching user info:', error);
@@ -79,7 +89,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
             <div className={styled.main__container}>
 
                 <TopCategory
-                    text={selectedPostUno === null ? uid :user2.uid}
+                    text={selectedPostUno === null ? user.uid :user2.uid}
                     iconName={<IoArrowBackOutline />}
                     iconName2={<IoMdExit />}
                     MainClose={MainClose}
@@ -91,32 +101,36 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     <div className={styled.profile}>
                         <div className={styled.profile__edit}>
                             <div className={styled.profile__image}>
-                                <img src={pfile} alt="프로필 이미지" />
+                                <img src={selectedPostUno  === null ? user.fpath : user2.fpath} alt="프로필 이미지" />
                             </div>
                             {selectedPostUno === user2.uno ? null : (
-                            <div className={styled.profile__editBtn} onClick={handleOpenModal}
+                                <div className={styled.profile__editBtn} onClick={handleOpenModal}
                                 >
                                     프로필 수정
                                 </div>
                             )}
 
-                        <ProfileEditModal
+                            <ProfileEditModal
                                 open={openModal}
                                 onClose={handleCloseModal}
                                 handleProfileEdit={handleProfileEdit}
+                                nicknames ={user.nickname}
+                                imgs={user.fpath}
+                                introduces={user.introduce}
+                                updates={update}
                             />
                         </div>
                         <div className={styled.profile__info}>
                             <div className={styled.userInfo}>
-                                <p>{selectedPostUno  === null ? nickname :user2.nickname}</p>
-                                <p>@{selectedPostUno  === null  ? uid :user2.uid}</p>
+                                <p>{selectedPostUno  === null ? user.nickname :user2.nickname}</p>
+                                <p>@{selectedPostUno  === null  ? user.uid :user2.uid}</p>
                             </div>
                             <div className={styled.profile__desc}>
-                                <p>안녕하세요</p>
+                                <p>{selectedPostUno  === null ? user.introduce : user2.introduce}</p>
                             </div>
                             <div className={styled.profile__createdAt}>
                                 <BsCalendar3 />
-                                <p>가입일 :</p>
+                                <p>가입일 :{ selectedPostUno  === null ? new Date(user.regDate).toLocaleString() : new Date(user2.regDate).toLocaleString()}</p>
                             </div>
                         </div>
                     </div>
@@ -132,16 +146,18 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                             <p>내 활동</p>
                         </div>
                     </div>
-                    <div
-                        onClick={() => handleClick(2)}
-                        className={`${style.container} ${ style.sizeContainer}`}
-                    >
+                    {selectedPostUno === user2.uno ? null : (
                         <div
-                            className={`${style.btnBox} ${selected === 2 && style.selectedBox}`}
+                            onClick={() => handleClick(2)}
+                            className={`${style.container} ${ style.sizeContainer}`}
                         >
-                            <p>내 기록</p>
+                            <div
+                                className={`${style.btnBox} ${selected === 2 && style.selectedBox}`}
+                            >
+                                <p>내 기록</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div
                         onClick={() => handleClick(3)}
                         className={`${style.container} ${ style.sizeContainer}`}

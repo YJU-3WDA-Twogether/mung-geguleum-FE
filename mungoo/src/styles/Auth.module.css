@@ -27,7 +27,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-top: 65px;
+    padding-top: 30px;
 }
 
 .auth .nwitter__logo {

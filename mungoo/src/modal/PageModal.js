@@ -1,13 +1,14 @@
 import axios from "axios";
 import jwt from "jwt-decode";
 import React, { useEffect, useState } from 'react';
-import pfile from "../image/Profile.jpg";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { Carousel } from "react-responsive-carousel";
 import '../styles/PageModal.css';
 import styled from "../styles/PostView.module.css";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 상태값과 함수 전달받음
-
+    const [fileNum,setFileNum] = useState(0);
     const [postData, setPostData] = useState(null);
     const [comment, setComment] = useState("");
     const [user, setUser] = useState({});
@@ -34,18 +35,18 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
     const closeModal = () => {
         setShowPopup(false);
     };
-
+    const postread = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/post/read/${postId}`);
+            const data = response.data;
+            setPostData(data);
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching node data:', error);
+        }
+    };
     useEffect(() => {
-        const postread = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/post/read/${postId}`);
-                const data = response.data;
-                setPostData(data);
-                console.log(data);
-            } catch (error) {
-                console.error('Error fetching node data:', error);
-            }
-        };
+
 
         if (postId) {
             postread();
@@ -70,18 +71,35 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
         try {
             const response = await axios.post(`${API_URL}/reply/create`, formData, config);
             console.log(response.data);
-
-            if (postData) {
-                setPostData({
-                    ...postData,
-                    reply: [...postData.reply, { ...formData, rno: response.data.rno }]
-                });
-                // Reset comment input field
-                setComment("");
-            }
+            setComment("");
+            postread();
         } catch (err) {
             console.error(err);
             alert('오류가 발생했습니다.');
+        }
+    };
+
+    const [postSlides, setPostSlides] = useState({});
+
+    const handleSlideChange = (postId, index) => {
+        setPostSlides(prevSlides => ({
+            ...prevSlides,
+            [postId]: index
+        }));
+    };
+    const handleButtonClick = (postId, increment) => {
+        const post = postData;
+        if (post) {
+            setPostSlides((prevSlides) => {
+                const currentIndex = prevSlides[postId] || 0;
+                const newIndex = (currentIndex + increment + post.file.length) % post.file.length;
+                return {
+                    ...prevSlides,
+                    [postId]: newIndex,
+                };
+            });
+
+            setFileNum((prevNum) => (prevNum + increment + post.file.length) % post.file.length);
         }
     };
 
@@ -90,76 +108,103 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
             <div className={`layer-popup ${showPopup ? 'show' : ''}`} onClick={handleOutsideClick}>
                 <div className="layer-popup show">
                     <div className="modal-dialog" style={{  borderRadius:  '10px 10px'}}>
-                        {postData && postData.file.length > 0 && (
-                            <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden'}}>
+                        {postData && postData.file && postData.file.length > 0 && (
+                            <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden' , width:'700px', backgroundColor:"black"} }>
                                 {/* 파일 표시 영역 내용 */}
-                                {postData.file.map((item, index) => (
-                                    <div key={index}>
-                                        {item.fsname.match(/.(jpg|jpeg|png|gif)$/i) ? (
-                                            <div className="img-wrap">
-                                                <img src={`${API_URL}/file/read/${item.fno}`} alt="file" style={{ width: '600px', height: '700px'}} />
-                                            </div>
-                                        ) : item.fsname.match(/.(mp4|webm)$/i) ? (
-                                            <div className="video-wrap">
-                                                <video controls style={{ width: '100%', height: '100%' }}>
-                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`video/${item.fsname.split('.').pop()}`} />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            </div>
-                                        ) : item.fsname.match(/.(mp3|wav)$/i) ? (
-                                            <div className="audio-wrap">
-                                                <audio controls style={{ width: '100%', height: '100%' }}>
-                                                    <source src={`${API_URL}/file/read/${item.fno}`} type={`audio/${item.fsname.split('.').pop()}`} />
-                                                    Your browser does not support the audio tag.
-                                                </audio>
-                                            </div>
-                                        ) : (
-                                            <div className="file-wrap">
-                                                <a href={`${API_URL}/file/read/${item.fno}`} target="_blank" rel="noopener noreferrer">
-                                                    {item.fsname}
-                                                </a>
-                                            </div>
-                                        )}
+                                    <div>
+                                        <div style={{ position: 'relative',width : '700px' }}>
+                                            <Carousel
+                                                showStatus={false}
+                                                showArrows={false}
+                                                showThumbs={false}
+                                                selectedItem={postSlides[postData.pno] || 0}
+                                                onChange={(selectedIndex) => handleSlideChange(postData.pno, selectedIndex)}
+                                            >
+                                                {postData.file.map((file) => (
+                                                    <div key={file.fno}>
+                                                        {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
+                                                        file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
+                                                            <img src={file.fpath} alt="file"  style={{height:"460px"}} />
+                                                        ) : (
+                                                            <video controls style={{ width: '100%', height: '600px'}}>
+                                                                <source src={file.fpath} type="video/webm" />
+                                                            </video>
+                                                        )}
+                                                    </div>
+
+                                                ))}
+                                            </Carousel>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleButtonClick(postData.pno, -1)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    left: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent',
+                                                    border: 'none',
+                                                    color: '#000',
+                                                    fontSize: '1.5rem',
+                                                }}
+                                            >
+                                                <IoIosArrowBack size={35} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleButtonClick(postData.pno, 1)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    backgroundColor: 'transparent',
+                                                    border: 'none',
+                                                    color: '#000',
+                                                    fontSize: '1.5rem',
+                                                }}
+                                            >
+                                                <IoIosArrowForward size={35} />
+                                            </button>
+                                        </div>
                                     </div>
-                                ))}
                             </div>
                         )}
-                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px'}}>
+                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px',overflow:'none'}}>
                             {postData && (
                                 <>
-                                    <div className="fixedUp" >
+                                    <div className="fixedUp">
                                         <img
-                                            src={pfile}
+                                            src={postData.fpath}
                                             alt="profileImg"
                                             className={styled.profile__image}
                                             onClick={() => handlePostClick(postData.uno)}
                                         />
-                                        <div style={{paddingLeft:"8px"}}>
+                                        <div style={{ paddingLeft: "8px" }}>
                                             <p> <span className="comment-author">{postData.title}</span>
-                                                {new Date(postData.regDate).toLocaleString()} { postData.nickname}</p>
-                                            <p>{postData.content}</p>
+                                                {new Date(postData.regDate).toLocaleString()} {postData.nickname}</p>
+                                            <p style={{ whiteSpace: 'pre-wrap' }}>{postData.content}</p>
                                         </div>
                                     </div>
                                     <div className="scrollable">
-                                        {postData.reply.map((comment, index) => {
+                                        {[...postData.reply].reverse().map((comment, index) => { // Reverse the array
                                             const localDate = new Date(comment.regDate).toLocaleString();
                                             return (
                                                 <React.Fragment key={index}>
-                                                    <div className="container_reply">
+                                                    <div className="container_reply" >
                                                         <img
-                                                            src={pfile}
+                                                            src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
                                                         />
-                                                        <div className="comment-text">
-                                                            <p>
+                                                        <div className="comment-text" >
+                                                            <p style={{ whiteSpace: 'pre-wrap' }}>
                                                                 <span className="comment-author">{comment.uname}</span>
                                                                 <span className="comment-content">{comment.reply}</span>
                                                             </p>
                                                             <div className="comment-date">
-                                                                <p style={{color:"#6667AB"}}>{localDate}</p>
+                                                                <p style={{ color: "#6667AB" }}>{localDate}</p>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 </React.Fragment>

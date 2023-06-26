@@ -18,11 +18,7 @@ const OffcanvasModal = ({ show, onHide }) => {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      console.log(JSON.parse(storedUser));
-    }
+
 
     const fetchData = async () => {
       try {

@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import Collapse from 'react-bootstrap/Collapse';
 import { IoAlertCircleOutline } from "react-icons/io5";
 import D3Guide from "../image/D3Guide.png";
-import pfile from "../image/Profile.jpg";
 import PageModal from "../modal/PageModal";
 import '../styles/d3.css';
 const API_URL = process.env.REACT_APP_API_URL;
@@ -69,7 +68,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             // node tooltip
             node
                 .append("title")
-                .text((d) => `${d.regDate}\n${d.title}\n${d.nickname}`);
+                .text((d) => `${new Date(d.regDate).toLocaleString()}\n${d.title}\n${d.nickname}`);
 
             // generate the svg objects and force simulation
 
@@ -131,7 +130,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
                     .attr('height', 1)
                     .attr('width', 1)
                     .attr('preserveAspectRatio', 'none')
-                    .attr('xlink:href', pfile); // 이 부분은 실제 이미지 URL이어야 합니다.
+                    .attr('xlink:href', node.fpath); // 이 부분은 실제 이미지 URL이어야 합니다.
             });
         };
 
