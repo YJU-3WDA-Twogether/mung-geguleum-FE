@@ -67,7 +67,7 @@ const D3 = ({handlePostClick, d3num, modalPostId}) => {
             // node tooltip
             node
                 .append("title")
-                .text((d) => `${d.regDate}\n${d.title}\n${d.nickname}`);
+                .text((d) => `${new Date(d.regDate).toLocaleString()}\n${d.title}\n${d.nickname}`);
 
             // generate the svg objects and force simulation
 

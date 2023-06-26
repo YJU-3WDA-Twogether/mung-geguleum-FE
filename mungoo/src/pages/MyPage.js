@@ -131,7 +131,7 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                             </div>
                             <div className={styled.profile__createdAt}>
                                 <BsCalendar3 />
-                                <p>가입일 :</p>
+                                <p>가입일 :{ selectedPostUno  === null ? new Date(user.regDate).toLocaleString() : new Date(user2.regDate).toLocaleString()}</p>
                             </div>
                         </div>
                     </div>

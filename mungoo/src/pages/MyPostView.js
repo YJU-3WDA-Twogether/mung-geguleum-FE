@@ -294,7 +294,7 @@ function MyPostView({handlePostClick,selectedPostUno}) {
 
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative' ,width : '650px'}}>
                                     <Carousel
                                         showStatus={false}
                                         showArrows={false}
@@ -306,14 +306,17 @@ function MyPostView({handlePostClick,selectedPostUno}) {
                                             <div key={file.fno}>
                                                 {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                 file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                    <img src={file.fpath} alt="file" />
+                                                    <img src={file.fpath} alt="file" style={{height:"450px"}}/>
+                                                ) : file.ftype === '.mp3' ? (
+                                                    <video controls style={{backgroundImage:`${pfile}`}} controlsList="nodownload">
+                                                        <source src={file.fpath} type="audio/mp3" />
+                                                    </video>
                                                 ) : (
-                                                    <video controls>
+                                                    <video controls controlsList="nodownload">
                                                         <source src={file.fpath} type="video/webm" />
                                                     </video>
                                                 )}
                                             </div>
-
                                         ))}
                                     </Carousel>
                                     <button

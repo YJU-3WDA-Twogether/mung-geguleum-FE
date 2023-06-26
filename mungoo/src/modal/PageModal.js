@@ -114,7 +114,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                             <div className="modal-content" style={{ borderRadius: '10px 0 0 10px', overflow: 'hidden' , width:'700px', backgroundColor:"black"} }>
                                 {/* 파일 표시 영역 내용 */}
                                     <div>
-                                        <div style={{ position: 'relative' }}>
+                                        <div style={{ position: 'relative',width : '700px' }}>
                                             <Carousel
                                                 showStatus={false}
                                                 showArrows={false}
@@ -126,7 +126,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                     <div key={file.fno}>
                                                         {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                         file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                            <img src={file.fpath} alt="file" style={{ width: '100%', height: 'auto' }} />
+                                                            <img src={file.fpath} alt="file"  style={{height:"460px"}} />
                                                         ) : (
                                                             <video controls style={{ width: '100%', height: '600px'}}>
                                                                 <source src={file.fpath} type="video/webm" />
@@ -172,10 +172,10 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                     </div>
                             </div>
                         )}
-                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px'}}>
+                        <div className="modal-content app" style={{ borderRadius: postData && postData.file.length > 0 ? '0 10px 10px 0' : '10px 10px' , width:'450px',overflow:'none'}}>
                             {postData && (
                                 <>
-                                    <div className="fixedUp" >
+                                    <div className="fixedUp">
                                         <img
                                             src={postData.fpath}
                                             alt="profileImg"
@@ -185,7 +185,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                         <div style={{ paddingLeft: "8px" }}>
                                             <p> <span className="comment-author">{postData.title}</span>
                                                 {new Date(postData.regDate).toLocaleString()} {postData.nickname}</p>
-                                            <p>{postData.content}</p>
+                                            <p style={{ whiteSpace: 'pre-wrap' }}>{postData.content}</p>
                                         </div>
                                     </div>
                                     <div className="scrollable">
@@ -193,14 +193,14 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                             const localDate = new Date(comment.regDate).toLocaleString();
                                             return (
                                                 <React.Fragment key={index}>
-                                                    <div className="container_reply">
+                                                    <div className="container_reply" >
                                                         <img
                                                             src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
                                                         />
-                                                        <div className="comment-text">
-                                                            <p>
+                                                        <div className="comment-text" >
+                                                            <p style={{ whiteSpace: 'pre-wrap' }}>
                                                                 <span className="comment-author">{comment.uname}</span>
                                                                 <span className="comment-content">{comment.reply}</span>
                                                             </p>

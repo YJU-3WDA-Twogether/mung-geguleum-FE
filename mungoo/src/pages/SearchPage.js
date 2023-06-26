@@ -298,7 +298,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                         </div>
                         <div className={styled.nweet__image}>
                             {post.file.length > 0 && (
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative' ,width : '650px'}}>
                                     <Carousel
                                         showStatus={false}
                                         showArrows={false}
@@ -310,9 +310,13 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                                             <div key={file.fno}>
                                                 {file.ftype === '.jpg' || file.ftype === '.jpeg' || file.ftype === '.png' ||
                                                 file.ftype === '.JPG' || file.ftype === '.JPEG' || file.ftype === '.PNG' ? (
-                                                    <img src={file.fpath} alt="file" />
+                                                    <img src={file.fpath} alt="file" style={{height:"450px"}}/>
+                                                ) : file.ftype === '.mp3' ? (
+                                                    <video controls style={{backgroundImage:`${pfile}`}} controlsList="nodownload">
+                                                        <source src={file.fpath} type="audio/mp3" />
+                                                    </video>
                                                 ) : (
-                                                    <video controls>
+                                                    <video controls controlsList="nodownload">
                                                         <source src={file.fpath} type="video/webm" />
                                                     </video>
                                                 )}
@@ -452,7 +456,7 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                     <li className="page-item">
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(currentPage - 10)}
+                            onClick={() => handlePageChange(Math.max(currentPage - 10, 1))}
                         >
                             Prev
                         </button>
@@ -482,7 +486,9 @@ function SearchPage({ searchQuery, setSearchQuery ,selectedPostUno,handlePostCli
                     <li className="page-item">
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(Math.min(currentPage + 10, totalPages))}
+                            onClick={() =>
+                                handlePageChange(Math.min(currentPage + 10, totalPages))
+                            }
                         >
                             Next
                         </button>
