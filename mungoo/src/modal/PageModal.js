@@ -38,7 +38,11 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
     };
 
     const closeModal = (e) => {
-        handlePostClick(e);
+        setShowPopup(false);
+    };
+
+    const MoveModal = (e) => {
+        handlePostClick(e)
         setShowPopup(false);
     };
 
@@ -202,7 +206,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                             src={postData.fpath}
                                             alt="profileImg"
                                             className={styled.profile__image}
-                                            onClick={() => closeModal(postData.uno)}
+                                            onClick={() => MoveModal(postData.uno)}
                                         />
                                         <div style={{ paddingLeft: "8px" }}>
                                             <p> <span className="comment-author">{postData.title}</span>
@@ -220,7 +224,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
                                                             src={comment.fpath}
                                                             alt="profileImg"
                                                             className={styled.profile__image}
-                                                            onClick={() => closeModal(comment.uno)}
+                                                            onClick={() => MoveModal(comment.uno)}
                                                         />
                                                         <div className="comment-text" >
                                                             <p style={{ whiteSpace: 'pre-wrap' }}>
