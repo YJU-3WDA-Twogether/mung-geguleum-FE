@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OffcanvasModal from "../modal/OffCanvasModal";
 import styled from "../styles/TopCategory.module.css";
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const TopCategory = ({
   creatorInfo,

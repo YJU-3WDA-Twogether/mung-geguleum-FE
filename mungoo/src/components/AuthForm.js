@@ -99,6 +99,22 @@ const AuthForm = ({ newAccount, setUserObj }) => {
 
     
 
+    // 비밀번호 확인 함수
+    const handlePasswordCheck = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setPasswordMatch(formData.password === value); // 비밀번호와 비밀번호 확인 값 비교
+    };
+
+    // 이메일 유효성 검사 함수
+    const handleEmailValidation = (e) => {
+        const { value } = e.target;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setEmailValid(emailRegex.test(value)); // 이메일 형식 검사
+        handleChange(e); // 이메일 값을 상태에 저장
+    };
+
+
     return (
         <div className={styled.container}>
             <form onSubmit={handleSubmit} className={styled.wrapper}>
@@ -177,8 +193,11 @@ const AuthForm = ({ newAccount, setUserObj }) => {
                             name="password2"
                             placeholder="비밀번호 확인"
                             value={formData.password2}
-                            onChange={handleChange}
+                            onChange={handlePasswordCheck} // 비밀번호 확인 함수 사용
                         />
+                        {!passwordMatch && formData.password2 && (
+                            <p className={styled.errorMessage}>비밀번호가 일치하지 않습니다.</p>
+                        )}
                         <input
                             className={`${styled.authInput} ${
                                 select === "email" && styled.select
@@ -189,8 +208,11 @@ const AuthForm = ({ newAccount, setUserObj }) => {
                             name="email"
                             placeholder="이메일"
                             value={formData.email}
-                            onChange={handleChange}
+                            onChange={handleEmailValidation} // 이메일 유효성 검사 함수 사용
                         />
+                        {!emailValid && formData.email && (
+                            <p className={styled.errorMessage}>유효한 이메일 형식이 아닙니다.</p>
+                        )}
                         <input
                             className={`${styled.authInput} ${
                                 select === "nickname" && styled.select

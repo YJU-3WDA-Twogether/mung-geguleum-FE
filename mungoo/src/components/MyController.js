@@ -15,7 +15,7 @@ function MyController({ MyName, handlePostClick,selectedPostUno}) {
             page = <MyLog selectedPostUno={selectedPostUno}/>;
             break;
         case 'MyPostView':
-            page = <MyPostView />;
+            page = <MyPostView handlePostClick={handlePostClick} selectedPostUno={selectedPostUno} />;
             break;
     }
 

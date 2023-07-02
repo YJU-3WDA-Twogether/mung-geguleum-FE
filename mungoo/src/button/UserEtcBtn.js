@@ -4,6 +4,11 @@ import { BiCheck } from "react-icons/bi";
 import { GoTriangleDown } from "react-icons/go";
 import { IoMdExit } from "react-icons/io";
 import styled from "../styles/UserEtcBtn.module.css";
+<<<<<<< HEAD
+=======
+import {useEffect, useState} from "react";
+import jwt from "jwt-decode";
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 
 const UserEtcBtn = ({ creatorInfo, userEtc, onLogOutClick }) => {
 

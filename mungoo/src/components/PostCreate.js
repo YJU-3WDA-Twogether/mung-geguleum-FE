@@ -5,7 +5,6 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import pfile from "../image/Profile.jpg";
 import styled from "../styles/PostCreate.module.css";
 
 
@@ -26,8 +25,8 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
     const MAX_FILE_SIZE = 100 * 1024 * 1024; // 20MB
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-
         files.forEach((file) => {
+            setFilename(file.name)
             const extension = file.name.split('.').pop();
             const fileType = (() => {
                 switch (extension) {
@@ -186,7 +185,7 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                 <div className={styled.factoryInput__container}>
                     <div className={styled.nweet__profile}>
                             <img
-                                src={pfile} /* 이미지 주소 추가 */
+                                src={fpath} /* 이미지 주소 추가 */
                                 alt="profileImg"
                                 className={styled.profile__image}
                             />
@@ -237,7 +236,18 @@ const PostCreate = ({pageNum, onPostSubmit,setNewPosts}) => {
                                                 ].map(({ type, file, index }) => (
                                                     <div key={index} className={styled.factoryForm__mediaContainer} style={{marginBottom : 5}}>
                                                         {type === 'image' && <img src={URL.createObjectURL(file.file)} />}
-                                                        {type === 'audio' && <audio src={URL.createObjectURL(file.file)} controls />}
+                                                        {type === 'audio' &&
+                                                            <div className='container'>
+                                                                <div className='player' >
+                                                                    <div className='imgBx'>
+                                                                        <img src={fpath}id="audio"/>
+                                                                    </div>
+                                                                    <audio controls controlsList="nodownload">
+                                                                        <source  src={URL.createObjectURL(file.file)}  />
+                                                                    </audio>
+                                                                </div>
+                                                             </div>
+                                                        }
                                                         {type === 'video' && <video src={URL.createObjectURL(file.file)} controls />}
                                                         <div
                                                             className={styled.factoryForm__clear}

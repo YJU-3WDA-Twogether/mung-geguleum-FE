@@ -188,6 +188,7 @@
 .nweet__image img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
 }
 .nweet__image video {
     width: 600px;
@@ -352,6 +353,10 @@
 
 /* 좋아요 숫자 */
 .nweet .nweet__actions .actionBox.like p {
+<<<<<<< HEAD
     color: #6667ab;
+=======
+    color: #5859b2;
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 }
 

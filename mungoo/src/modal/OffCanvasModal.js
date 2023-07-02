@@ -19,7 +19,6 @@ const OffcanvasModal = ({ show, onHide }) => {
 
   useEffect(() => {
 
-
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_URL}/log/getdownlist`, config);

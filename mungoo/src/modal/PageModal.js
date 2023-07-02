@@ -32,7 +32,7 @@ const PageModal = ({ showPopup, setShowPopup, postId, handlePostClick}) => { // 
         }
     };
 
-    const closeModal = () => {
+    const closeModal = (e) => {
         setShowPopup(false);
     };
     const postread = async () => {

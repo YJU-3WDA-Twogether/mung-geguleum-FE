@@ -1,3 +1,4 @@
+import axios from "axios";
 import jwt from "jwt-decode";
 import React, { useEffect, useRef, useState } from 'react';
 import { BsFire, BsPersonFill } from "react-icons/bs";
@@ -9,8 +10,9 @@ import { VscGitPullRequestCreate } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 import UserEtcBtn from "../button/UserEtcBtn";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
-import pfile from "../image/Profile.jpg";
 import styled from '../styles/MainNavigation.module.css';
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery }) {
     const userEtcRef = useRef();
@@ -29,19 +31,26 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery
         setIsAdmin(decodedToken.role === 'ADMIN'); // Set isAdmin state based on the user's role
     }, []);
 
-    const { uno, nickname, uid, role } = jwt(localStorage.getItem('accessToken'));
+    const { uno, nickname, uid, role ,fpath} = jwt(localStorage.getItem('accessToken'));
     const { nweetEtc: userEtc, setNweetEtc: setUserEtc } = useNweetEctModalClick(userEtcRef);
 
     const toggleUserEtc = () => {
         setUserEtc((prev) => !prev);
     };
 
-    const onLogOutClick = () => {
+    const onLogOutClick = async() => {
         const ok = window.confirm("로그아웃 하시겠어요?");
         if (ok) {
-            localStorage.clear();
             setUser({});
             navigate("/auth");
+
+            await axios.get(`${API_URL}/user/logout`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+            });
+            localStorage.clear();
+
         }
     };
 
@@ -153,7 +162,7 @@ function MainNavigation({ onSelectPost, MainClose, handlePostUno, setSearchQuery
                             <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
                                 <div className={styled.userInfo__profile}>
                                     <img
-                                        src={pfile}
+                                        src={fpath}
                                         alt="profileImg"
                                         className={styled.profile__image}
                                     />

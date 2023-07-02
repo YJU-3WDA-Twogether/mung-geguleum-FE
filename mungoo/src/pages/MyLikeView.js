@@ -322,7 +322,6 @@ function MyLikeView({handlePostClick,selectedPostUno}) {
                                     </div>
 
                                     <div className={style1.nweet__image}>
-
                                     </div>
                                     <nav className={style1.nweet__actions}>
                                         <div className={`${style1.actionBox} ${style1.like} `}>

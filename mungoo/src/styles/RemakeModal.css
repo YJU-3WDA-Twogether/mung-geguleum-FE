@@ -64,6 +64,7 @@
 .Remake .pagination button span {
   margin: auto;
 }
+<<<<<<< HEAD
 
 .Remake .pagination button:hover {
   background-color: #ccc;
@@ -179,4 +180,96 @@
 
 
 
+=======
+
+.Remake .pagination button:hover {
+  background-color: #ccc;
+  border-color: #6667AB;
+  color: #fff;
+}
+
+.Remake .pagination button.active {
+  background-color: #4B4C7F;
+  border-color: #4B4C7F;
+  color: #fff;
+}
+
+
+/* 재창작 테이블 */
+.RemakeTagTable {
+  width: 100%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+
+.RemakeTagCell {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.RemakeTagCheckbox {
+  margin: 0;
+}
+
+.RemakeTagTable th {
+  background-color: #f2f2f2;
+}
+
+.RemakeTagTable th,
+.RemakeTagTable td {
+  padding: 10px;
+}
+
+.RemakeTagTable td {
+  background-color: #fff;
+}
+
+.RemakeTagTable tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+
+.RemakeTagTable tr:hover td {
+  background-color: #e6e6e6;
+}
+
+.Remake.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.page-button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #f2f2f2;
+  border: none;
+  cursor: pointer;
+}
+
+.page-button.active {
+  background-color: #ccc;
+}
+
+.Remake-Selected {
+  position: relative;
+
+  font-size: small;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #6667AB;
+  color: white;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  max-width: 100px;
+}
+
+.Remake-Selected:hover {
+  background-color: #4B4C7F;
+}
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 

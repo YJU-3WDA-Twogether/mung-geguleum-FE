@@ -69,11 +69,20 @@
     }
 }
 
+<<<<<<< HEAD
+=======
+.errorMessage {
+    color: red;
+    margin-bottom: 1%;
+}
+
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 .agreement {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+<<<<<<< HEAD
   }
   
   .agreement label {
@@ -89,6 +98,23 @@
   }
 
   .agreementForm {
+=======
+}
+
+.agreement label {
+    margin-left: 5px;
+    position: relative;
+    top: -1px; /* 상황에 따라 조정 가능 */
+}
+
+.agreement input[type="checkbox"] {
+    margin-right: 5px;
+    position: relative;
+    top: -1px; /* 상황에 따라 조정 가능 */
+}
+
+.agreementForm {
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
     position: absolute;
     top: 50%;
     left: 50%;
@@ -100,6 +126,7 @@
     border-radius: 4px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+<<<<<<< HEAD
   }
   
   
@@ -108,6 +135,16 @@
   }
   
   .closeButton {
+=======
+}
+
+
+.agreementContent {
+    line-height: 1.5;
+}
+
+.closeButton {
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
     background-color: #ffffff;
     color: #333333;
     border-radius: 20px;
@@ -115,6 +152,7 @@
     font-size: 14px;
     cursor: pointer;
     margin-left: 10px;
+<<<<<<< HEAD
   }
   
   .closeButton:hover {
@@ -124,3 +162,11 @@
   
 
   
+=======
+}
+
+.closeButton:hover {
+    background-color: #eeeeee;
+}
+
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92

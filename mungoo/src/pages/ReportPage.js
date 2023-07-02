@@ -67,7 +67,6 @@ const ReportPage = () => {
                 showPopup={showPopup && selectedPostId === clickedPostId}
                 setShowPopup={setShowPopup}
                 postId={showPopup && selectedPostId === clickedPostId ? clickedPostId : null}
-
             />
         </>
     );

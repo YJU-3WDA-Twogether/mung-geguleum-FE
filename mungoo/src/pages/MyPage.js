@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { BsCalendar3 } from "react-icons/bs";
 import { IoMdExit } from "react-icons/io";
 import { IoArrowBackOutline } from "react-icons/io5";
+<<<<<<< HEAD
+=======
+import pfile from "../image/Profile.jpg";
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 import bgfile from "../image/background.jpg";
 import ProfileEditModal from '../modal/ProfileEditModal';
 import style from "../styles/MyPageBtn.module.css";
@@ -170,8 +174,13 @@ function MyPage({ handlePostClick, selectedPostUno ,MainClose}) {
                     </div>
                 </nav>
                 {selected === 1 && <MyLog selectedPostUno={selectedPostUno} />}
+<<<<<<< HEAD
                 {selected === 2 && <MyLikeView />}
                 {selected === 3 && <MyPostView selectedPostUno={selectedPostUno}/>}
+=======
+                {selected === 2 && <MyLikeView handlePostClick={handlePostClick}/>}
+                {selected === 3 && <MyPostView handlePostClick={handlePostClick} selectedPostUno={selectedPostUno}/>}
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
             </div>
         </section>
     );

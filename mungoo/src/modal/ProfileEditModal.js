@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import jwt from "jwt-decode";
@@ -7,6 +8,18 @@ import { IoCameraOutline, IoCloseSharp } from "react-icons/io5";
 import pfile from "../image/Profile.jpg";
 import bgfile from "../image/background.jpg";
 import styled from "../styles/UpdateProfileModal.module.css";
+=======
+import axios from 'axios';
+import Modal from '@mui/material/Modal';
+import React, { useRef, useState ,useEffect} from 'react';
+import { GrClose } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
+import { IoCameraOutline, IoCameraReverseOutline, IoCloseSharp } from "react-icons/io5";
+import pfile from "../image/Profile.jpg";
+import bgfile from "../image/background.jpg";
+import styled from "../styles/UpdateProfileModal.module.css";
+import jwt from "jwt-decode";
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -20,6 +33,10 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
   const [nickname, setNickname] = useState(nicknames);
   const { uno, uid,role } = jwt(localStorage.getItem('accessToken'));
   const inputRef = useRef();
+<<<<<<< HEAD
+=======
+  const navigate = useNavigate();
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 
   useEffect(() => {
     setIntroduce(introduces);
@@ -121,6 +138,28 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
       console.error('Error updating profile:', error);
     }
   };
+<<<<<<< HEAD
+=======
+    const userDelete =  async() => {
+      try {
+        console.log(uno);
+        const response = await axios.delete(`${API_URL}/user/delete/${uno}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          },
+        });
+       await axios.get(`${API_URL}/user/logout`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          },
+        });
+        localStorage.clear();
+        navigate("/auth");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
 
   return (
       <Modal
@@ -137,6 +176,16 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
               </div>
               <div className={styled.submit}>
                 <input
+<<<<<<< HEAD
+=======
+                    type="button"
+                    value="회원탈퇴"
+                    className={styled.editInput__arrow}
+                    style={{marginRight:"5px"}}
+                    onClick={userDelete}
+                />
+                <input
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
                     type="submit"
                     value="프로필 수정"
                     className={styled.editInput__arrow}
@@ -239,4 +288,8 @@ const ProfileEditModal = ({ open, onClose, handleProfileEdit, handleWithdrawal ,
   );
 };
 
+<<<<<<< HEAD
 export default ProfileEditModal;
+=======
+export default ProfileEditModal;
+>>>>>>> 8b88703b34f8ed704c69231c033d3bc102b84f92
