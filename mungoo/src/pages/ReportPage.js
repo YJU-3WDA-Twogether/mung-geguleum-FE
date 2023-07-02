@@ -57,7 +57,7 @@ const ReportPage = () => {
                             {item.ptitle}게시글을  {item.unickname}님에게 {item.lsname}를 받았습니다.
                         </div>
                     </div>
-                        <button  >삭제</button>
+                        <button>삭제</button>
                     </div>
                 ))}
                 <div>

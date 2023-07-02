@@ -168,7 +168,7 @@ const UserListPage = () => {
           <li className="page-item">
             <button
               className="page-link"
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => handlePageChange(currentPage - 5)}
             >
               Prev
             </button>
@@ -198,7 +198,7 @@ const UserListPage = () => {
           <li className="page-item">
             <button
               className="page-link"
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => handlePageChange(currentPage + 5,totalPages )}
             >
               Next
             </button>

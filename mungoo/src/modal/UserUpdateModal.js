@@ -154,7 +154,7 @@ const handleEditComplete = async (e) => {
                     ref={introduceRef}
                     spellCheck="false"
                     type="text"
-                    value={introduce}
+                    value={user.introduce || introduce}
                     onChange={handleIntroduceChange}
                   />
                 </div>
